@@ -1,5 +1,5 @@
 # veracode-scan-plugin
-Hello World type Jenkins plugin for testing Veracode Scan Jenkins Plugin
+Veracode has productised a plugin to make it simple for you to submit to Veracode applications already configured in Jenkins.
 
 ## Building
 
