@@ -1,0 +1,58 @@
+h3 {
+    color: #666;
+}
+#section-listing, #section-table, #section-bar {
+    margin-left: 35px;
+    margin-bottom: 20px;
+}
+#section-listing table {
+    width: 600px;
+    border-collapse: collapse;
+}
+#section-listing table td {
+    width: 300px;
+    padding: 3px 0;
+}
+.title {
+    margin-left: -35px;
+}
+.shield-icon {
+    margin-right: 5px;
+    margin-bottom: 1%;
+    width: 30px;
+    vertical-align: middle;
+}
+.sign-icon {
+    margin-bottom: 1%;
+    margin-right: 5px;
+    width: 25px;
+    vertical-align: middle;
+}
+
+/*Section 2 Table Style*/
+#section-table table {
+  width: 600px;
+  border-top: 2px solid #eee;
+  border-collapse: collapse;
+}
+#section-table table tr:nth-child(even) {
+    background-color: #eee;
+}
+#section-table table td, th {
+    padding: 6px 12px;
+    text-align: right;
+}
+#section-table table tr td:first-child {
+    text-align: left;
+}
+#section-table td span {
+    color: red;
+}
+#table-total {
+    background-color: #fff!important;
+    border-top: 2px solid #eee;
+    padding: 12px 8px;
+}
+#table-total td {
+    padding: 16px 12px!important;
+}

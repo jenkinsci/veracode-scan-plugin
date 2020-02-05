@@ -1,0 +1,105 @@
+<?xml version="1.0"?>
+<?jelly escape-by-default='true'?>
+<!--
+/*******************************************************************************
+ * Copyright (c) 2014 Veracode, Inc. All rights observed.
+ * 
+ * Available for use by Veracode customers as described in the accompanying license agreement.
+ * 
+ * Send bug reports or enhancement requests to support@veracode.com.
+ *
+ * See the license agreement for conditions on submitted materials.
+ ******************************************************************************/
+-->
+
+<!-- Renders the plugin's html elements contributed to the "Configure System" page. -->
+
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
+
+	<f:section title="Veracode Jenkins Plugin">
+
+		<f:entry title="Veracode User Credentials">
+			<table width="100%">
+
+				<f:entry title="API ID" field="gvid">
+					<f:textbox />
+				</f:entry>
+
+				<f:entry title="API Key" field="gvkey">
+					<f:password />
+				</f:entry>
+
+			</table>
+		</f:entry>
+
+		<f:entry title="Fail Job">
+			<table width="100%">
+				<f:entry field="failbuild">
+					<f:checkbox title="Fail the entire Jenkins job if either of the following Veracode tasks fail: upload and scan (including SCA) or dynamic rescan post-build action"/>
+				</f:entry>
+			</table>
+		</f:entry>
+		
+		<f:entry title="Copy Output Remote Files to Master">
+			<table width="100%">
+				<f:entry field="copyremotefiles">
+					<f:checkbox title="When a remote machine performs the build, the output files are copied to master (not recommended)."/>
+				</f:entry>
+			</table>
+		</f:entry>
+
+		<f:entry title="Default Values">
+			<table width="100%">
+
+				<f:entry field="autoappname">
+					<f:checkbox default="false" title="Use the Jenkins project name as the default application name ($projectname)." />
+				</f:entry>
+
+				<f:entry field="autodescription">
+					<f:checkbox default="false" title="Use the Jenkins server workspace path and IP address as the default application description." />
+				</f:entry>
+
+				<f:entry field="autoversion">
+					<f:checkbox default="false" title="Use the Jenkins project build number as the default scan name ($buildnumber)." />
+				</f:entry>
+
+			</table>
+		</f:entry>
+
+		<f:entry title="Debug">
+			<table width="100%">
+				<f:entry field="debug">
+					<f:checkbox default="false" title="Run in debug mode." />
+				</f:entry>
+			</table>
+		</f:entry>
+
+		<f:optionalBlock title="Connect using proxy" name="proxy" inline="true" checked="${descriptor.getProxy()}">
+	
+			<f:entry title="Proxy Settings">
+				<table width="100%">
+
+					<f:entry title="Host" field="phost">
+						<f:textbox />
+					</f:entry>
+
+					<f:entry title="Port" field="pport">
+						<f:textbox />
+					</f:entry>
+
+					<f:entry title="Username" field="puser">
+						<f:textbox />
+					</f:entry>
+
+					<f:entry title="Password" field="ppassword">
+						<f:password />
+					</f:entry>
+
+				</table>
+			</f:entry>
+		</f:optionalBlock>
+		
+		<f:validateButton title="Test Connection" progress="Testing..." method="testConnection" with="gvid,gvkey,proxy,phost,pport,puser,ppassword" />
+
+	</f:section>
+</j:jelly>

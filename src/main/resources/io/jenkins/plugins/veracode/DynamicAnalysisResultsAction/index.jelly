@@ -1,0 +1,237 @@
+<?jelly escape-by-default='true'?>
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
+  <l:layout>
+    <st:include it="${it.build}" page="sidepanel.jelly" />
+    <l:main-panel>
+      <h2 class="greyed">VERACODE DYNAMIC ANALYSIS</h2>
+        <j:choose>
+            <j:when test="${it.isScanHistoryAvailable() == false}">Dynamic analysis results are not available. Please refer to the <a href="../console"> console output</a> for details.</j:when>
+            <j:otherwise>
+		      <table style="width:600px" class="table">
+		        <tr>
+		          <td style="width: 24px; height: 24px; vertical-align:middle"><img src="${rootURL}${it.policyComplianceStatusIconUri24}"/></td>
+		          <td style="vertical-align:middle"><h2><j:out value="${it.policyComplianceStatusForHTML}"/> Policy: <j:out value="${it.policyNameForHTML}"/></h2></td>
+		        </tr>
+		        <tr>
+		          <td/>
+		          <td>
+		            <table class="pane" width="100%" style="border-top: 0px; border-left: 0px; border-right: 0px;">
+		              <tr>
+		                <td width="50%"><b>Scan Results</b></td>
+		              </tr>
+			        </table> 
+			        <table class="table" width="100%"> 
+		              <tr>
+		                <td width="50%">Veracode Level</td>
+		                <td width="50%"><j:out value="${it.veracodeLevelForHTML}"/></td>
+		              </tr>
+		              <tr>
+				        <td width="50%">Dynamic Analysis Requirement</td>
+		                <td width="50%">${it.scanOverdueStatus}</td>
+		              </tr>
+		              <tr>
+				        <td width="50%">Software Quality Score</td>
+				        <td width="50%">${it.analysisScore}</td>
+		              </tr>
+		              <tr class="blank_row">
+		                <td style="line-height:10px;" colspan="3"><br></br></td>
+		              </tr>
+		              <tr>
+		                <td width="50%"><a href="${it.detailedReportURLForHTMLAttr}" target="_blank">View Executive Summary</a>
+		                  <img src="${rootURL}${it.openNewWindow16}"/></td>
+		              </tr>
+		              	<tr class="blank_row">
+		                <td style="line-height:20px;" colspan="3"><br></br></td>
+		              </tr>
+		            </table>
+			      </td>
+			    </tr>
+		        <tr>
+		          <td width="24px"/>
+		 	      <td>        
+		 	   	    <table class="table" width="100%"> 
+			          <tr>
+			            <td><b>Vulnerabilities by Severity</b></td>
+			      	  </tr>
+		 	   	    </table>
+		            <table width="100" cellspacing="0" cellpadding="0" class="pane" style="border-left: 0px; border-right: 0px;">	 
+			 	      <tr bgcolor="#FFFFFF">
+			    	    <td width="25%"></td>
+			    	    <td width="25%" style="text-align: right; padding-right: 10px"><b>Flaw Count</b></td>
+			    	    <td width="25%" align="right"><b>New Flaws</b></td>
+			    	    <td width="25%" align="right"><b>Net Change</b></td>
+			 	      </tr>
+		              <tbody>
+		                <tr bgcolor="#e6e6e6"> 
+		                  <td class="pane" id="all-priorities">Very High</td>
+                          <j:choose>
+                            <j:when test="${it.isStaticSevLevelMitigated(5) == true}">
+                              <j:if test="${it.getPolicyAffection(5) == false}">
+                              <td style="text-align: right" class="pane">${it.getFlawsCount(5)}</td>
+                             </j:if> 
+                             <j:if test="${it.getPolicyAffection(5) == true}">
+                              <td style="text-align: right; color: red" class="pane">${it.getFlawsCount(5)}</td>
+                             </j:if> 
+                            </j:when>
+                            <j:otherwise>
+                            <j:if test="${it.getPolicyAffection(5) == false}">
+                              <td style="text-align: right; padding-right: 10px" class="pane">${it.getFlawsCount(5)}</td>
+                             </j:if> 
+                             <j:if test="${it.getPolicyAffection(5) == true}">
+                              <td style="text-align: right; padding-right: 10px; color: red" class="pane">${it.getFlawsCount(5)}</td>
+                             </j:if> 
+                            </j:otherwise>
+                          </j:choose>
+		                  <td align="right" class="pane">${it.getNewFlaws(5)}</td>
+		                  <td align="right" class="pane">${it.getNetChange(5)}</td>
+		                </tr>
+		                <tr>
+		                  <td class="pane" id="all-priorities">High</td>
+                          <j:choose>
+                            <j:when test="${it.isStaticSevLevelMitigated(4) == true}">
+                              <j:if test="${it.getPolicyAffection(4) == false}">
+                              <td style="text-align: right" class="pane">${it.getFlawsCount(4)}</td>
+                             </j:if> 
+                             <j:if test="${it.getPolicyAffection(4) == true}">
+                              <td style="text-align: right; color: red" class="pane">${it.getFlawsCount(4)}</td>
+                             </j:if> 
+                            </j:when>
+                            <j:otherwise>
+                            <j:if test="${it.getPolicyAffection(4) == false}">
+                              <td style="text-align: right; padding-right: 10px" class="pane">${it.getFlawsCount(4)}</td>
+                              </j:if> 
+                              <j:if test="${it.getPolicyAffection(4) == true}">
+                              <td style="text-align: right; padding-right: 10px; color: red" class="pane">${it.getFlawsCount(4)}</td>
+                              </j:if>
+                            </j:otherwise>
+                          </j:choose>
+		                  <td align="right" class="pane">${it.getNewFlaws(4)}</td>
+		                  <td align="right" class="pane">${it.getNetChange(4)}</td>
+		                </tr>              
+		                <tr bgcolor="#e6e6e6"> 
+		                  <td class="pane" id="all-priorities">Medium</td>
+                          <j:choose>
+                            <j:when test="${it.isStaticSevLevelMitigated(3) == true}">
+                              <j:if test="${it.getPolicyAffection(3) == false}">
+                              <td style="text-align: right" class="pane">${it.getFlawsCount(3)}</td>
+                             </j:if> 
+                             <j:if test="${it.getPolicyAffection(3) == true}">
+                              <td style="text-align: right; color: red" class="pane">${it.getFlawsCount(3)}</td>
+                             </j:if> 
+                            </j:when>
+                            <j:otherwise>
+                              <j:if test="${it.getPolicyAffection(3) == false}">
+                              <td style="text-align: right; padding-right: 10px" class="pane">${it.getFlawsCount(3)}</td>
+                              </j:if> 
+                              <j:if test="${it.getPolicyAffection(3) == true}">
+                              <td style="text-align: right; padding-right: 10px; color: red" class="pane">${it.getFlawsCount(3)}</td>
+                              </j:if>
+                            </j:otherwise>
+                          </j:choose>
+		                  <td align="right" class="pane">${it.getNewFlaws(3)}</td>
+		                  <td align="right" class="pane">${it.getNetChange(3)}</td>
+		                </tr>
+		                <tr> 
+		                  <td class="pane" id="all-priorities">Low</td>
+                          <j:choose>
+                            <j:when test="${it.isStaticSevLevelMitigated(2) == true}">
+                              <j:if test="${it.getPolicyAffection(2) == false}">
+                              <td style="text-align: right" class="pane">${it.getFlawsCount(2)}</td>
+                             </j:if> 
+                             <j:if test="${it.getPolicyAffection(2) == true}">
+                              <td style="text-align: right; color: red" class="pane">${it.getFlawsCount(2)}</td>
+                             </j:if> 
+                            </j:when>
+                            <j:otherwise>
+                              <j:if test="${it.getPolicyAffection(2) == false}">
+                              	<td style="text-align: right; padding-right: 10px" class="pane">${it.getFlawsCount(2)}</td>
+                              </j:if> 
+                              <j:if test="${it.getPolicyAffection(2) == true}">
+                              	<td style="text-align: right; padding-right: 10px; color: red" class="pane">${it.getFlawsCount(2)}</td>
+                              </j:if>
+                            </j:otherwise>
+                          </j:choose>
+		                  <td align="right" class="pane">${it.getNewFlaws(2)}</td>
+		                  <td align="right" class="pane">${it.getNetChange(2)}</td>
+		                </tr>      
+		                <tr bgcolor="#e6e6e6"> 
+		                  <td class="pane" id="all-priorities">Very Low</td>
+                          <j:choose>
+                            <j:when test="${it.isStaticSevLevelMitigated(1) == true}">
+                              <j:if test="${it.getPolicyAffection(1) == false}">
+                              <td style="text-align: right" class="pane">${it.getFlawsCount(1)}</td>
+                             </j:if> 
+                             <j:if test="${it.getPolicyAffection(1) == true}">
+                              <td style="text-align: right; color: red" class="pane">${it.getFlawsCount(1)}</td>
+                             </j:if> 
+                            </j:when>
+                            <j:otherwise>
+                              <j:if test="${it.getPolicyAffection(1) == false}">
+                              <td style="text-align: right; padding-right: 10px" class="pane">${it.getFlawsCount(1)}</td>
+                              </j:if> 
+                              <j:if test="${it.getPolicyAffection(1) == true}">
+                              <td style="text-align: right; padding-right: 10px; color: red" class="pane">${it.getFlawsCount(1)}</td>
+                              </j:if>
+                            </j:otherwise>
+                          </j:choose>
+		                  <td align="right" class="pane">${it.getNewFlaws(1)}</td>
+		                  <td align="right" class="pane">${it.getNetChange(1)}</td>
+		                </tr>               
+		                <tr> 
+		                  <td class="pane" id="all-priorities">Informational</td>
+                          <j:choose>
+                            <j:when test="${it.isStaticSevLevelMitigated(0) == true}">
+                              <j:if test="${it.getPolicyAffection(0) == false}">
+                              <td style="text-align: right" class="pane">${it.getFlawsCount(0)}</td>
+                             </j:if> 
+                             <j:if test="${it.getPolicyAffection(0) == true}">
+                              <td style="text-align: right; color: red" class="pane">${it.getFlawsCount(0)}</td>
+                             </j:if> 
+                            </j:when>
+                            <j:otherwise>
+                           <j:if test="${it.getPolicyAffection(0) == false}">
+                              <td style="text-align: right; padding-right: 10px" class="pane">${it.getFlawsCount(0)}</td>
+                              </j:if> 
+                              <j:if test="${it.getPolicyAffection(0) == true}">
+                              <td style="text-align: right; padding-right: 10px; color: red" class="pane">${it.getFlawsCount(0)}</td>
+                              </j:if>
+                            </j:otherwise>
+                          </j:choose>
+		                  <td align="right" class="pane">${it.getNewFlaws(0)}</td>
+		                  <td align="right" class="pane">${it.getNetChange(0)}</td>
+		                </tr>
+		                <table width="100%" cellspacing="0" cellpadding="0">
+		                  <tr class="blank_row">
+		                    <td style="line-height:10px;" colspan="3"><br></br></td>
+		                  </tr>
+		                  <tr>
+		                    <td width="25%" class="pane" id="all-priorities">Total Flaws</td>
+		                    <td width="25%" style="text-align: right; padding-right: 10px" class="pane">${it.totalFlawsCount}</td>
+		                    <td width="25%" align="right" class="pane">${it.totalNewFlawsCount}</td>
+		                    <td width="25%" align="right" class="pane">${it.totalNetChangeCount}</td>
+		                  </tr>
+		                </table>
+			          </tbody>
+		            </table>                 
+		          </td>         
+		        </tr>
+		       <div>
+				 <div style="margin-left:32px;margin-top:20px;">
+				   <b>Number of Vulnerabilities Per Scan</b>
+				 </div>
+				 <div style="margin-left:20px">
+				   <img src="./graph" width="584" height="400" />
+			     </div>
+			   </div>
+			   <tr class="blank_row">
+			      <td style="line-height:20px;" colspan="3"><br></br></td>
+			      <td style="line-height:20px;" colspan="3"><br></br></td>
+			   </tr>
+			   <p style="margin-left:32px;margin-top:20px;">*This count is modified to exclude mitigated flaws.</p>
+			   <p style="margin-left:32px;margin-top:5px;">Flaw count shown in <span style="color:red">red font</span> indicates one or more flaws impact policy.</p>
+			 </table>
+            </j:otherwise>
+        </j:choose>
+    </l:main-panel>
+  </l:layout>
+</j:jelly>

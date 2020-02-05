@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?jelly escape-by-default='true'?>
+<j:jelly xmlns:j="jelly:core" xmlns:f="/lib/form">
+
+	<f:entry title="Application Name" field="applicationName" clazz="required">
+		<f:textbox />
+	</f:entry>
+	
+	<f:entry title="Create Application" name="createProfile">
+		<f:checkbox default="false" field="createProfile" onclick="createProfileChecked(this.checked)"/>
+	</f:entry>
+	<f:entry title="Team Name" field="teams">
+		<f:textbox />
+	</f:entry>
+	
+	<f:entry name="criticality" title="Business Criticality" field="criticality">
+		<select name="criticality">
+			<option value="VeryHigh">Very High</option>
+	        <option value="High">High</option>
+	        <option value="Medium">Medium</option>
+	        <option value="Low">Low</option>
+	        <option value="VeryLow">Very Low</option>
+        </select>
+	</f:entry>
+	
+	<f:entry title="Sandbox Name" field="sandboxName">
+		<f:textbox />
+	</f:entry>
+
+	<f:entry title="Create Sandbox" field="createSandbox">
+		<f:checkbox default="false" />
+	</f:entry>
+	
+	<f:entry title="Scan Name" field="scanName" clazz="required">
+		<f:textbox default="${descriptor.autoversion ? '$buildnumber' : null}" />
+	</f:entry>
+
+	<f:entry title="Upload">
+			<table width="100%">
+				<f:entry title="Include Filepaths Pattern" field="uploadIncludesPattern" clazz="required">
+					<f:textbox default="**/**.jar" />
+				</f:entry>
+
+				<f:entry title="Exclude Filepaths Pattern" field="uploadExcludesPattern">
+					<f:textbox />
+				</f:entry>
+			</table>
+	</f:entry>
+    
+	<f:entry title="Scan">
+			<table width="100%">
+				<f:entry title="Include Filenames Pattern" field="scanIncludesPattern">
+					<f:textbox />
+				</f:entry>
+
+				<f:entry title="Exclude Filenames Pattern" field="scanExcludesPattern">
+					<f:textbox />
+				</f:entry>
+			</table>
+	</f:entry>
+
+	<f:entry title="Save As">
+			<table width="100%">
+				<f:entry title="Filename Pattern" field="fileNamePattern">
+					<f:textbox />
+				</f:entry>
+			
+				<f:entry title="Replacement Pattern" field="replacementPattern">
+					<f:textbox />
+				</f:entry>
+			</table>
+	</f:entry>
+
+	<f:optionalBlock title="Wait for scan to complete" name="waitForScan" inline="true"> 
+		<f:entry title="Maximum Wait Time (in minutes)" field="timeout">
+			<f:number default="60"/>
+		</f:entry>
+	</f:optionalBlock>
+	
+	<f:entry title="API ID" field="vid">
+		<f:textbox />
+	</f:entry>
+	
+	<f:entry title="API Key" field="vkey">
+		<f:textbox />
+	</f:entry>
+
+	<f:entry title="Fail Job">
+		<table width="100%">
+			<f:entry field="canFailJob">
+				<f:checkbox title="Fail the entire Jenkins job if either of the following Veracode tasks fail: upload and scan (including SCA) or dynamic rescan post-build action"/>
+			</f:entry>
+		</table>
+	</f:entry>
+	
+	<f:entry title="Copy Output Remote Files to Master">
+			<table width="100%">
+				<f:entry field="copyRemoteFiles">
+					<f:checkbox title="When a remote machine performs the build, the output files are copied to master (not recommended)."/>
+				</f:entry>
+			</table>
+		</f:entry>
+	
+	<f:entry title="Debug">
+			<table width="100%">
+				<f:entry field="debug">
+					<f:checkbox default="false" title="Run in debug mode." />
+				</f:entry>
+			</table>
+	</f:entry>
+	
+	<f:optionalBlock title="Connect using proxy" name="useProxy" inline="true" checked="${descriptor.getProxy()}">
+	<f:entry title="Proxy Settings">
+	<table width="100%">
+		<f:entry title="Host" field="pHost">
+			<f:textbox />
+		</f:entry>
+		
+		<f:entry title="Port" field="pPort">
+			<f:number />
+		</f:entry>
+		
+		<f:entry title="Username" field="pUser">
+			<f:textbox />
+		</f:entry>
+		
+		<f:entry title="Password" field="pPassword">
+			<f:textbox />
+		</f:entry>
+		</table>
+		</f:entry>
+	</f:optionalBlock>
+</j:jelly>

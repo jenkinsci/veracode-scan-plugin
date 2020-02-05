@@ -1,0 +1,65 @@
+<?xml version="1.0"?>
+<?jelly escape-by-default='true'?>
+<!--
+/*******************************************************************************
+ * Copyright (c) 2019 Veracode, Inc. All rights observed.
+ * 
+ * Available for use by Veracode customers as described in the accompanying license agreement.
+ * 
+ * Send bug reports or enhancement requests to support@veracode.com.
+ *
+ * See the license agreement for conditions on submitted materials.
+ ******************************************************************************/
+-->
+
+<!-- Renders the plugin's html elements contributed to the "Job Configuration" page. -->
+
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
+
+	<f:entry title="Results wait time (in hours)" field="waitForResultsDuration">
+		<f:textbox default="1" style="width:60px;" />
+	</f:entry>
+
+	<f:block>
+		<f:checkbox title="Fail the build for policy violation" field="failBuildForPolicyViolation" default="false" />
+	</f:block>
+
+	<f:entry title="Veracode API ID" field="vid">
+		<f:textbox value="VERACODE_API_ID"/>
+	</f:entry>
+	
+	<f:entry title="Veracode API Key" field="vkey">
+		<f:textbox value="VERACODE_API_KEY"/>
+	</f:entry>
+
+	<f:entry title="Debug">
+			<table width="100%">
+				<f:entry field="debug">
+					<f:checkbox default="false" title="Run in debug mode" />
+				</f:entry>
+			</table>
+	</f:entry>
+
+	<f:optionalBlock title="Connect using proxy" name="useProxy" inline="true" checked="${descriptor.getProxy()}">
+		<f:entry title="Proxy Settings">
+			<table width="100%">
+				<f:entry title="Host" field="pHost">
+					<f:textbox />
+				</f:entry>
+	
+				<f:entry title="Port" field="pPort" type="number">
+					<f:number />
+				</f:entry>
+	
+				<f:entry title="Username" field="pUser">
+					<f:textbox />
+				</f:entry>
+	
+				<f:entry title="Password" field="pPassword">
+					<f:textbox />
+				</f:entry>
+			</table>
+		</f:entry>
+	</f:optionalBlock>
+	
+</j:jelly>

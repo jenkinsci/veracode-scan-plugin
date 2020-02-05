@@ -1,0 +1,33 @@
+<!--
+/*******************************************************************************
+ * Copyright (c) 2018 Veracode, Inc. All rights observed.
+ * 
+ * Available for use by Veracode customers as described in the accompanying license agreement.
+ * 
+ * Send bug reports or enhancement requests to support@veracode.com.
+ *
+ * See the license agreement for conditions on submitted materials.
+ ******************************************************************************/
+-->
+
+<style>
+		.veracode+.from-plugin
+		{
+			display:none;
+		}
+</style>
+<div class="veracode">
+	<p>
+		Enter the filepaths of the files to exclude from the upload for scanning, represented as a comma-separated
+		list of	ant-style exclude patterns relative to the job's workspace root directory.
+	</p>
+	<p>
+		Patterns are case-sensitive. Patterns that include commas because they denote filepaths that contain commas need to have the commas replaced with a wildcard character.
+	</p>
+	<p>
+		If no filepaths are provided, no files (except default excludes) in the job's workspace root directory are excluded.
+	</p>
+	<p>
+		See <a href="http://ant.apache.org/manual/dirtasks.html">http://ant.apache.org/manual/dirtasks.html</a> for more info.
+	</p>
+</div>

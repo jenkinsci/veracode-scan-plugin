@@ -1,0 +1,59 @@
+<?jelly escape-by-default='true'?>
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form"> 
+   
+	<!--
+	Creates fields that shows the value of each property.
+	When submitted, it will be passed to the corresponding constructor parameter.
+	-->
+   
+	<f:entry title="Analysis Name" field="analysisName">
+		<f:textbox />
+	</f:entry>
+  
+	<f:entry title="Maximum duration (in hours)" field="maximumDuration">
+		<f:textbox default="72" style="width:60px;" />
+	</f:entry>
+
+	<f:entry title="Fail the build if the analysis fails" field="failBuildAsScanFailed">
+		<f:checkbox default="false" />
+	</f:entry>
+
+	<f:entry title="Veracode API ID" field="vid">
+		<f:textbox value="VERACODE_API_ID"/>
+	</f:entry>
+	
+	<f:entry title="Veracode API Key" field="vkey">
+		<f:textbox value="VERACODE_API_KEY"/>
+	</f:entry>
+	
+	<f:entry title="Debug">
+		<table width="100%">
+			<f:entry field="debug">
+				<f:checkbox default="false" title="Run in debug mode" />
+			</f:entry>
+		</table>
+	</f:entry>
+	
+	<f:optionalBlock title="Connect using proxy" name="useProxy" inline="true" checked="${descriptor.getProxy()}">
+		<f:entry title="Proxy Settings">
+			<table width="100%">
+				<f:entry title="Host" field="pHost">
+					<f:textbox />
+				</f:entry>
+				
+				<f:entry title="Port" field="pPort">
+					<f:number />
+				</f:entry>
+				
+				<f:entry title="Username" field="pUser">
+					<f:textbox />
+				</f:entry>
+				
+				<f:entry title="Password" field="pPassword">
+					<f:textbox />
+				</f:entry>
+			</table>
+		</f:entry>
+	</f:optionalBlock>
+  
+</j:jelly>
