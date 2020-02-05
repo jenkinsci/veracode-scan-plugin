@@ -1,4 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+/*******************************************************************************
+ * Copyright (c) 2014 Veracode, Inc. All rights observed.
+ * 
+ * Available for use by Veracode customers as described in the accompanying license agreement.
+ * 
+ * Send bug reports or enhancement requests to support@veracode.com.
+ *
+ * See the license agreement for conditions on submitted materials.
+ ******************************************************************************/
+-->
+
+<!-- Builds the Veracode Jenkins Plugin. -->
+
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
@@ -9,7 +24,7 @@
     </parent>
     <groupId>io.jenkins.plugins</groupId>
     <artifactId>veracode-scan</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0.0-SNAPSHOT</version>
     <packaging>hpi</packaging>
     <properties>
         <!-- Baseline Jenkins version you use to build the plugin. Users must have this version or newer to run. -->
@@ -21,7 +36,7 @@
           ~ stapler-plugin.version: The Stapler Maven plugin version required by the plugin.
      -->
     </properties>
-    <name>TODO Plugin</name>
+    <name>Veracode Scan</name>
     <!-- The default licence for Jenkins OSS Plugins is MIT. Substitute for the applicable one if needed. -->
     <licenses>
         <license>
@@ -43,14 +58,65 @@
     </dependencyManagement>
     <dependencies>
         <dependency>
+            <groupId>com.veracode.vosp.api.wrappers</groupId>
+            <!-- Artifact name and version of the java wrapper -->
+            <artifactId>vosp-api-wrappers-java</artifactId>
+            <version>19.11.6.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.owasp.esapi</groupId>
+            <artifactId>esapi</artifactId>
+            <version>2.2.0.0</version>
+            <scope>compile</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>*</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+	    <groupId>org.slf4j</groupId>
+	    <artifactId>slf4j-api</artifactId>
+	    <version>1.7.26
+	    </version>
+        </dependency>
+        <dependency>
+	    <groupId>org.apache.xmlgraphics</groupId>
+	    <artifactId>batik-css</artifactId>
+	    <version>1.11</version>
+        </dependency>
+
+	<dependency>
+	    <groupId>org.jenkins-ci</groupId>
+	    <artifactId>symbol-annotation</artifactId>
+	    <version>1.20</version>
+	</dependency>
+
+        <dependency>
             <groupId>org.jenkins-ci.plugins</groupId>
             <artifactId>structs</artifactId>
+            <version>1.20</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.5.11</version>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+            <version>1.14</version>
+        </dependency>
+
         <dependency>
             <groupId>org.jenkins-ci.plugins.workflow</groupId>
             <artifactId>workflow-cps</artifactId>
             <scope>test</scope>
         </dependency>
+
         <dependency>
             <groupId>org.jenkins-ci.plugins.workflow</groupId>
             <artifactId>workflow-job</artifactId>
@@ -71,9 +137,9 @@
     <!-- If you want this to appear on the wiki page:
     <developers>
       <developer>
-        <id>bhacker</id>
-        <name>Bob Q. Hacker</name>
-        <email>bhacker@nowhere.net</email>
+        <id>veracode</id>
+        <name>Veracode</name>
+        <email>contact@veracode.com</email>
       </developer>
     </developers> -->
 

@@ -1,0 +1,72 @@
+<?xml version="1.0"?>
+<?jelly escape-by-default='true'?>
+<!--
+/*******************************************************************************
+ * Copyright (c) 2017 Veracode, Inc. All rights observed.
+ * 
+ * Available for use by Veracode customers as described in the accompanying license agreement.
+ * 
+ * Send bug reports or enhancement requests to support@veracode.com.
+ *
+ * See the license agreement for conditions on submitted materials.
+ ******************************************************************************/
+-->
+
+<!-- Renders the plugin's html elements contributed to the "Job Configuration" page. -->
+
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
+
+	<f:entry title="Application Name" field="applicationName">
+		<f:textbox default="${descriptor.autoappname ? '$projectname' : null}" />
+	</f:entry>
+	
+	<f:entry title="Enable Vulnerability Rescan" field="dvrEnabled">
+		<f:checkbox default="false" />
+	</f:entry>
+	
+	<f:entry title="API ID" field="vid">
+		<f:textbox />
+	</f:entry>
+	
+	<f:entry title="API Key" field="vkey">
+		<f:textbox />
+	</f:entry>
+
+	<f:entry title="Fail Job">
+		<table width="100%">
+			<f:entry field="canFailJob">
+				<f:checkbox title="Fail the entire Jenkins job if either of the following Veracode tasks fail: upload and scan (including SCA) or dynamic rescan post-build action"/>
+			</f:entry>
+		</table>
+	</f:entry>
+	
+	<f:entry title="Debug">
+			<table width="100%">
+				<f:entry field="debug">
+					<f:checkbox default="false" title="Run in debug mode." />
+				</f:entry>
+			</table>
+	</f:entry>	
+	<f:optionalBlock title="Connect using proxy" name="useProxy" inline="true" checked="${descriptor.getProxy()}">
+		<f:entry title="Proxy Settings">
+			<table width="100%">
+				<f:entry title="Host" field="pHost">
+					<f:textbox />
+				</f:entry>
+	
+				<f:entry title="Port" field="pPort" type="number">
+					<f:number />
+				</f:entry>
+	
+				<f:entry title="Username" field="pUser">
+					<f:textbox />
+				</f:entry>
+	
+				<f:entry title="Password" field="pPassword">
+					<f:textbox />
+				</f:entry>
+			</table>
+		</f:entry>
+	</f:optionalBlock>
+	
+</j:jelly>

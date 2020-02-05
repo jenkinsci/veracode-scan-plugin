@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<?jelly escape-by-default='true'?>
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form"> 
+   
+	<!--
+	Creates fields that shows the value of each property.
+	When submitted, it will be passed to the corresponding constructor parameter.
+	-->
+  
+	<f:entry title="Results wait time (in hours)" field="waitForResultsDuration">
+		<f:textbox default="1" style="width:60px;" />
+	</f:entry>
+
+	<f:block>
+		<f:checkbox title="Fail the build for policy violation" field="failBuildForPolicyViolation" default="false" />
+	</f:block>
+
+	<!-- 
+	For default, set use global credentials to disabled. Then preserve user setting of credentials.
+	-->
+	<f:optionalBlock title="Use global Veracode API ID and key" name="credentials" negative="true" checked="${instance == null ? false : instance.isGlobalCredentialsEnabled()}">
+		<f:section title="Veracode Credentials">
+			<f:entry title="API ID" field="vid">
+				<f:textbox />
+			</f:entry>
+
+			<f:entry title="API Key" field="vkey">
+				<f:password />
+			</f:entry>
+		</f:section>
+	</f:optionalBlock>
+  
+</j:jelly>

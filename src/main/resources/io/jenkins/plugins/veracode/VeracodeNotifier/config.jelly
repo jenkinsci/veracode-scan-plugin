@@ -1,0 +1,99 @@
+<?xml version="1.0"?>
+<?jelly escape-by-default='true'?>
+<!--
+/*******************************************************************************
+ * Copyright (c) 2014 Veracode, Inc. All rights observed.
+ * 
+ * Available for use by Veracode customers as described in the accompanying license agreement.
+ * 
+ * Send bug reports or enhancement requests to support@veracode.com.
+ *
+ * See the license agreement for conditions on submitted materials.
+ ******************************************************************************/
+-->
+
+<!-- Renders the plugin's html elements contributed to the "Job Configuration" page. -->
+
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
+
+	<f:entry title="Application Name" field="appname">
+		<f:textbox default="${descriptor.autoappname ? '$projectname' : null}" />
+	</f:entry>
+	
+	<f:optionalBlock title="Create Application" field="createprofile" name="createprofile" checked="${instance.getCreateprofile() == true}" inline="true"> 
+	    <f:entry title="Team Name" field="teams">
+		<f:textbox />
+	</f:entry>
+	</f:optionalBlock>
+		
+	<f:entry name="criticality" title="Business Criticality" field="criticality">
+		<f:select />
+	</f:entry>
+
+	<f:entry title="Sandbox Name" field="sandboxname">
+		<f:textbox />
+	</f:entry>
+
+	<f:entry title="Create Sandbox" field="createsandbox">
+		<f:checkbox default="false" />
+	</f:entry>
+
+	<f:entry title="Scan Name" field="version">
+		<f:textbox default="${descriptor.autoversion ? '$buildnumber' : null}" />
+	</f:entry>
+
+	<f:entry title="Upload">
+			<table width="100%">
+				<f:entry title="Include Filepaths Pattern" field="uploadincludespattern">
+					<f:textbox default="**/**.jar" />
+				</f:entry>
+
+				<f:entry title="Exclude Filepaths Pattern" field="uploadexcludespattern">
+					<f:textbox />
+				</f:entry>
+			</table>
+	</f:entry>
+
+	<f:entry title="Scan">
+			<table width="100%">
+				<f:entry title="Include Filenames Pattern" field="scanincludespattern">
+					<f:textbox />
+				</f:entry>
+
+				<f:entry title="Exclude Filenames Pattern" field="scanexcludespattern">
+					<f:textbox />
+				</f:entry>
+			</table>
+	</f:entry>
+	
+	<f:entry title="Save As">
+			<table width="100%">
+				<f:entry title="Filename Pattern" field="filenamepattern">
+					<f:textbox />
+				</f:entry>
+			
+				<f:entry title="Replacement Pattern" field="replacementpattern">
+					<f:textbox />
+				</f:entry>
+			</table>
+	</f:entry>
+
+	<f:optionalBlock title="Wait for scan to complete" name="waitForScan" checked="${instance.getWaitForScan() == true}" inline="true" >
+		<f:entry title="Maximum Wait Time (in minutes)" field="timeout">
+			<f:textbox default="60"/>
+		</f:entry>
+	</f:optionalBlock>
+
+	<f:optionalBlock title="Use global Veracode API ID and key" name="credentials" negative="true" checked="${instance.getCredentials() == null ? descriptor.hasGlobalCredentials() : false}"> 
+		<f:section title="Veracode Credentials">
+
+			<f:entry title="API ID" field="vid">
+				<f:textbox onload="vapicredential()"/>
+			</f:entry>
+
+			<f:entry title="API Key" field="vkey">
+				<f:password />
+			</f:entry>
+		</f:section>
+	</f:optionalBlock>
+</j:jelly>

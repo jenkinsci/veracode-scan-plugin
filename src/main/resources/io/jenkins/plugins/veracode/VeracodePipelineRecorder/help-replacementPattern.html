@@ -1,0 +1,37 @@
+<!--
+/*******************************************************************************
+ * Copyright (c) 2018 Veracode, Inc. All rights observed.
+ * 
+ * Available for use by Veracode customers as described in the accompanying license agreement.
+ * 
+ * Send bug reports or enhancement requests to support@veracode.com.
+ *
+ * See the license agreement for conditions on submitted materials.
+ ******************************************************************************/
+-->
+
+<style>
+		.veracode+.from-plugin
+		{
+			display:none;
+		}
+</style>
+<div class="veracode">
+	<p>
+		Enter the replacement pattern that represents the groups captured by the filename pattern.
+		For example, if the filename pattern is '*-*-SNAPSHOT.war' and the replacement pattern '$1-master-SNAPSHOT.war',
+		an uploaded file named 'app-branch-SNAPSHOT.war' would be saved as 'app-master-SNAPSHOT.war'.
+	</p>
+	<p>
+		In order to specify a replacement pattern that includes a reference to a captured group followed by a number,
+		place the captured group's index inside curly braces. For example, if the filename pattern is '*-*-SNAPSHOT.war'
+		and the replacement pattern '${1}5-master-SNAPSHOT.war', an uploaded file named 'app-branch-SNAPSHOT.war' would be
+		saved as 'app5-master-SNAPSHOT.war'.
+	</p>
+	<p>
+		New filenames for uploaded files must be valid. Path separators ('\' or '/') should not be included.
+	</p>
+	<p>
+		No uploaded files are saved with a different name when either the filename pattern or the replacement pattern is omitted.
+	</p>
+</div>
