@@ -27,6 +27,7 @@ import hudson.tasks.Publisher;
 import hudson.util.ArgumentListBuilder;
 import hudson.util.FormValidation;
 import hudson.util.ListBoxModel;
+import hudson.util.Secret;
 
 import com.veracode.apiwrapper.cli.VeracodeCommand.VeracodeParser;
 import io.jenkins.plugins.veracode.VeracodeNotifier.VeracodeDescriptor;
@@ -115,10 +116,10 @@ public class VeracodeNotifier extends Notifier {
 		// Methods that correspond to identifiers referenced in global.jelly
 		//-------------------------------------------------------------------
 		public String getGvid() {
-			return EncryptionUtil.decrypt(gvid);
+			return Secret.toString(Secret.fromString(gvid));
 		}
 		public String getGvkey() {
-			return EncryptionUtil.decrypt(gvkey);
+			return Secret.toString(Secret.fromString(gvkey));
 		}
 		public boolean getFailbuild() {
 			return failbuild;
@@ -143,16 +144,16 @@ public class VeracodeNotifier extends Notifier {
 			return proxy;
 		}
 		public String getPhost() {
-			return EncryptionUtil.decrypt(phost);
+			return Secret.toString(Secret.fromString(phost));
 		}
 		public String getPport() {
-			return EncryptionUtil.decrypt(pport);
+			return Secret.toString(Secret.fromString(pport));
 		}
 		public String getPuser() {
-			return EncryptionUtil.decrypt(puser);
+			return Secret.toString(Secret.fromString(puser));
 		}
 		public String getPpassword() {
-			return EncryptionUtil.decrypt(ppassword);
+			return Secret.toString(Secret.fromString(ppassword));
 		}
 
 		//------------------------------------------------------------------------------------------------------------------------
@@ -402,43 +403,43 @@ public class VeracodeNotifier extends Notifier {
 	// Methods that correspond to identifiers referenced in config.jelly
 	//-------------------------------------------------------------------
 	public String getAppname() {
-		return EncryptionUtil.decrypt(this._appname);
+		return Secret.toString(Secret.fromString(this._appname));
 	}
 	public boolean getCreateprofile() {
 		return this._createprofile;
 	}
 	public String getTeams() {
-		return this.getCreateprofile() ? EncryptionUtil.decrypt(this._teams) : null;
+		return this.getCreateprofile() ? Secret.toString(Secret.fromString(this._teams)) : null;
 	}
 	public String getCriticality() {
-		return EncryptionUtil.decrypt(this._criticality);
+		return Secret.toString(Secret.fromString(this._criticality));
 	}
 	public String getSandboxname() {
-		return EncryptionUtil.decrypt(this._sandboxname);
+		return Secret.toString(Secret.fromString(this._sandboxname));
 	}
 	public boolean getCreatesandbox() {
 		return this._createsandbox;
 	}
 	public String getVersion() {
-		return EncryptionUtil.decrypt(this._version);
+		return Secret.toString(Secret.fromString(this._version));
 	}
 	public String getUploadincludespattern() {
-		return EncryptionUtil.decrypt(this._uploadincludespattern);
+		return Secret.toString(Secret.fromString(this._uploadincludespattern));
 	}
 	public String getUploadexcludespattern() {
-		return EncryptionUtil.decrypt(this._uploadexcludespattern);
+		return Secret.toString(Secret.fromString(this._uploadexcludespattern));
 	}
 	public String getScanincludespattern() {
-		return EncryptionUtil.decrypt(this._scanincludespattern);
+		return Secret.toString(Secret.fromString(this._scanincludespattern));
 	}
 	public String getScanexcludespattern() {
-		return EncryptionUtil.decrypt(this._scanexcludespattern);
+		return Secret.toString(Secret.fromString(this._scanexcludespattern));
 	}
 	public String getFilenamepattern() {
-		return EncryptionUtil.decrypt(this._filenamepattern);
+		return Secret.toString(Secret.fromString(this._filenamepattern));
 	}
 	public String getReplacementpattern() {
-		return EncryptionUtil.decrypt(this._replacementpattern);
+		return Secret.toString(Secret.fromString(this._replacementpattern));
 	}
 	public CredentialsBlock getCredentials() {
 		// needed in order to tell if the Credentials optionalblock is checked
@@ -450,15 +451,15 @@ public class VeracodeNotifier extends Notifier {
 	}
 
 	public String getTimeout() {
-		return this.getWaitForScan() ? EncryptionUtil.decrypt(this._timeout) : null;
+		return this.getWaitForScan() ? Secret.toString(Secret.fromString(this._timeout)) : null;
 	}
 
 	public String getVid() {
-		return EncryptionUtil.decrypt((this._credentials != null) ?  this._credentials.getVid() : null);
+		return Secret.toString(Secret.fromString((this._credentials != null) ?  this._credentials.getVid() : null));
 	}
 
 	public String getVkey() {
-		return EncryptionUtil.decrypt((this._credentials != null) ? this._credentials.getVkey() : null);
+		return Secret.toString(Secret.fromString((this._credentials != null) ? this._credentials.getVkey() : null));
 	}
 
 	//--------------------------------------------------------------

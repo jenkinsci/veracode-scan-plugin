@@ -43,6 +43,7 @@ import hudson.tasks.BuildStepMonitor;
 import hudson.tasks.Notifier;
 import hudson.tasks.Publisher;
 import hudson.util.ArgumentListBuilder;
+import hudson.util.Secret;
 import jenkins.model.Jenkins;
 import net.sf.json.JSONObject;
 
@@ -153,7 +154,7 @@ public class DynamicRescanNotifier extends Notifier {
     // Methods that correspond to identifiers referenced in config.jelly
     // -------------------------------------------------------------------
     public String getAppname() {
-        return EncryptionUtil.decrypt(this._appname);
+        return Secret.toString(Secret.fromString(this._appname));
     }
 
     public boolean getDvrenabled() {

@@ -18,6 +18,7 @@ import io.jenkins.plugins.veracode.args.GetAppListArgs;
 import io.jenkins.plugins.veracode.data.ProxyBlock;
 
 import hudson.util.FormValidation;
+import hudson.util.Secret;
 
 /**
  * A utility class for performing validation of form fields.
@@ -293,7 +294,7 @@ public final class FormValidationUtil {
 	 */
 	public static String formatTimeout(final String timeoutValue) {
 		String str_timeout;
-		if(!StringUtil.isNullOrEmpty(EncryptionUtil.decrypt(timeoutValue)) && Integer.parseInt(EncryptionUtil.decrypt(timeoutValue)) >= 0) {
+		if(!StringUtil.isNullOrEmpty(Secret.toString(Secret.fromString(timeoutValue))) && Integer.parseInt(Secret.toString(Secret.fromString(timeoutValue))) >= 0) {
 			str_timeout = timeoutValue;
 		} else {
 			str_timeout = DEFAULT_TIMEOUT;
