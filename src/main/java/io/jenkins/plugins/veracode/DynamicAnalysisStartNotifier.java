@@ -28,7 +28,6 @@ import hudson.tasks.BuildStepMonitor;
 import hudson.tasks.Notifier;
 import hudson.tasks.Publisher;
 import hudson.util.FormValidation;
-import hudson.util.Secret;
 import jenkins.model.Jenkins;
 import net.sf.json.JSONObject;
 
@@ -144,15 +143,15 @@ public class DynamicAnalysisStartNotifier extends Notifier {
 		@SuppressWarnings("unchecked")
 		@Override
 		public Publisher newInstance(StaplerRequest req, JSONObject formData) throws FormException {
-			formData.put("analysisName", Secret.fromString(formData.getString("analysisName")).getEncryptedValue());
+			formData.put("analysisName", EncryptionUtil.encrypt(formData.getString("analysisName")));
 			String maximumDuration = formData.getString("maximumDuration");
 			formData.put("maximumDuration",
 					StringUtil.isNullOrEmpty(maximumDuration) ? Constant.DEFAULT_VALUE_DA_MAX_DURATION_HOURS
 							: maximumDuration);
 			Map<String, Object> credMap = (Map<String, Object>) formData.get("credentials");
 			if (credMap != null) {
-				credMap.put("vid", Secret.fromString((String) credMap.get("vid")).getEncryptedValue());
-				credMap.put("vkey", Secret.fromString((String) credMap.get("vkey")).getEncryptedValue());
+				credMap.put("vid", EncryptionUtil.encrypt((String) credMap.get("vid")));
+				credMap.put("vkey", EncryptionUtil.encrypt((String) credMap.get("vkey")));
 				formData.put("credentials", credMap);
 			}
 
@@ -246,7 +245,7 @@ public class DynamicAnalysisStartNotifier extends Notifier {
 	// Getter methods
 
 	public String getAnalysisName() {
-		return Secret.toString(Secret.fromString(analysisName));
+		return EncryptionUtil.decrypt(analysisName);
 	}
 
 	public int getMaximumDuration() {
@@ -266,10 +265,10 @@ public class DynamicAnalysisStartNotifier extends Notifier {
 	}
 
 	public String getVid() {
-		return Secret.toString(Secret.fromString((this.credentials != null) ? this.credentials.getVid() : null));
+		return EncryptionUtil.decrypt((this.credentials != null) ? this.credentials.getVid() : null);
 	}
 
 	public String getVkey() {
-		return Secret.toString(Secret.fromString((this.credentials != null) ? this.credentials.getVkey() : null));
+		return EncryptionUtil.decrypt((this.credentials != null) ? this.credentials.getVkey() : null);
 	}
 }

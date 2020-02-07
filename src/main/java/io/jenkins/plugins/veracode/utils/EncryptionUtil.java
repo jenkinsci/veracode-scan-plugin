@@ -124,7 +124,7 @@ public final class EncryptionUtil {
 					if (o instanceof String) {
 						if (!"kind".equals(key) && !"stapler-class".equals(key) && !"$class".equals(key)) {
 							//expected value for the plugin: "com.veracode.jenkins.plugin.VeracodeNotifier"
-							((JSONObject)json).put(key, Secret.fromString((String)o).getEncryptedValue());
+							((JSONObject)json).put(key, encrypt((String)o));
 						}
 					} else if (o instanceof JSON) {
 						encrypt((JSON)o);
@@ -132,6 +132,28 @@ public final class EncryptionUtil {
 				}
 			}
 		}
+	}
+
+	/**
+	 * Encrypts a plain text String.
+	 *
+	 *
+	 * @param data String
+	 * @return String
+	 */
+	public static String encrypt(String data) {
+		return Secret.fromString(data).getEncryptedValue();
+	}
+
+	/**
+	 * Decrypts an encrypted text String.
+	 *
+	 *
+	 * @param data String
+	 * @return String
+	 */
+	public static String decrypt(String data) {
+		return Secret.toString(Secret.fromString(data));
 	}
 
 	private EncryptionUtil(){}

@@ -28,7 +28,6 @@ import hudson.tasks.BuildStepMonitor;
 import hudson.tasks.Notifier;
 import hudson.tasks.Publisher;
 import hudson.util.FormValidation;
-import hudson.util.Secret;
 import jenkins.model.Jenkins;
 import net.sf.json.JSONObject;
 
@@ -146,8 +145,8 @@ public class DynamicAnalysisResultsNotifier extends Notifier {
 							: waitForResultsDuration);
 			Map<String, Object> credMap = (Map<String, Object>) formData.get("credentials");
 			if (credMap != null) {
-				credMap.put("vid", Secret.fromString((String) credMap.get("vid")).getEncryptedValue());
-				credMap.put("vkey", Secret.fromString((String) credMap.get("vkey")).getEncryptedValue());
+				credMap.put("vid", EncryptionUtil.encrypt((String) credMap.get("vid")));
+				credMap.put("vkey", EncryptionUtil.encrypt((String) credMap.get("vkey")));
 				formData.put("credentials", credMap);
 			}
 
@@ -252,10 +251,10 @@ public class DynamicAnalysisResultsNotifier extends Notifier {
 	}
 
 	public String getVid() {
-		return Secret.toString(Secret.fromString((this.credentials != null) ? this.credentials.getVid() : null));
+		return EncryptionUtil.decrypt((this.credentials != null) ? this.credentials.getVid() : null);
 	}
 
 	public String getVkey() {
-		return Secret.toString(Secret.fromString((this.credentials != null) ? this.credentials.getVkey() : null));
+		return EncryptionUtil.decrypt((this.credentials != null) ? this.credentials.getVkey() : null);
 	}
 }
