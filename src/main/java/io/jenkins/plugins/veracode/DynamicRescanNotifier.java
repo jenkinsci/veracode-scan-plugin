@@ -182,6 +182,7 @@ public class DynamicRescanNotifier extends Notifier {
     @Override
     public boolean prebuild(AbstractBuild<?, ?> build, BuildListener listener) {
         boolean bRet = false;
+        getDescriptor().updateFromGlobalConfiguration();
         boolean debug = getDescriptor().getDebug();
 
         PrintStream ps = listener.getLogger();
@@ -272,6 +273,7 @@ public class DynamicRescanNotifier extends Notifier {
         ps.println(DynamicScanDescriptor.getPostBuildActionDisplayText());
         ps.println("------------------------------------------------------------------------");
 
+        getDescriptor().updateFromGlobalConfiguration();
         boolean debug = getDescriptor().getDebug();
 
         if (debug) {
