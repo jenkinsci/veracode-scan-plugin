@@ -77,6 +77,7 @@ public class DynamicAnalysisResultsNotifier extends Notifier {
 	public boolean perform(final AbstractBuild build, final Launcher launcher, final BuildListener listener) {
 
 		DynamicAnalysisResultsDescriptorImpl descriptor = getDescriptor();
+		descriptor.updateFromGlobalConfiguration();
 
 		String apiId = getCredentials() != null ? getVid() : descriptor.getGvid();
 		String apiKey = getCredentials() != null ? getVkey() : descriptor.getGvkey();
