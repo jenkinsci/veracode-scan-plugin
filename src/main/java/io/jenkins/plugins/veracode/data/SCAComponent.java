@@ -5,6 +5,7 @@ package io.jenkins.plugins.veracode.data;
  *
  */
 public class SCAComponent {
+
     private final String name;
     private final boolean isBacklisted;
     private final boolean isNew;

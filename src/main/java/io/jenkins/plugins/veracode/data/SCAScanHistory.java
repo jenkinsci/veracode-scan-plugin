@@ -13,17 +13,22 @@ import io.jenkins.plugins.veracode.enums.SeverityLevel;
  *
  */
 public class SCAScanHistory {
+
     private final boolean subscribed;
-    private final int     blComponentsCount; // number of blacklisted components
-    private final double  maxCVSSScore;
+    private final int blComponentsCount; // number of blacklisted components
+    private final double maxCVSSScore;
 
     private final List<Map<String, Long>> vulCountHistory;
 
-    private final int totalVulCount;    // Total vulnerability count of this build across all severity levels
-    private final int totalNewVulCount; // Total new vulnerability count against last build across all severity levels
-    private final int totalNetVulCount; // Total delta of vulnerability count between this and last build across all severity levels
+    private final int totalVulCount; // Total vulnerability count of this build across all severity
+                                     // levels
+    private final int totalNewVulCount; // Total new vulnerability count against last build across
+                                        // all severity levels
+    private final int totalNetVulCount; // Total delta of vulnerability count between this and last
+                                        // build across all severity levels
 
-    private final FindingCounts[] vulCounts; // An array to contain Vulnerability counts for each severity level.
+    private final FindingCounts[] vulCounts; // An array to contain Vulnerability counts for each
+                                             // severity level.
     private final Set<SCAComponent> scaComponents;
 
     public SCAScanHistory() {
@@ -50,7 +55,8 @@ public class SCAScanHistory {
         totalNetVulCount = 0;
     }
 
-    public SCAScanHistory(double maxCVSSScore, int blComponentsCount, Set<FindingCounts> vulCounts, Set<SCAComponent> scaComponents, List<Map<String, Long>> vulCountHistory) {
+    public SCAScanHistory(double maxCVSSScore, int blComponentsCount, Set<FindingCounts> vulCounts,
+            Set<SCAComponent> scaComponents, List<Map<String, Long>> vulCountHistory) {
         this.subscribed = true;
         this.maxCVSSScore = maxCVSSScore;
         this.scaComponents = new HashSet<SCAComponent>(scaComponents);
@@ -93,7 +99,8 @@ public class SCAScanHistory {
 
     public FindingCounts getCountBySeverity(SeverityLevel sevLevel) {
         if (null == sevLevel) {
-            throw new IllegalArgumentException("Must provide a severity level to get the finding counts.");
+            throw new IllegalArgumentException(
+                    "Must provide a severity level to get the finding counts.");
         }
 
         return vulCounts[sevLevel.getSevLevel()];

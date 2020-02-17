@@ -9,15 +9,6 @@ import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
 
-import io.jenkins.plugins.veracode.VeracodeNotifier.VeracodeDescriptor;
-import io.jenkins.plugins.veracode.common.Constant;
-import io.jenkins.plugins.veracode.common.DAAdapterService;
-import io.jenkins.plugins.veracode.data.CredentialsBlock;
-import io.jenkins.plugins.veracode.data.ProxyBlock;
-import io.jenkins.plugins.veracode.utils.EncryptionUtil;
-import io.jenkins.plugins.veracode.utils.FormValidationUtil;
-import io.jenkins.plugins.veracode.utils.StringUtil;
-
 import hudson.Extension;
 import hudson.Launcher;
 import hudson.model.AbstractBuild;
@@ -28,6 +19,14 @@ import hudson.tasks.BuildStepMonitor;
 import hudson.tasks.Notifier;
 import hudson.tasks.Publisher;
 import hudson.util.FormValidation;
+import io.jenkins.plugins.veracode.VeracodeNotifier.VeracodeDescriptor;
+import io.jenkins.plugins.veracode.common.Constant;
+import io.jenkins.plugins.veracode.common.DAAdapterService;
+import io.jenkins.plugins.veracode.data.CredentialsBlock;
+import io.jenkins.plugins.veracode.data.ProxyBlock;
+import io.jenkins.plugins.veracode.utils.EncryptionUtil;
+import io.jenkins.plugins.veracode.utils.FormValidationUtil;
+import io.jenkins.plugins.veracode.utils.StringUtil;
 import jenkins.model.Jenkins;
 import net.sf.json.JSONObject;
 
@@ -44,218 +43,226 @@ import net.sf.json.JSONObject;
 
 public class DynamicAnalysisResultsNotifier extends Notifier {
 
-	private final int waitForResultsDuration;
-	private final boolean failBuildForPolicyViolation;
-	private final CredentialsBlock credentials;
-	private boolean isGlobalCredentialsEnabled;
+    private final int waitForResultsDuration;
+    private final boolean failBuildForPolicyViolation;
+    private final CredentialsBlock credentials;
+    private boolean isGlobalCredentialsEnabled;
 
-	@DataBoundConstructor
-	public DynamicAnalysisResultsNotifier(final int waitForResultsDuration,
-			final boolean failBuildForPolicyViolation, final CredentialsBlock credentials) {
+    @DataBoundConstructor
+    public DynamicAnalysisResultsNotifier(final int waitForResultsDuration,
+            final boolean failBuildForPolicyViolation, final CredentialsBlock credentials) {
 
-		this.waitForResultsDuration = waitForResultsDuration;;
-		this.failBuildForPolicyViolation = failBuildForPolicyViolation;
-		this.credentials = credentials;
+        this.waitForResultsDuration = waitForResultsDuration;
+        this.failBuildForPolicyViolation = failBuildForPolicyViolation;
+        this.credentials = credentials;
 
         if (credentials == null) {
             this.isGlobalCredentialsEnabled = true;
         } else {
             this.isGlobalCredentialsEnabled = false;
         }
-	}
+    }
 
-	@Override
-	public BuildStepMonitor getRequiredMonitorService() {
-		return BuildStepMonitor.BUILD;
-	}
+    @Override
+    public BuildStepMonitor getRequiredMonitorService() {
+        return BuildStepMonitor.BUILD;
+    }
 
-	/**
-	 * Called by Jenkins after a build for a job specified to use the plugin is performed.
-	 */
-	@SuppressWarnings("rawtypes")
-	@Override
-	public boolean perform(final AbstractBuild build, final Launcher launcher, final BuildListener listener) {
+    /**
+     * Called by Jenkins after a build for a job specified to use the plugin is
+     * performed.
+     */
+    @SuppressWarnings("rawtypes")
+    @Override
+    public boolean perform(final AbstractBuild build, final Launcher launcher,
+            final BuildListener listener) {
 
-		DynamicAnalysisResultsDescriptorImpl descriptor = getDescriptor();
-		descriptor.updateFromGlobalConfiguration();
+        DynamicAnalysisResultsDescriptorImpl descriptor = getDescriptor();
+        descriptor.updateFromGlobalConfiguration();
 
-		String apiId = getCredentials() != null ? getVid() : descriptor.getGvid();
-		String apiKey = getCredentials() != null ? getVkey() : descriptor.getGvkey();
-		ProxyBlock proxyBlock = null;
-		if (descriptor.isProxyEnabled()) {
-			proxyBlock = new ProxyBlock(descriptor.getPhost(), descriptor.getPport(), descriptor.getPuser(),
-				descriptor.getPpassword());
-		}
+        String apiId = getCredentials() != null ? getVid() : descriptor.getGvid();
+        String apiKey = getCredentials() != null ? getVkey() : descriptor.getGvkey();
+        ProxyBlock proxyBlock = null;
+        if (descriptor.isProxyEnabled()) {
+            proxyBlock = new ProxyBlock(descriptor.getPhost(), descriptor.getPport(),
+                    descriptor.getPuser(), descriptor.getPpassword());
+        }
 
-		DAAdapterService daAdapterService = new DAAdapterService();
-		return daAdapterService.reviewDynamicAnalysis(build, build.getWorkspace(), listener, waitForResultsDuration,
-				failBuildForPolicyViolation, apiId, apiKey, descriptor.isDebugEnabled(), proxyBlock);
-	}
+        DAAdapterService daAdapterService = new DAAdapterService();
+        return daAdapterService.reviewDynamicAnalysis(build, build.getWorkspace(), listener,
+                waitForResultsDuration, failBuildForPolicyViolation, apiId, apiKey,
+                descriptor.isDebugEnabled(), proxyBlock);
+    }
 
-	@Override
-	public DynamicAnalysisResultsDescriptorImpl getDescriptor() {
-		return (DynamicAnalysisResultsDescriptorImpl) super.getDescriptor();
-	}
+    @Override
+    public DynamicAnalysisResultsDescriptorImpl getDescriptor() {
+        return (DynamicAnalysisResultsDescriptorImpl) super.getDescriptor();
+    }
 
-	@Extension
-	public static class DynamicAnalysisResultsDescriptorImpl extends BuildStepDescriptor<Publisher> {
+    @Extension
+    public static class DynamicAnalysisResultsDescriptorImpl
+            extends BuildStepDescriptor<Publisher> {
 
-		private String gvid;
-		private String gvkey;
-		private boolean debugEnabled;
-		private boolean proxyEnabled;
-		private String phost;
-		private String pport;
-		private String puser;
-		private String ppassword;
+        private String gvid;
+        private String gvkey;
+        private boolean debugEnabled;
+        private boolean proxyEnabled;
+        private String phost;
+        private String pport;
+        private String puser;
+        private String ppassword;
 
-		/**
-		 * Load the persisted global configuration.
-		 */
-		public DynamicAnalysisResultsDescriptorImpl() {
-			load();
-		}
+        /**
+         * Load the persisted global configuration.
+         */
+        public DynamicAnalysisResultsDescriptorImpl() {
+            load();
+        }
 
-		/**
-		 * The name of the plugin displayed in the UI.
-		 */
-		@Override
-		public String getDisplayName() {
-			return Constant.POST_BUILD_ACTION_DISPLAY_TEXT_REVIEW;
-		}
+        /**
+         * The name of the plugin displayed in the UI.
+         */
+        @Override
+        public String getDisplayName() {
+            return Constant.POST_BUILD_ACTION_DISPLAY_TEXT_REVIEW;
+        }
 
-		/**
-		 * Whether this task is applicable to the given project.
-		 */
-		@SuppressWarnings("rawtypes")
-		@Override
-		public boolean isApplicable(Class<? extends AbstractProject> aClass) {
-			return true;
-		}
+        /**
+         * Whether this task is applicable to the given project.
+         */
+        @SuppressWarnings("rawtypes")
+        @Override
+        public boolean isApplicable(Class<? extends AbstractProject> aClass) {
+            return true;
+        }
 
-		/**
-		 * Called when the user saves the project configuration.
-		 */
-		@SuppressWarnings("unchecked")
-		@Override
-		public Publisher newInstance(StaplerRequest req, JSONObject formData) throws FormException {
-			String waitForResultsDuration = formData.getString("waitForResultsDuration");
-			formData.put("waitForResultsDuration",
-					StringUtil.isNullOrEmpty(waitForResultsDuration)
-							? Constant.DEFAULT_VALUE_DA_WAIT_FOR_RESULTS_MINUTES
-							: waitForResultsDuration);
-			Map<String, Object> credMap = (Map<String, Object>) formData.get("credentials");
-			if (credMap != null) {
-				credMap.put("vid", EncryptionUtil.encrypt((String) credMap.get("vid")));
-				credMap.put("vkey", EncryptionUtil.encrypt((String) credMap.get("vkey")));
-				formData.put("credentials", credMap);
-			}
+        /**
+         * Called when the user saves the project configuration.
+         */
+        @SuppressWarnings("unchecked")
+        @Override
+        public Publisher newInstance(StaplerRequest req, JSONObject formData) throws FormException {
+            String waitForResultsDuration = formData.getString("waitForResultsDuration");
+            formData.put("waitForResultsDuration",
+                    StringUtil.isNullOrEmpty(waitForResultsDuration)
+                            ? Constant.DEFAULT_VALUE_DA_WAIT_FOR_RESULTS_MINUTES
+                            : waitForResultsDuration);
+            Map<String, Object> credMap = (Map<String, Object>) formData.get("credentials");
+            if (credMap != null) {
+                credMap.put("vid", EncryptionUtil.encrypt((String) credMap.get("vid")));
+                credMap.put("vkey", EncryptionUtil.encrypt((String) credMap.get("vkey")));
+                formData.put("credentials", credMap);
+            }
 
-			return super.newInstance(req, formData);
-		}
+            return super.newInstance(req, formData);
+        }
 
-		@Override
-		public boolean configure(StaplerRequest req, JSONObject formData) throws FormException {
-			updateFromGlobalConfiguration();
-			req.bindJSON(this, formData);
-			save();
-			return super.configure(req, formData);
-		}
+        @Override
+        public boolean configure(StaplerRequest req, JSONObject formData) throws FormException {
+            updateFromGlobalConfiguration();
+            req.bindJSON(this, formData);
+            save();
+            return super.configure(req, formData);
+        }
 
-		// Validate wait for results duration
-		public FormValidation doCheckWaitForResultsDuration(@QueryParameter String waitForResultsDuration) throws IOException, ServletException {
-			return FormValidationUtil.checkWaitForResultsDuration(waitForResultsDuration);
-		}
+        // Validate wait for results duration
+        public FormValidation doCheckWaitForResultsDuration(
+                @QueryParameter String waitForResultsDuration)
+                throws IOException, ServletException {
+            return FormValidationUtil.checkWaitForResultsDuration(waitForResultsDuration);
+        }
 
-		// Validate Veracode API ID
-		public FormValidation doCheckVid(@QueryParameter("vid") String vid, @QueryParameter("vkey") String vkey)
-				throws IOException, ServletException {
-			return FormValidationUtil.checkApiId(vid, vkey, hasGlobalApiIdKeyCredentials());
-		}
+        // Validate Veracode API ID
+        public FormValidation doCheckVid(@QueryParameter("vid") String vid,
+                @QueryParameter("vkey") String vkey) throws IOException, ServletException {
+            return FormValidationUtil.checkApiId(vid, vkey, hasGlobalApiIdKeyCredentials());
+        }
 
-		// Validate Veracode API Key
-		public FormValidation doCheckVkey(@QueryParameter("vid") String vid, @QueryParameter("vkey") String vkey)
-				throws IOException, ServletException {
-			return FormValidationUtil.checkApiKey(vid, vkey, hasGlobalApiIdKeyCredentials());
-		}
+        // Validate Veracode API Key
+        public FormValidation doCheckVkey(@QueryParameter("vid") String vid,
+                @QueryParameter("vkey") String vkey) throws IOException, ServletException {
+            return FormValidationUtil.checkApiKey(vid, vkey, hasGlobalApiIdKeyCredentials());
+        }
 
-		private void updateFromGlobalConfiguration() {
-			VeracodeDescriptor globalVeracodeDescriptor = (VeracodeDescriptor) Jenkins.getInstance()
-					.getDescriptor(VeracodeNotifier.class);
-			if (globalVeracodeDescriptor != null) {
-				gvid = globalVeracodeDescriptor.getGvid();
-				gvkey = globalVeracodeDescriptor.getGvkey();
-				debugEnabled = globalVeracodeDescriptor.getDebug();
-				proxyEnabled = globalVeracodeDescriptor.getProxy();
-				phost = globalVeracodeDescriptor.getPhost();
-				pport = globalVeracodeDescriptor.getPport();
-				puser = globalVeracodeDescriptor.getPuser();
-				ppassword = globalVeracodeDescriptor.getPpassword();
-			}
-		}
+        private void updateFromGlobalConfiguration() {
+            VeracodeDescriptor globalVeracodeDescriptor = (VeracodeDescriptor) Jenkins.getInstance()
+                    .getDescriptor(VeracodeNotifier.class);
+            if (globalVeracodeDescriptor != null) {
+                gvid = globalVeracodeDescriptor.getGvid();
+                gvkey = globalVeracodeDescriptor.getGvkey();
+                debugEnabled = globalVeracodeDescriptor.getDebug();
+                proxyEnabled = globalVeracodeDescriptor.getProxy();
+                phost = globalVeracodeDescriptor.getPhost();
+                pport = globalVeracodeDescriptor.getPport();
+                puser = globalVeracodeDescriptor.getPuser();
+                ppassword = globalVeracodeDescriptor.getPpassword();
+            }
+        }
 
-		// Methods to get global configuration
-		public String getGvid() {
-			return gvid;
-		}
+        // Methods to get global configuration
+        public String getGvid() {
+            return gvid;
+        }
 
-		public String getGvkey() {
-			return gvkey;
-		}
+        public String getGvkey() {
+            return gvkey;
+        }
 
-		public boolean isDebugEnabled() {
-			return debugEnabled;
-		}
+        public boolean isDebugEnabled() {
+            return debugEnabled;
+        }
 
-		public boolean isProxyEnabled() {
-			return proxyEnabled;
-		}
+        public boolean isProxyEnabled() {
+            return proxyEnabled;
+        }
 
-		public String getPhost() {
-			return phost;
-		}
+        public String getPhost() {
+            return phost;
+        }
 
-		public String getPport() {
-			return pport;
-		}
+        public String getPport() {
+            return pport;
+        }
 
-		public String getPuser() {
-			return puser;
-		}
+        public String getPuser() {
+            return puser;
+        }
 
-		public String getPpassword() {
-			return ppassword;
-		}
+        public String getPpassword() {
+            return ppassword;
+        }
 
-		// Check if Veracode API ID and key are saved in global configuration
-		public boolean hasGlobalApiIdKeyCredentials() {
-			return !StringUtil.isNullOrEmpty(getGvid()) && !StringUtil.isNullOrEmpty(getGvkey());
-		}
-	}
+        // Check if Veracode API ID and key are saved in global configuration
+        public boolean hasGlobalApiIdKeyCredentials() {
+            return !StringUtil.isNullOrEmpty(getGvid()) && !StringUtil.isNullOrEmpty(getGvkey());
+        }
+    }
 
-	// Getter methods
+    // Getter methods
 
-	public int getWaitForResultsDuration() {
-		return waitForResultsDuration;
-	}
+    public int getWaitForResultsDuration() {
+        return waitForResultsDuration;
+    }
 
-	public boolean isFailBuildForPolicyViolation() {
-		return failBuildForPolicyViolation;
-	}
+    public boolean isFailBuildForPolicyViolation() {
+        return failBuildForPolicyViolation;
+    }
 
-	public boolean isGlobalCredentialsEnabled() {
-		return isGlobalCredentialsEnabled;
-	}
+    public boolean isGlobalCredentialsEnabled() {
+        return isGlobalCredentialsEnabled;
+    }
 
-	public CredentialsBlock getCredentials() {
-		return credentials;
-	}
+    public CredentialsBlock getCredentials() {
+        return credentials;
+    }
 
-	public String getVid() {
-		return EncryptionUtil.decrypt((this.credentials != null) ? this.credentials.getVid() : null);
-	}
+    public String getVid() {
+        return EncryptionUtil
+                .decrypt((this.credentials != null) ? this.credentials.getVid() : null);
+    }
 
-	public String getVkey() {
-		return EncryptionUtil.decrypt((this.credentials != null) ? this.credentials.getVkey() : null);
-	}
+    public String getVkey() {
+        return EncryptionUtil
+                .decrypt((this.credentials != null) ? this.credentials.getVkey() : null);
+    }
 }
