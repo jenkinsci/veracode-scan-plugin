@@ -21,13 +21,7 @@ import java.util.List;
 import org.kohsuke.stapler.StaplerRequest;
 
 import com.veracode.apiwrapper.cli.VeracodeCommand.VeracodeParser;
-import io.jenkins.plugins.veracode.VeracodeNotifier.VeracodeDescriptor;
-import io.jenkins.plugins.veracode.args.DynamicRescanArgs;
-import io.jenkins.plugins.veracode.common.Constant;
-import io.jenkins.plugins.veracode.utils.EncryptionUtil;
-import io.jenkins.plugins.veracode.utils.FileUtil;
-import io.jenkins.plugins.veracode.utils.RemoteScanUtil;
-import io.jenkins.plugins.veracode.utils.StringUtil;
+
 import hudson.FilePath;
 import hudson.Launcher;
 import hudson.Launcher.ProcStarter;
@@ -35,33 +29,43 @@ import hudson.Proc;
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
 import hudson.model.BuildListener;
-import hudson.model.Hudson;
 import hudson.model.Node;
-import hudson.model.Descriptor.FormException;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.BuildStepMonitor;
 import hudson.tasks.Notifier;
 import hudson.tasks.Publisher;
 import hudson.util.ArgumentListBuilder;
+import io.jenkins.plugins.veracode.VeracodeNotifier.VeracodeDescriptor;
+import io.jenkins.plugins.veracode.args.DynamicRescanArgs;
+import io.jenkins.plugins.veracode.common.Constant;
+import io.jenkins.plugins.veracode.utils.EncryptionUtil;
+import io.jenkins.plugins.veracode.utils.FileUtil;
+import io.jenkins.plugins.veracode.utils.RemoteScanUtil;
+import io.jenkins.plugins.veracode.utils.StringUtil;
 import jenkins.model.Jenkins;
 import net.sf.json.JSONObject;
 
 /**
- * Contains the code that is executed after a job that is configured to use the Veracode plugin is built and provides
- * getter methods for the form fields defined in config.jelly.
+ * Contains the code that is executed after a job that is configured to use the
+ * Veracode plugin is built and provides getter methods for the form fields
+ * defined in config.jelly.
  * <p>
  *
  * This class extends the {@link hudson.tasks.Notifier Notifier} class.
  */
 public class DynamicRescanNotifier extends Notifier {
+
     /**
-     * Contains the code that is executed after a user submits the "Configure System" form and provides getter methods
-     * for the form fields defined in global.jelly.
+     * Contains the code that is executed after a user submits the "Configure
+     * System" form and provides getter methods for the form fields defined in
+     * global.jelly.
      * <p>
-     * This class extends the {@link hudson.tasks.BuildStepDescriptor BuildStepDescriptor} class.
+     * This class extends the {@link hudson.tasks.BuildStepDescriptor
+     * BuildStepDescriptor} class.
      *
-     *       Converting this class to a top-level class should be done with the understanding that doing so might
-     *       prevent the plugin from working properly if not at all.
+     * Converting this class to a top-level class should be done with the
+     * understanding that doing so might prevent the plugin from working properly if
+     * not at all.
      *
      */
     @hudson.Extension
@@ -69,10 +73,10 @@ public class DynamicRescanNotifier extends Notifier {
 
         private static final String PostBuildActionDisplayText = "Dynamic Rescan with Veracode";
 
-		private boolean failbuild;
-		private boolean autoappname;
-		private boolean debug;
-		private boolean autoversion;
+        private boolean failbuild;
+        private boolean autoappname;
+        private boolean debug;
+        private boolean autoversion;
 
         // -------------------------------------------------------------------
         // Methods that correspond to identifiers referenced in global.jelly
@@ -111,7 +115,8 @@ public class DynamicRescanNotifier extends Notifier {
         }
 
         /**
-         * This constructor makes it possible for global configuration data to be re-loaded after Jenkins is restarted.
+         * This constructor makes it possible for global configuration data to be
+         * re-loaded after Jenkins is restarted.
          */
         public DynamicScanDescriptor() {
             super(DynamicRescanNotifier.class);
@@ -123,23 +128,23 @@ public class DynamicRescanNotifier extends Notifier {
         }
 
         @Override
-		public boolean configure(StaplerRequest req, JSONObject formData) throws FormException {
-			updateFromGlobalConfiguration();
-			req.bindJSON(this, formData);
-			save();
-			return super.configure(req, formData);
-		}
+        public boolean configure(StaplerRequest req, JSONObject formData) throws FormException {
+            updateFromGlobalConfiguration();
+            req.bindJSON(this, formData);
+            save();
+            return super.configure(req, formData);
+        }
 
-		private void updateFromGlobalConfiguration() {
-			VeracodeDescriptor globalVeracodeDescriptor = (VeracodeDescriptor) Jenkins.getInstance()
-					.getDescriptor(VeracodeNotifier.class);
-			if (globalVeracodeDescriptor != null) {
-				failbuild = globalVeracodeDescriptor.getFailbuild();
-				autoappname = globalVeracodeDescriptor.getAutoappname();
-				debug = globalVeracodeDescriptor.getDebug();
-				autoversion = globalVeracodeDescriptor.getAutoversion();
-			}
-		}
+        private void updateFromGlobalConfiguration() {
+            VeracodeDescriptor globalVeracodeDescriptor = (VeracodeDescriptor) Jenkins.getInstance()
+                    .getDescriptor(VeracodeNotifier.class);
+            if (globalVeracodeDescriptor != null) {
+                failbuild = globalVeracodeDescriptor.getFailbuild();
+                autoappname = globalVeracodeDescriptor.getAutoappname();
+                debug = globalVeracodeDescriptor.getDebug();
+                autoversion = globalVeracodeDescriptor.getAutoversion();
+            }
+        }
     }
 
     // --------------------------------------------------------------------------------------
@@ -160,14 +165,14 @@ public class DynamicRescanNotifier extends Notifier {
         return this._dvrenabled;
     }
 
-
     @Override
     public DynamicScanDescriptor getDescriptor() {
         return (DynamicScanDescriptor) super.getDescriptor();
     }
 
     /**
-     * Returns an object that represents the scope of the synchronization monitor expected by the plugin.
+     * Returns an object that represents the scope of the synchronization monitor
+     * expected by the plugin.
      */
     @Override
     public BuildStepMonitor getRequiredMonitorService() {
@@ -175,8 +180,8 @@ public class DynamicRescanNotifier extends Notifier {
     }
 
     /**
-     * In this overridden method we are taking care of copying the wrapper to remote location and making the build ready
-     * for scan
+     * In this overridden method we are taking care of copying the wrapper to remote
+     * location and making the build ready for scan
      **/
 
     @Override
@@ -188,8 +193,8 @@ public class DynamicRescanNotifier extends Notifier {
         PrintStream ps = listener.getLogger();
         FilePath workspace = build.getWorkspace();
         if (workspace == null) {
-        	ps.print("\r\n\r\nFailed to locate the build workspace.\r\n");
-			return !getDescriptor().getFailbuild();
+            ps.print("\r\n\r\nFailed to locate the build workspace.\r\n");
+            return !getDescriptor().getFailbuild();
         }
         boolean isRemoteWorkspace = workspace.isRemote();
 
@@ -215,7 +220,8 @@ public class DynamicRescanNotifier extends Notifier {
 
                 // copy the jar if it does not exist
                 if (files.length == 0) {
-                    bRet = FileUtil.copyJarFiles(build, localWorkspaceFilePath, remoteVeracodeFilePath, ps);
+                    bRet = FileUtil.copyJarFiles(build, localWorkspaceFilePath,
+                            remoteVeracodeFilePath, ps);
                 } else // if file exits
                 {
                     FilePath[] newfiles = localWorkspaceFilePath.list(Constant.inclusive);
@@ -228,20 +234,23 @@ public class DynamicRescanNotifier extends Notifier {
                     // plugin directory and delete the old one
                     if (newVersion > oldVersion) {
                         if (debug) {
-                            ps.println("Newer veracode library version, copying it to remote machine");
+                            ps.println(
+                                    "Newer veracode library version, copying it to remote machine");
                         }
 
                         remoteVeracodeFilePath.deleteContents();
-                        bRet = FileUtil.copyJarFiles(build, localWorkspaceFilePath, remoteVeracodeFilePath, ps);
+                        bRet = FileUtil.copyJarFiles(build, localWorkspaceFilePath,
+                                remoteVeracodeFilePath, ps);
                     } else // just make sure we have our jarfile (defensive
                            // coding)
                     {
                         String jarName = files[0].getRemote();
-                        String newJarName = jarName.replaceAll(Constant.regex, Constant.execJarFile + "$2");
+                        String newJarName = jarName.replaceAll(Constant.regex,
+                                Constant.execJarFile + "$2");
                         Node node = build.getBuiltOn();
                         if (node == null) {
-                        	ps.print("\r\n\r\nFailed to locate the build node.\r\n");
-                			return !getDescriptor().getFailbuild();
+                            ps.print("\r\n\r\nFailed to locate the build node.\r\n");
+                            return !getDescriptor().getFailbuild();
                         }
                         FilePath newjarFilePath = new FilePath(node.getChannel(), newJarName);
 
@@ -262,7 +271,8 @@ public class DynamicRescanNotifier extends Notifier {
     }
 
     /**
-     * Called by Jenkins after a build for a job specified to use the plugin is performed.
+     * Called by Jenkins after a build for a job specified to use the plugin is
+     * performed.
      */
     @Override
     public boolean perform(AbstractBuild<?, ?> build, Launcher launcher, BuildListener listener)
@@ -282,27 +292,29 @@ public class DynamicRescanNotifier extends Notifier {
             ps.println(String.format("Can Fail Build?%n%s%n", getDescriptor().getFailbuild()));
 
             try {
-                Method method = com.veracode.apiwrapper.cli.VeracodeCommand.class.getDeclaredMethod("getVersionString");
+                Method method = com.veracode.apiwrapper.cli.VeracodeCommand.class
+                        .getDeclaredMethod("getVersionString");
                 method.setAccessible(true);
                 String version = (String) method.invoke(null);
                 if (!StringUtil.isNullOrEmpty(version)) {
                     ps.println(String.format("Version information:%n%s", version));
                 }
-            } catch (NoSuchMethodException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+            } catch (NoSuchMethodException | IllegalAccessException | IllegalArgumentException
+                    | InvocationTargetException e) {
                 ps.println("Could not retrieve API wrapper's version information.");
             }
         }
 
         FilePath workspace = build.getWorkspace();
         if (workspace == null) {
-        	ps.print("\r\n\r\nFailed to locate the build workspace.\r\n");
-			return !getDescriptor().getFailbuild();
+            ps.print("\r\n\r\nFailed to locate the build workspace.\r\n");
+            return !getDescriptor().getFailbuild();
         }
         boolean isRemoteWorkspace = workspace.isRemote();
 
         if (debug) {
-            ps.println(
-                String.format("%n%nProcessing files in [%s] workspace: ", isRemoteWorkspace ? "remote" : "local"));
+            ps.println(String.format("%n%nProcessing files in [%s] workspace: ",
+                    isRemoteWorkspace ? "remote" : "local"));
             String workspaceDir = workspace.getRemote();
             workspaceDir = workspaceDir.replace("\\", "/");
             listener.hyperlink("file://" + workspaceDir, workspaceDir);
@@ -319,12 +331,12 @@ public class DynamicRescanNotifier extends Notifier {
                 ps.print("\r\n\r\nBuilding arguments. ");
             }
 
-            DynamicRescanArgs dynamicScanArguments =
-                DynamicRescanArgs.dynamicScanArgs(this, build, build.getEnvironment(listener));
+            DynamicRescanArgs dynamicScanArguments = DynamicRescanArgs.dynamicScanArgs(this, build,
+                    build.getEnvironment(listener));
 
             if (debug) {
                 ps.println(String.format("Calling wrapper with arguments:%n%s%n",
-                    Arrays.toString(dynamicScanArguments.getMaskedArguments())));
+                        Arrays.toString(dynamicScanArguments.getMaskedArguments())));
             }
 
             try {
@@ -363,7 +375,7 @@ public class DynamicRescanNotifier extends Notifier {
     /**
      * Called by Jenkins with data supplied in the "Job Configuration" page.
      *
-     * @param appname String
+     * @param appname    String
      * @param dvrenabled boolean
      */
     @org.kohsuke.stapler.DataBoundConstructor
@@ -373,8 +385,8 @@ public class DynamicRescanNotifier extends Notifier {
     }
 
     // invoking the CLI from remote node
-    private boolean runScanFromRemote(AbstractBuild<?, ?> build, BuildListener listener, PrintStream ps,
-            boolean bDebug) {
+    private boolean runScanFromRemote(AbstractBuild<?, ?> build, BuildListener listener,
+            PrintStream ps, boolean bDebug) {
         boolean bRet = false;
 
         Node node = build.getBuiltOn();
@@ -384,8 +396,8 @@ public class DynamicRescanNotifier extends Notifier {
 
         FilePath workspace = build.getWorkspace();
         if (workspace == null) {
-        	ps.print("\r\n\r\nFailed to locate the build workspace.\r\n");
-			return !getDescriptor().getFailbuild();
+            ps.print("\r\n\r\nFailed to locate the build workspace.\r\n");
+            return !getDescriptor().getFailbuild();
         }
         String remoteworkspace = workspace.getRemote();
         String sep = RemoteScanUtil.getPathSeparator(remoteworkspace);
@@ -393,8 +405,8 @@ public class DynamicRescanNotifier extends Notifier {
         // obtain the String file paths, using the includes/excludes patterns a
         // 2nd time
         try {
-            DynamicRescanArgs dynamicScanArguments =
-                DynamicRescanArgs.dynamicScanArgs(this, build, build.getEnvironment(listener));
+            DynamicRescanArgs dynamicScanArguments = DynamicRescanArgs.dynamicScanArgs(this, build,
+                    build.getEnvironment(listener));
 
             String jarPath = jarFilePath + sep + Constant.execJarFile + ".jar";
             String cmd = "java -jar " + jarPath;
@@ -403,7 +415,7 @@ public class DynamicRescanNotifier extends Notifier {
             StringBuilder result = new StringBuilder();
             result.append(cmd);
             for (String _cmd : cmds) {
-            	_cmd = RemoteScanUtil.formatParameterValue(_cmd);
+                _cmd = RemoteScanUtil.formatParameterValue(_cmd);
                 result.append(" " + _cmd);
             }
 

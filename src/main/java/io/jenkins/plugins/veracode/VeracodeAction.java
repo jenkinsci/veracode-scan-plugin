@@ -7,19 +7,18 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
 
+import hudson.model.Run;
+import io.jenkins.plugins.veracode.common.Constant;
 import io.jenkins.plugins.veracode.data.BuildHistory;
 import io.jenkins.plugins.veracode.data.FindingCounts;
 import io.jenkins.plugins.veracode.data.SCAComponent;
 import io.jenkins.plugins.veracode.data.SCAScanHistory;
 import io.jenkins.plugins.veracode.data.ScanHistory;
 import io.jenkins.plugins.veracode.enums.SeverityLevel;
-import io.jenkins.plugins.veracode.common.Constant;
-import org.apache.commons.lang.StringEscapeUtils;
-
-import hudson.model.Run;
 import jenkins.model.RunAction2;
 
 /**
@@ -32,7 +31,7 @@ public class VeracodeAction implements RunAction2 {
     private final ScanHistory scanHistory;
 
     // The Jenkins build containing this action
-    private transient Run<?,?> build;
+    private transient Run<?, ?> build;
 
     public VeracodeAction() {
         scanHistory = null;
@@ -41,15 +40,16 @@ public class VeracodeAction implements RunAction2 {
 
     public VeracodeAction(ScanHistory scanHistory) {
         if (null == scanHistory) {
-            throw new IllegalArgumentException("Missing required information to create a VeracodeAction.");
+            throw new IllegalArgumentException(
+                    "Missing required information to create a VeracodeAction.");
         }
         this.scanHistory = scanHistory;
         build = null;
     }
 
     /**
-     * Use by Jenkins framework to display our logo on the left panel on
-     * on the build page
+     * Use by Jenkins framework to display our logo on the left panel on on the
+     * build page
      *
      * @return URI to the 24x24 Veracode logo icon
      */
@@ -93,7 +93,7 @@ public class VeracodeAction implements RunAction2 {
      * @return policy name escaped for HTML
      */
     public String getPolicyNameForHTML() {
-        return  StringEscapeUtils.escapeHtml(scanHistory.getPolicyName());
+        return StringEscapeUtils.escapeHtml(scanHistory.getPolicyName());
     }
 
     /**
@@ -106,13 +106,15 @@ public class VeracodeAction implements RunAction2 {
     }
 
     /**
-     * Get the policy compliance status for displaying in HTML
-     * Note that the "PASS" status is returned as "Passed" for displaying purpose.
+     * Get the policy compliance status for displaying in HTML Note that the "PASS"
+     * status is returned as "Passed" for displaying purpose.
+     * 
      * @return policy compliance status escaped for HTML
      */
     public String getPolicyComplianceStatusForHTML() {
         String complianceStatus = scanHistory.getPolicyComplianceStatus();
-        return StringEscapeUtils.escapeHtml(complianceStatus.equalsIgnoreCase(Constant.PASSED) ? "Passed" : complianceStatus);
+        return StringEscapeUtils.escapeHtml(
+                complianceStatus.equalsIgnoreCase(Constant.PASSED) ? "Passed" : complianceStatus);
     }
 
     /**
@@ -133,7 +135,6 @@ public class VeracodeAction implements RunAction2 {
         return StringEscapeUtils.escapeHtml(scanHistory.getVeracodeLevel());
     }
 
-
     public int getAnalysisScore() {
         return scanHistory.getScore();
     }
@@ -152,7 +153,8 @@ public class VeracodeAction implements RunAction2 {
     }
 
     /**
-     * Use by summary.jelly for VeracodeAction to display the correct status icon (16x16)
+     * Use by summary.jelly for VeracodeAction to display the correct status icon
+     * (16x16)
      *
      * @return relative URI of the status icon
      */
@@ -173,7 +175,8 @@ public class VeracodeAction implements RunAction2 {
     }
 
     /**
-     * Use by summary.jelly for VeracodeAction to display the correct status icon (24x24)
+     * Use by summary.jelly for VeracodeAction to display the correct status icon
+     * (24x24)
      *
      * @return relative URI of the status icon
      */
@@ -194,7 +197,8 @@ public class VeracodeAction implements RunAction2 {
     }
 
     /**
-     * Used by summary.jelly for VeracodeAction to display the correct status icon (32x32)
+     * Used by summary.jelly for VeracodeAction to display the correct status icon
+     * (32x32)
      *
      * @return relative URI of the status icon
      */
@@ -237,6 +241,7 @@ public class VeracodeAction implements RunAction2 {
 
     /**
      * Use by index.jelly for VeracodeAction to display the open new window icon
+     * 
      * @return String
      */
     public String getOpenNewWindow16() {
@@ -244,8 +249,8 @@ public class VeracodeAction implements RunAction2 {
     }
 
     /**
-     * Find out if the flaw count of the given severity is
-     * lower than the actual count due to mitigation
+     * Find out if the flaw count of the given severity is lower than the actual
+     * count due to mitigation
      *
      * @param severity - A severity level
      * @return true if the count is lower due to mitigation, false otherwise.
@@ -261,19 +266,20 @@ public class VeracodeAction implements RunAction2 {
     }
 
     public String getFlawsCount(int severity) {
-		String displayFlawsCount;
-		try {
-	        int flawsCount = scanHistory.getFlawsCount(severity);
+        String displayFlawsCount;
+        try {
+            int flawsCount = scanHistory.getFlawsCount(severity);
 
-	        // Adding "*" to count number if there is a mitigated flaw in that severity level
-	        if (isStaticSevLevelMitigated(severity)) {
-	            displayFlawsCount = flawsCount + "*";
-	        } else {
-	            displayFlawsCount = flawsCount > 0? Integer.toString(flawsCount) : "";
-	        }
-		} catch (IllegalArgumentException iae) {
-		    displayFlawsCount = "";
-		}
+            // Adding "*" to count number if there is a mitigated flaw in that severity
+            // level
+            if (isStaticSevLevelMitigated(severity)) {
+                displayFlawsCount = flawsCount + "*";
+            } else {
+                displayFlawsCount = flawsCount > 0 ? Integer.toString(flawsCount) : "";
+            }
+        } catch (IllegalArgumentException iae) {
+            displayFlawsCount = "";
+        }
 
         return displayFlawsCount;
     }
@@ -309,7 +315,7 @@ public class VeracodeAction implements RunAction2 {
         int newFlaw = scanHistory.getNewFlaws(severity);
 
         // Display empty string for 0 and negative number
-        return newFlaw > 0? Integer.toString(newFlaw) : "";
+        return newFlaw > 0 ? Integer.toString(newFlaw) : "";
     }
 
     public List<Map<String, Long>> getFlawsCountHistory() {
@@ -319,15 +325,18 @@ public class VeracodeAction implements RunAction2 {
     public void doGraph(StaplerRequest request, StaplerResponse response) {
         try {
             Collection<BuildHistory> buildHistoryList = new ArrayList<BuildHistory>();
-            BuildHistory staticBuildHistory = new BuildHistory("Static Flaws", scanHistory.getFlawsCountHistory());
+            BuildHistory staticBuildHistory = new BuildHistory("Static Flaws",
+                    scanHistory.getFlawsCountHistory());
             buildHistoryList.add(staticBuildHistory);
 
             // SCA vulnerabilities is optional
             if (null != getVulCountHistory()) {
-                BuildHistory vulnerBuildHistory = new BuildHistory("SCA Vulnerabilities", getVulCountHistory());
+                BuildHistory vulnerBuildHistory = new BuildHistory("SCA Vulnerabilities",
+                        getVulCountHistory());
                 buildHistoryList.add(vulnerBuildHistory);
             }
-            TrendChart trendChart = new TrendChart(System.currentTimeMillis(), 600, 400, buildHistoryList);
+            TrendChart trendChart = new TrendChart(System.currentTimeMillis(), 600, 400,
+                    buildHistoryList);
             trendChart.doPng(request, response);
         } catch (IOException ioe) {
             throw new RuntimeException("Unable to generate the Flaw trend graph.");
@@ -335,7 +344,8 @@ public class VeracodeAction implements RunAction2 {
     }
 
     /**
-     * Get the URL to the Detailed Report for this scan that is escaped for HTML attribute
+     * Get the URL to the Detailed Report for this scan that is escaped for HTML
+     * attribute
      *
      * @return Detailed Report URL escaped for HTML attribute
      */
@@ -343,19 +353,19 @@ public class VeracodeAction implements RunAction2 {
         String escapedAcctId = StringEscapeUtils.escapeHtml(scanHistory.getAccountId());
         String escapedAppId = StringEscapeUtils.escapeHtml(scanHistory.getAppId());
         String escapedBuildId = StringEscapeUtils.escapeHtml(scanHistory.getBuildId());
-        return Constant.VIEW_REPORT_URI_PREFIX + ":" + escapedAcctId + ":" + escapedAppId + ":" + escapedBuildId;
+        return Constant.VIEW_REPORT_URI_PREFIX + ":" + escapedAcctId + ":" + escapedAppId + ":"
+                + escapedBuildId;
     }
 
     public boolean isScanHistoryAvailable() {
         return null != scanHistory;
     }
 
-
-    private void setBuild(Run<?,?> build) {
+    private void setBuild(Run<?, ?> build) {
         this.build = build;
     }
 
-    public Run<?,?> getBuild() {
+    public Run<?, ?> getBuild() {
         return build;
     }
 
@@ -365,7 +375,7 @@ public class VeracodeAction implements RunAction2 {
      * @return true if available. False otherwise
      */
     public boolean isSCAHistoryAvailable() {
-        return (null != scanHistory)? scanHistory.hasSCAHistory() : false;
+        return (null != scanHistory) ? scanHistory.hasSCAHistory() : false;
     }
 
     /**
@@ -374,15 +384,14 @@ public class VeracodeAction implements RunAction2 {
      * @return true if subscribed. False if not subscribed or data not available
      */
     public boolean isSubscribedToSCA() {
-        return (isSCAHistoryAvailable())? scanHistory.getScaHistory().isSubscribed() : false;
+        return (isSCAHistoryAvailable()) ? scanHistory.getScaHistory().isSubscribed() : false;
     }
 
     /**
      * Get the max CVSS score among all the SCA components.
      *
-     * @return the max CVSS score if available. Otherwise,
-     *           -1 for none of the SCA components has a CVSS score
-     *           -2 for SCA data is not available
+     * @return the max CVSS score if available. Otherwise, -1 for none of the SCA
+     *         components has a CVSS score -2 for SCA data is not available
      */
     public double getMaxCVSSScore() {
         double score = -2;
@@ -395,9 +404,8 @@ public class VeracodeAction implements RunAction2 {
     /**
      * Returns the display on the build page based on the Max CVSS Score
      *
-     * @return the max CVSS score if available. Otherwise,
-     *         "-" if none of the SCA components has a CVSS score
-     *         "" if SCA data is not available
+     * @return the max CVSS score if available. Otherwise, "-" if none of the SCA
+     *         components has a CVSS score "" if SCA data is not available
      */
     public String getMaxCVSSScoreForHTML() {
         double score = getMaxCVSSScore();
@@ -413,22 +421,24 @@ public class VeracodeAction implements RunAction2 {
     /**
      * Get the number of blacklisted components.
      *
-     * @return the number of blacklisted components if available. Otherwise,
-     *         -1 if SCA data is not available
+     * @return the number of blacklisted components if available. Otherwise, -1 if
+     *         SCA data is not available
      */
     public int getBlacklistedCompsCount() {
-        return (isSCAHistoryAvailable())? scanHistory.getScaHistory().getBlacklistedComponentsCount() : -1;
+        return (isSCAHistoryAvailable())
+                ? scanHistory.getScaHistory().getBlacklistedComponentsCount()
+                : -1;
     }
 
     /**
      * Returns the display of the number of blacklisted components on the build page
      *
-     * @return the number of blacklisted components if available. Otherwise,
-     *         "0" if SCA data is not available or no SCA blacklisted components
+     * @return the number of blacklisted components if available. Otherwise, "0" if
+     *         SCA data is not available or no SCA blacklisted components
      */
     public String getBlacklistedCompsCountForHTML() {
         int count = getBlacklistedCompsCount();
-        return (count == -1)? "0" : String.valueOf(count);
+        return (count == -1) ? "0" : String.valueOf(count);
     }
 
     private FindingCounts getCountBySeverity(int severity) {
@@ -438,7 +448,8 @@ public class VeracodeAction implements RunAction2 {
 
         FindingCounts result = null;
         try {
-            result = scanHistory.getScaHistory().getCountBySeverity(SeverityLevel.findSevLevel(severity));
+            result = scanHistory.getScaHistory()
+                    .getCountBySeverity(SeverityLevel.findSevLevel(severity));
         } catch (IllegalArgumentException iae) {
             result = null;
         }
@@ -447,8 +458,9 @@ public class VeracodeAction implements RunAction2 {
     }
 
     /**
-     * Get the vulnerability count of a given severity level (0 - 5). If the count is lower than actual (due to mitigation),
-     * then the returned count will be followed by an asterisk
+     * Get the vulnerability count of a given severity level (0 - 5). If the count
+     * is lower than actual (due to mitigation), then the returned count will be
+     * followed by an asterisk
      *
      * @param severity - A severity level
      * @return the vulnerability count
@@ -457,7 +469,8 @@ public class VeracodeAction implements RunAction2 {
         FindingCounts fc = getCountBySeverity(severity);
         String result = "";
         if (null != fc) {
-            result = fc.isMitigated()? fc.getCount() + "*" : (fc.getCount() > 0? Integer.toString(fc.getCount()) : "");
+            result = fc.isMitigated() ? fc.getCount() + "*"
+                    : (fc.getCount() > 0 ? Integer.toString(fc.getCount()) : "");
         } else {
             result = null;
         }
@@ -467,24 +480,26 @@ public class VeracodeAction implements RunAction2 {
 
     /**
      * Get if the each severity level contains flaws which affect policy compliance
+     * 
      * @param severity - A severity level
      * @return policy affection
      */
-    public boolean getPolicyAffection(int severity){
-    	 boolean result = false;
-         try {
-             result = scanHistory.getPolicyAffection(severity);
-         } catch (IllegalArgumentException iae) {
-             result = false;
-         } catch (NullPointerException ex){
-        	 result = false;
-         }
-         return result;
+    public boolean getPolicyAffection(int severity) {
+        boolean result = false;
+        try {
+            result = scanHistory.getPolicyAffection(severity);
+        } catch (IllegalArgumentException iae) {
+            result = false;
+        } catch (NullPointerException ex) {
+            result = false;
+        }
+        return result;
     }
 
     /**
-     * Get the new vulnerability count of a given severity level (0 - 5). If the count zero,
-     * then an empty string will be returned. If the count is not available, null will be returned.
+     * Get the new vulnerability count of a given severity level (0 - 5). If the
+     * count zero, then an empty string will be returned. If the count is not
+     * available, null will be returned.
      *
      * @param severity - A severity level
      * @return the vulnerability count
@@ -493,7 +508,7 @@ public class VeracodeAction implements RunAction2 {
         FindingCounts fc = getCountBySeverity(severity);
         String result = "";
         if (null != fc) {
-            result = fc.getNewCount() > 0? Integer.toString(fc.getNewCount()) : "";
+            result = fc.getNewCount() > 0 ? Integer.toString(fc.getNewCount()) : "";
         } else {
             result = null;
         }
@@ -502,8 +517,9 @@ public class VeracodeAction implements RunAction2 {
     }
 
     /**
-     * Get the net vulnerability count of a given severity level (0 - 5). If the count zero,
-     * then an empty string will be returned. If the count is not available, null will be returned.
+     * Get the net vulnerability count of a given severity level (0 - 5). If the
+     * count zero, then an empty string will be returned. If the count is not
+     * available, null will be returned.
      *
      * @param severity - A severity level
      * @return the vulnerability count
@@ -515,7 +531,8 @@ public class VeracodeAction implements RunAction2 {
             if (fc.getNetCount() == 0) {
                 result = "";
             } else {
-                result = fc.getNetCount() > 0? "+" + fc.getNetCount() : Integer.toString(fc.getNetCount());
+                result = fc.getNetCount() > 0 ? "+" + fc.getNetCount()
+                        : Integer.toString(fc.getNetCount());
             }
         } else {
             result = null;
@@ -525,8 +542,8 @@ public class VeracodeAction implements RunAction2 {
     }
 
     /**
-     * Find out if the vulnerability count of the given severity is
-     * lower than the actual count due to mitigation
+     * Find out if the vulnerability count of the given severity is lower than the
+     * actual count due to mitigation
      *
      * @param severity - A severity level
      * @return true if the count is lower due to mitigation, false otherwise.
@@ -538,7 +555,8 @@ public class VeracodeAction implements RunAction2 {
 
         boolean result = false;
         try {
-            FindingCounts fc = scanHistory.getScaHistory().getCountBySeverity(SeverityLevel.findSevLevel(severity));
+            FindingCounts fc = scanHistory.getScaHistory()
+                    .getCountBySeverity(SeverityLevel.findSevLevel(severity));
             if (null != fc) {
                 result = fc.isMitigated();
             }
@@ -552,111 +570,113 @@ public class VeracodeAction implements RunAction2 {
     /**
      * Get the total number of vulnerabilities across all severity levels.
      *
-     * @return the total number of vulnerabilities if available. Otherwise,
-     *         -1 if SCA data is not available
+     * @return the total number of vulnerabilities if available. Otherwise, -1 if
+     *         SCA data is not available
      */
     public int getTotalVulCount() {
-        return (isSCAHistoryAvailable())? scanHistory.getScaHistory().getTotalVulCount() : -1;
+        return (isSCAHistoryAvailable()) ? scanHistory.getScaHistory().getTotalVulCount() : -1;
     }
 
     /**
-     * Returns the display of the total number of vulnerabilities across all severity levels.
+     * Returns the display of the total number of vulnerabilities across all
+     * severity levels.
      *
      * @return the total number of vulnerabilities
      */
     public String getTotalVulCountForDisplay() {
         int count = getTotalVulCount();
-        return count > 0? String.valueOf(count) : "0";
+        return count > 0 ? String.valueOf(count) : "0";
     }
 
     /**
      * Get the total number of new vulnerabilities across all severity levels.
      *
-     * @return the total number of new vulnerabilities if available. Otherwise,
-     *         -1 if SCA data is not available
+     * @return the total number of new vulnerabilities if available. Otherwise, -1
+     *         if SCA data is not available
      */
     public int getTotalNewVulCount() {
-        return (isSCAHistoryAvailable())? scanHistory.getScaHistory().getTotalNewVulCount() : -1;
+        return (isSCAHistoryAvailable()) ? scanHistory.getScaHistory().getTotalNewVulCount() : -1;
     }
 
     /**
-     * Returns the display of the total number of new vulnerabilities across all severity levels.
+     * Returns the display of the total number of new vulnerabilities across all
+     * severity levels.
      *
      * @return the total number of new vulnerabilities
      */
     public String getTotalNewVulCountForDisplay() {
         int count = getTotalNewVulCount();
-        return count > 0? String.valueOf(count) : "0";
+        return count > 0 ? String.valueOf(count) : "0";
     }
 
     /**
      * Get the total number of net vulnerabilities across all severity levels.
      *
-     * @return the total number of net vulnerabilities if available. Otherwise,
-     *         null if SCA data is not available
+     * @return the total number of net vulnerabilities if available. Otherwise, null
+     *         if SCA data is not available
      */
     public Integer getTotalNetVulCount() {
-        return (isSCAHistoryAvailable())? scanHistory.getScaHistory().getTotalNetVulCount() : null;
+        return (isSCAHistoryAvailable()) ? scanHistory.getScaHistory().getTotalNetVulCount() : null;
     }
 
     /**
-     * Returns the display of the total number of net vulnerabilities across all severity levels.
+     * Returns the display of the total number of net vulnerabilities across all
+     * severity levels.
      *
      * @return the total number of net vulnerabilities
      */
     public String getTotalNetVulCountForDisplay() {
 
-    	String totalNetVulCount = "0";
-    	if (null != getTotalNetVulCount()) {
-    		totalNetVulCount = String.valueOf(getTotalNetVulCount());
-    	}
+        String totalNetVulCount = "0";
+        if (null != getTotalNetVulCount()) {
+            totalNetVulCount = String.valueOf(getTotalNetVulCount());
+        }
         return totalNetVulCount;
     }
 
     /**
-     * Used by index.jelly for VeracodeAction to determine if there are
-     * new SCA components since the previous build.
+     * Used by index.jelly for VeracodeAction to determine if there are new SCA
+     * components since the previous build.
      *
      * @return boolean whether or not there are new SCA components
      */
     public boolean isNewSCAComponents() {
 
-    	boolean isNewComponents = false;
+        boolean isNewComponents = false;
 
-    	if (isSCAHistoryAvailable()) {
-    		/* Check if any new SCA components since previous build */
-    		for (SCAComponent component : scanHistory.getScaHistory().getSCAComponents()) {
-    		   if (component.isNew()) {
-    			   isNewComponents = true;
-    			   break;
-    		   }
-    		}
-    	}
-    	return isNewComponents;
+        if (isSCAHistoryAvailable()) {
+            /* Check if any new SCA components since previous build */
+            for (SCAComponent component : scanHistory.getScaHistory().getSCAComponents()) {
+                if (component.isNew()) {
+                    isNewComponents = true;
+                    break;
+                }
+            }
+        }
+        return isNewComponents;
     }
 
     /**
-     * Used by index.jelly for VeracodeAction to display the SCA components
-     * which are new since the previous build.  Builds an array of the new
-     * SCA components that passed policy or failed policy.
+     * Used by index.jelly for VeracodeAction to display the SCA components which
+     * are new since the previous build. Builds an array of the new SCA components
+     * that passed policy or failed policy.
      *
      * @param isViolatedPolicy boolean
      * @return array of SCA component names that either passed or failed policy
      */
     public ArrayList<String> getNewSCAComponentsByPolicyStatus(boolean isViolatedPolicy) {
 
-    	ArrayList<String> componentArray = new ArrayList<String>();
+        ArrayList<String> componentArray = new ArrayList<String>();
 
-    	/* Add SCA component names based on specified passed or failed policy status */
-    	for (SCAComponent component : scanHistory.getScaHistory().getSCAComponents()) {
-    		if (component.isNew() &&
-    		   (isViolatedPolicy == component.isViolatedPolicy())) {
-    			componentArray.add(component.getName());
-    		}
-    	}
-    	/* Sort component array by alphabetic order */
-    	Collections.sort(componentArray);
-    	return componentArray;
+        /* Add SCA component names based on specified passed or failed policy status */
+        for (SCAComponent component : scanHistory.getScaHistory().getSCAComponents()) {
+            if (component.isNew() && (isViolatedPolicy == component.isViolatedPolicy())) {
+                componentArray.add(component.getName());
+            }
+        }
+        /* Sort component array by alphabetic order */
+        Collections.sort(componentArray);
+        return componentArray;
     }
 
     /**
@@ -668,13 +688,13 @@ public class VeracodeAction implements RunAction2 {
      */
     public String getPolicyComplianceComponentIconUri(boolean isViolatedPolicy) {
 
-    	String iconName = "";
+        String iconName = "";
 
-    	if (isViolatedPolicy) {
+        if (isViolatedPolicy) {
             iconName = Constant.FAILED_POLICY_COMPONENT_ICON;
-    	} else {
+        } else {
             iconName = Constant.PASSED_POLICY_COMPONENT_ICON;
-    	}
+        }
         return Constant.PLUGIN_ICONS_URI_PREFIX + iconName;
     }
 
@@ -684,10 +704,10 @@ public class VeracodeAction implements RunAction2 {
      * @return the count history or null if it is unavailable
      */
     public List<Map<String, Long>> getVulCountHistory() {
-        return isSCAHistoryAvailable()? scanHistory.getScaHistory().getVulCountHistory() : null;
+        return isSCAHistoryAvailable() ? scanHistory.getScaHistory().getVulCountHistory() : null;
     }
 
     public SCAScanHistory getSCAScanHistory() {
-        return isSCAHistoryAvailable()? scanHistory.getScaHistory() : null;
+        return isSCAHistoryAvailable() ? scanHistory.getScaHistory() : null;
     }
 }

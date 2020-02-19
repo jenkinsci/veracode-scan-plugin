@@ -3,10 +3,12 @@ package io.jenkins.plugins.veracode.data;
 import io.jenkins.plugins.veracode.enums.SeverityLevel;
 
 /**
- * This class represents the counts and mitigated status of findings at a severity level
+ * This class represents the counts and mitigated status of findings at a
+ * severity level
  *
  */
 public class FindingCounts {
+
     private final SeverityLevel sevLevel;
 
     private final int count;
@@ -14,7 +16,8 @@ public class FindingCounts {
     private final int netCount;
     private final boolean mitigated;
 
-    public FindingCounts(SeverityLevel sevLevel, int count, int newCount, int netCount, boolean mitigated) {
+    public FindingCounts(SeverityLevel sevLevel, int count, int newCount, int netCount,
+            boolean mitigated) {
         this.sevLevel = sevLevel;
         this.count = count;
         this.newCount = newCount;
