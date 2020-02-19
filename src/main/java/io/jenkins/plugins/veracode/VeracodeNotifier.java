@@ -608,13 +608,11 @@ public class VeracodeNotifier extends Notifier {
                 FilePath[] files = remoteVeracodeFilePath.list(Constant.inclusive);
 
                 // copy the jar if it does not exist
-                if (files.length == 0)
-
-                {
+                if (files.length == 0) {
                     bRet = FileUtil.copyJarFiles(build, localWorkspaceFilePath,
                             remoteVeracodeFilePath, ps);
-                } else // if file exits
-                {
+                } else { // if file exits
+
                     FilePath[] newfiles = localWorkspaceFilePath.list(Constant.inclusive);
                     String newjarName = newfiles[0].getRemote();
                     int newVersion = RemoteScanUtil.getJarVersion(newjarName);
@@ -654,8 +652,9 @@ public class VeracodeNotifier extends Notifier {
                     ps.print(ex.getMessage());
                 }
             }
-        } else
+        } else {
             bRet = true;
+        }
 
         return bRet;
     }

@@ -43,8 +43,8 @@ public class DynamicAnalysisResultsAction implements RunAction2 {
     }
 
     /**
-     * Use by Jenkins framework to display our logo on the left panel on on the
-     * build page
+     * Use by Jenkins framework to display our logo on the left panel on the build
+     * page
      *
      * @return URI to the 24x24 Veracode logo icon
      */

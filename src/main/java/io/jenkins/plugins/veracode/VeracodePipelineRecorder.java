@@ -621,8 +621,9 @@ public class VeracodePipelineRecorder extends Recorder implements SimpleBuildSte
                     if (iPosKey == i)
                         masks[i] = true;
                 } else if (iPosProxyPassword != -1) {
-                    if (iPosProxyPassword == i)
+                    if (iPosProxyPassword == i) {
                         masks[i] = true;
+                    }
                 } else {
                     masks[i] = false;
                 }
