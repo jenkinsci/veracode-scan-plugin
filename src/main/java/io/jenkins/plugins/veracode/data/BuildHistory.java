@@ -4,7 +4,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * This class represents the build history data for a particular scan type (Static, SCA, Dynamic Analysis)
+ * This class represents the build history data for a particular scan type
+ * (Static, SCA, Dynamic Analysis)
  *
  */
 public class BuildHistory {
@@ -18,10 +19,10 @@ public class BuildHistory {
     }
 
     public String getBuildType() {
-    	return buildType;
+        return buildType;
     }
 
     public List<Map<String, Long>> getBuildList() {
-    	return buildList;
+        return buildList;
     }
 }

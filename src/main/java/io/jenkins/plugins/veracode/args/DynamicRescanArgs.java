@@ -10,22 +10,22 @@
 
 package io.jenkins.plugins.veracode.args;
 
+import hudson.EnvVars;
+import hudson.FilePath;
+import hudson.model.AbstractBuild;
 import io.jenkins.plugins.veracode.DynamicRescanNotifier;
 import io.jenkins.plugins.veracode.VeracodeNotifier;
 import io.jenkins.plugins.veracode.VeracodeNotifier.VeracodeDescriptor;
 import io.jenkins.plugins.veracode.utils.StringUtil;
 import io.jenkins.plugins.veracode.utils.UserAgentUtil;
-
-import hudson.EnvVars;
-import hudson.FilePath;
-import hudson.model.AbstractBuild;
 import jenkins.model.Jenkins;
 
 /**
- * Builds the command line argument passed to the Veracode API wrapper that causes it to create dynamic scan request and
- * submit the created dynamic scan.
+ * Builds the command line argument passed to the Veracode API wrapper that
+ * causes it to create dynamic scan request and submit the created dynamic scan.
  */
 public final class DynamicRescanArgs extends AbstractArgs {
+
     private static final String APPNAME = SWITCH + "appname";
     private static final String VERSION = SWITCH + "version";
     private static final String FLAWONLY = SWITCH + "flawonly";
@@ -34,24 +34,25 @@ public final class DynamicRescanArgs extends AbstractArgs {
     private DynamicRescanArgs() {
         addAction("CreateAndSubmitDynamicRescan");
     }
+
     /**
      * process arguments
      *
      * @param dynamicScanDescriptor DynamicRescanNotifier
-     * @param build AbstractBuild
-     * @param environment EnvVars
+     * @param build                 AbstractBuild
+     * @param environment           EnvVars
      * @return DynamicRescanArgs
      */
     public static DynamicRescanArgs dynamicScanArgs(DynamicRescanNotifier dynamicScanDescriptor,
             AbstractBuild<?, ?> build, EnvVars environment) {
-        VeracodeDescriptor veracodeDescriptor =
-            (VeracodeDescriptor) Jenkins.getInstance().getDescriptor(VeracodeNotifier.class);
+        VeracodeDescriptor veracodeDescriptor = (VeracodeDescriptor) Jenkins.getInstance()
+                .getDescriptor(VeracodeNotifier.class);
 
         DynamicRescanArgs args = new DynamicRescanArgs();
         String vid = null;
         String vkey = null;
         if (veracodeDescriptor != null) {
-        	vid = veracodeDescriptor.getGvid();
+            vid = veracodeDescriptor.getGvid();
             vkey = veracodeDescriptor.getGvkey();
         }
         String appname = dynamicScanDescriptor.getAppname();
@@ -60,8 +61,8 @@ public final class DynamicRescanArgs extends AbstractArgs {
         boolean autoversion = dynamicScanDescriptor.getDescriptor().getAutoversion();
         String scanName = StringUtil.getEmptyIfNull(build.getDisplayName());
 
-        environment.put(CUSTOM_PROJECT_NAME_VAR, StringUtil.getEmptyIfNull(build.getProject().getDisplayName()));
-
+        environment.put(CUSTOM_PROJECT_NAME_VAR,
+                StringUtil.getEmptyIfNull(build.getProject().getDisplayName()));
 
         if (!StringUtil.isNullOrEmpty(vid)) {
             vid = environment.expand(vid);
@@ -86,24 +87,24 @@ public final class DynamicRescanArgs extends AbstractArgs {
 
         args.addStdArguments(appname, scanName, isDVREnabled, autoversion);
         if (veracodeDescriptor != null) {
-        	args.setProxy(veracodeDescriptor, args);
+            args.setProxy(veracodeDescriptor, args);
         }
         args.addUserAgent(UserAgentUtil.getVersionDetails());
 
         return args;
-
 
     }
 
     /**
      * add argument to the argument list
      *
-     * @param appname String
-     * @param version String
-     * @param isDvr Boolean
+     * @param appname     String
+     * @param version     String
+     * @param isDvr       Boolean
      * @param autoVersion Boolean
      */
-    private void addStdArguments(String appname, String version, Boolean isDvr, Boolean autoVersion) {
+    private void addStdArguments(String appname, String version, Boolean isDvr,
+            Boolean autoVersion) {
         if (!StringUtil.isNullOrEmpty(appname)) {
             list.add(APPNAME);
             list.add(appname);
@@ -119,21 +120,22 @@ public final class DynamicRescanArgs extends AbstractArgs {
     }
 
     /**
-	 * Add user agent details got through api
-	 * @param userAgent String
-	 */
-  	protected void addUserAgent(String userAgent) {
-  		if (!StringUtil.isNullOrEmpty(userAgent)) {
-  			list.add(USERAGENT);
-  			list.add(userAgent);
-  			}
-  		}
+     * Add user agent details got through api
+     * 
+     * @param userAgent String
+     */
+    protected void addUserAgent(String userAgent) {
+        if (!StringUtil.isNullOrEmpty(userAgent)) {
+            list.add(USERAGENT);
+            list.add(userAgent);
+        }
+    }
 
     /**
      * set proxy setting
      *
      * @param veracodeDescriptor VeracodeDescriptor
-     * @param args DynamicRescanArgs
+     * @param args               DynamicRescanArgs
      */
     private void setProxy(VeracodeDescriptor veracodeDescriptor, DynamicRescanArgs args) {
         String phost = null;
@@ -154,28 +156,30 @@ public final class DynamicRescanArgs extends AbstractArgs {
 
     /**
      * create argument for pipeline in dynamicRescan
+     * 
      * @param autoApplicationName boolean
-     * @param autoDescription boolean
-     * @param autoScanName boolean
-     * @param useProxy boolean
-     * @param vId String
-     * @param vKey String
-     * @param version String
-     * @param projectName String
-     * @param applicationName String
-     * @param DVREnabled boolean
-     * @param pHost String
-     * @param pPort String
-     * @param pUser String
-     * @param pCredential String
-     * @param workspace FilePath
-     * @param envVars EnvVars
+     * @param autoDescription     boolean
+     * @param autoScanName        boolean
+     * @param useProxy            boolean
+     * @param vId                 String
+     * @param vKey                String
+     * @param version             String
+     * @param projectName         String
+     * @param applicationName     String
+     * @param DVREnabled          boolean
+     * @param pHost               String
+     * @param pPort               String
+     * @param pUser               String
+     * @param pCredential         String
+     * @param workspace           FilePath
+     * @param envVars             EnvVars
      * @return DynamicRescanArgs
      */
     public static DynamicRescanArgs pipelineRescanArgs(boolean autoApplicationName,
-            boolean autoDescription, boolean autoScanName, boolean useProxy, String vId, String vKey,
-            String version, String projectName, String applicationName, boolean DVREnabled, String pHost, String pPort,
-            String pUser, String pCredential, FilePath workspace, hudson.EnvVars envVars) {
+            boolean autoDescription, boolean autoScanName, boolean useProxy, String vId,
+            String vKey, String version, String projectName, String applicationName,
+            boolean DVREnabled, String pHost, String pPort, String pUser, String pCredential,
+            FilePath workspace, hudson.EnvVars envVars) {
 
         String phost = null;
         String pport = null;
@@ -191,8 +195,6 @@ public final class DynamicRescanArgs extends AbstractArgs {
         }
 
         envVars.put(CUSTOM_PROJECT_NAME_VAR, StringUtil.getEmptyIfNull(projectName));
-
-
 
         // application profile name
         if (!StringUtil.isNullOrEmpty(applicationName)) {

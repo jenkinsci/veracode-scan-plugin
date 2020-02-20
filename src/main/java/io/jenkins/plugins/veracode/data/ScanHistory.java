@@ -7,7 +7,8 @@ import java.util.Map;
 import io.jenkins.plugins.veracode.utils.StringUtil;
 
 /**
- * This XML-binded class represents the scan history for a Jenkins current/past builds.
+ * This XML-binded class represents the scan history for a Jenkins current/past
+ * builds.
  *
  */
 public class ScanHistory {
@@ -32,19 +33,22 @@ public class ScanHistory {
     private final int totalNewFlawsCount;
     private final int totalNetChangeCount;
 
-	private int[] netChange;
+    private int[] netChange;
 
     private final List<Map<String, Long>> flawsCountHistory;
 
     private final SCAScanHistory scaHistory;
 
-    public ScanHistory(String accountId, String appId, String buildId,
-                       String policyName, String policyComplianceStatus, int score, String veracodeLevel, boolean scanOverdue,
-                       int totalFlawsCount, int[] flawsCount, boolean[] mitigateFlag, int[] netChange, List<Map<String, Long>> flawsCountHistory,
-                       SCAScanHistory scaHistory, boolean[] policyaffect) {
+    public ScanHistory(String accountId, String appId, String buildId, String policyName,
+            String policyComplianceStatus, int score, String veracodeLevel, boolean scanOverdue,
+            int totalFlawsCount, int[] flawsCount, boolean[] mitigateFlag, int[] netChange,
+            List<Map<String, Long>> flawsCountHistory, SCAScanHistory scaHistory,
+            boolean[] policyaffect) {
 
-        if (StringUtil.isNullOrEmpty(policyName) || StringUtil.isNullOrEmpty(policyComplianceStatus) || StringUtil.isNullOrEmpty(veracodeLevel)) {
-            throw new IllegalArgumentException("Missing required information to create a scan history.");
+        if (StringUtil.isNullOrEmpty(policyName) || StringUtil.isNullOrEmpty(policyComplianceStatus)
+                || StringUtil.isNullOrEmpty(veracodeLevel)) {
+            throw new IllegalArgumentException(
+                    "Missing required information to create a scan history.");
         }
         this.accountId = accountId;
         this.appId = appId;
@@ -85,7 +89,7 @@ public class ScanHistory {
     }
 
     public int getScore() {
-    	return score;
+        return score;
     }
 
     public String getVeracodeLevel() {
@@ -98,21 +102,24 @@ public class ScanHistory {
 
     public int getFlawsCount(int severity) {
         if (severity < 0 || severity > 5) {
-            throw new IllegalArgumentException("Invalid severity. Severity must be between 0 and 5");
+            throw new IllegalArgumentException(
+                    "Invalid severity. Severity must be between 0 and 5");
         }
         return flawsCount[severity];
     }
 
     public boolean getMitigateFlag(int severity) {
         if (severity < 0 || severity > 5) {
-            throw new IllegalArgumentException("Invalid severity. Severity must be between 0 and 5");
+            throw new IllegalArgumentException(
+                    "Invalid severity. Severity must be between 0 and 5");
         }
         return mitigateFlag[severity];
     }
 
     public boolean getPolicyAffection(int severity) {
         if (severity < 0 || severity > 5) {
-            throw new IllegalArgumentException("Invalid severity. Severity must be between 0 and 5");
+            throw new IllegalArgumentException(
+                    "Invalid severity. Severity must be between 0 and 5");
         }
         return policyaffect[severity];
     }
@@ -131,15 +138,17 @@ public class ScanHistory {
 
     public int getNewFlaws(int severity) {
         if (severity < 0 || severity > 5) {
-            throw new IllegalArgumentException("Invalid severity. Severity must be between 0 and 5");
+            throw new IllegalArgumentException(
+                    "Invalid severity. Severity must be between 0 and 5");
         }
         int netChange = getNetChange(severity);
-        return netChange > 0? netChange : 0;
+        return netChange > 0 ? netChange : 0;
     }
 
     public int getNetChange(int severity) {
         if (severity < 0 || severity > 5) {
-            throw new IllegalArgumentException("Invalid severity. Severity must be between 0 and 5");
+            throw new IllegalArgumentException(
+                    "Invalid severity. Severity must be between 0 and 5");
         }
         return netChange[severity];
     }
@@ -167,5 +176,4 @@ public class ScanHistory {
     public SCAScanHistory getScaHistory() {
         return scaHistory;
     }
-
 }

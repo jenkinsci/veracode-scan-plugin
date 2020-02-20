@@ -21,19 +21,13 @@ import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.DataBoundSetter;
 
 import com.veracode.apiwrapper.cli.VeracodeCommand.VeracodeParser;
-import io.jenkins.plugins.veracode.args.DynamicRescanArgs;
-import io.jenkins.plugins.veracode.common.Constant;
-import io.jenkins.plugins.veracode.utils.FileUtil;
-import io.jenkins.plugins.veracode.utils.StringUtil;
-import io.jenkins.plugins.veracode.utils.RemoteScanUtil;
 
 import hudson.FilePath;
 import hudson.Launcher;
-import hudson.Proc;
 import hudson.Launcher.ProcStarter;
+import hudson.Proc;
 import hudson.model.AbstractProject;
 import hudson.model.Computer;
-import hudson.model.Hudson;
 import hudson.model.Node;
 import hudson.model.Result;
 import hudson.model.Run;
@@ -43,9 +37,15 @@ import hudson.tasks.BuildStepMonitor;
 import hudson.tasks.Publisher;
 import hudson.tasks.Recorder;
 import hudson.util.ArgumentListBuilder;
+import io.jenkins.plugins.veracode.args.DynamicRescanArgs;
+import io.jenkins.plugins.veracode.common.Constant;
+import io.jenkins.plugins.veracode.utils.FileUtil;
+import io.jenkins.plugins.veracode.utils.RemoteScanUtil;
+import io.jenkins.plugins.veracode.utils.StringUtil;
 import jenkins.tasks.SimpleBuildStep;
 
 public class DynamicRescanPipelineRecorder extends Recorder implements SimpleBuildStep {
+
     @DataBoundSetter
     public final String applicationName;
     @DataBoundSetter
@@ -76,22 +76,23 @@ public class DynamicRescanPipelineRecorder extends Recorder implements SimpleBui
      * {@link org.kohsuke.stapler.DataBoundConstructor DataBoundContructor}
      *
      * @param applicationName String
-     * @param dvrEnabled boolean
-     * @param canFailJob boolean
-     * @param debug boolean
-     * @param vid String
-     * @param vkey String
-     * @param useProxy boolean
-     * @param pHost String
-     * @param pPort int
-     * @param pUser String
-     * @param pPassword String
-     * @param vid String
-     * @param vkey String
+     * @param dvrEnabled      boolean
+     * @param canFailJob      boolean
+     * @param debug           boolean
+     * @param vid             String
+     * @param vkey            String
+     * @param useProxy        boolean
+     * @param pHost           String
+     * @param pPort           int
+     * @param pUser           String
+     * @param pPassword       String
+     * @param vid             String
+     * @param vkey            String
      */
     @org.kohsuke.stapler.DataBoundConstructor
-    public DynamicRescanPipelineRecorder(String applicationName, boolean dvrEnabled, boolean canFailJob, boolean debug,
-            boolean useProxy, String pHost, int pPort, String pUser, String pPassword, String vid, String vkey) {
+    public DynamicRescanPipelineRecorder(String applicationName, boolean dvrEnabled,
+            boolean canFailJob, boolean debug, boolean useProxy, String pHost, int pPort,
+            String pUser, String pPassword, String vid, String vkey) {
 
         this.canFailJob = canFailJob;
         this.debug = debug;
@@ -112,8 +113,6 @@ public class DynamicRescanPipelineRecorder extends Recorder implements SimpleBui
         return null;
     }
 
-
-
     @Override
     public void perform(Run<?, ?> run, FilePath workspace, Launcher launcher, TaskListener listener)
             throws InterruptedException, IOException {
@@ -130,17 +129,20 @@ public class DynamicRescanPipelineRecorder extends Recorder implements SimpleBui
             ps.println(String.format("Can Fail Job: %s%n", this.canFailJob));
 
             try {
-                Method method = com.veracode.apiwrapper.cli.VeracodeCommand.class.getDeclaredMethod("getVersionString");
+                Method method = com.veracode.apiwrapper.cli.VeracodeCommand.class
+                        .getDeclaredMethod("getVersionString");
                 method.setAccessible(true);
                 String version = (String) method.invoke(null);
                 if (!StringUtil.isNullOrEmpty(version)) {
                     ps.println(String.format("Version information:%n%s", version));
                 }
-            } catch (NoSuchMethodException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+            } catch (NoSuchMethodException | IllegalAccessException | IllegalArgumentException
+                    | InvocationTargetException e) {
                 ps.println("Could not retrieve API wrapper's version information.");
             }
             try {
-                String location = this.getClass().getProtectionDomain().getCodeSource().getLocation().toString();
+                String location = this.getClass().getProtectionDomain().getCodeSource()
+                        .getLocation().toString();
                 if (!StringUtil.isNullOrEmpty(location)) {
                     ps.println("\r\nHPI location: ");
                     location = location.replace("file:/", "");
@@ -154,8 +156,8 @@ public class DynamicRescanPipelineRecorder extends Recorder implements SimpleBui
         boolean isRemoteWorkspace = workspace.isRemote();
 
         if (debug) {
-            ps.println(
-                String.format("%n%nProcessing files in [%s] workspace: ", isRemoteWorkspace ? "remote" : "local"));
+            ps.println(String.format("%n%nProcessing files in [%s] workspace: ",
+                    isRemoteWorkspace ? "remote" : "local"));
             String workspaceDir = workspace.getRemote();
             workspaceDir = workspaceDir.replace("\\", "/");
             listener.hyperlink("file://" + workspaceDir, workspaceDir);
@@ -196,15 +198,15 @@ public class DynamicRescanPipelineRecorder extends Recorder implements SimpleBui
             boolean autoScanName = false;
             boolean createAutoApplicationDescription = false;
 
-            DynamicRescanArgs pipelineScanArguments =
-                DynamicRescanArgs.pipelineRescanArgs(autoApplicationName, createAutoApplicationDescription,
-                    autoScanName, useProxy, vid, vkey, run.getDisplayName(),
-                    run.getParent().getFullDisplayName(), applicationName, dvrEnabled, pHost, Integer.toString(pPort),
-                    pUser, pPassword, workspace, run.getEnvironment(listener));
+            DynamicRescanArgs pipelineScanArguments = DynamicRescanArgs.pipelineRescanArgs(
+                    autoApplicationName, createAutoApplicationDescription, autoScanName, useProxy,
+                    vid, vkey, run.getDisplayName(), run.getParent().getFullDisplayName(),
+                    applicationName, dvrEnabled, pHost, Integer.toString(pPort), pUser, pPassword,
+                    workspace, run.getEnvironment(listener));
 
             if (debug) {
                 ps.println(String.format("Calling wrapper with arguments:%n%s%n",
-                    Arrays.toString(pipelineScanArguments.getMaskedArguments())));
+                        Arrays.toString(pipelineScanArguments.getMaskedArguments())));
             }
 
             try {
@@ -235,7 +237,6 @@ public class DynamicRescanPipelineRecorder extends Recorder implements SimpleBui
         }
     }
 
-
     @Override
     public PipelineDynamicRescanDescriptorImpl getDescriptor() {
         return (PipelineDynamicRescanDescriptorImpl) super.getDescriptor();
@@ -243,9 +244,9 @@ public class DynamicRescanPipelineRecorder extends Recorder implements SimpleBui
 
     @Symbol("veracodeDynamicRescan")
     @hudson.Extension
-    public static final class PipelineDynamicRescanDescriptorImpl extends BuildStepDescriptor<Publisher> {
+    public static final class PipelineDynamicRescanDescriptorImpl
+            extends BuildStepDescriptor<Publisher> {
         public static final String PostBuildActionDisplayText = "Dynamic Rescan with Veracode Pipeline";
-
 
         @Override
         public boolean isApplicable(Class<? extends AbstractProject> jobType) {
@@ -260,12 +261,14 @@ public class DynamicRescanPipelineRecorder extends Recorder implements SimpleBui
     }
 
     // copy the wrapper to the remote location
-    private boolean copyJarFiles(Node node, FilePath local, FilePath remote, PrintStream ps) throws Exception {
+    private boolean copyJarFiles(Node node, FilePath local, FilePath remote, PrintStream ps)
+            throws Exception {
         boolean bRet = false;
         try {
             local.copyRecursiveTo(Constant.inclusive, null, remote);
 
-            // now make a copy of the jar as 'VeracodeJavaAPI.jar' as the name of the jarfile in the plugin
+            // now make a copy of the jar as 'VeracodeJavaAPI.jar' as the name of the
+            // jarfile in the plugin
             // will change depending on the wrapper version it has been built with
 
             FilePath[] files = remote.list(Constant.inclusive);
@@ -284,8 +287,6 @@ public class DynamicRescanPipelineRecorder extends Recorder implements SimpleBui
         return bRet;
     }
 
-
-
     private boolean copyJarRemoteBuild(FilePath workspace, TaskListener listener) {
         boolean bRet = false;
         PrintStream ps = listener.getLogger();
@@ -296,20 +297,21 @@ public class DynamicRescanPipelineRecorder extends Recorder implements SimpleBui
         if (isRemoteWorkspace) {
             Computer comp = workspace.toComputer();
             if (comp == null) {
-            	throw new RuntimeException("Cannot locate the remote workspace.");
+                throw new RuntimeException("Cannot locate the remote workspace.");
             }
             Node node = comp.getNode();
             if (node == null) {
-            	throw new RuntimeException("Cannot locate the remote node.");
+                throw new RuntimeException("Cannot locate the remote node.");
             }
             try {
                 FilePath localWorkspaceFilePath = FileUtil.getLocalWorkspaceFilepath();
                 FilePath remoteVeracodeFilePath = RemoteScanUtil.getRemoteVeracodePath(node);
                 if (remoteVeracodeFilePath == null) {
-                	throw new RuntimeException("Cannot retrieve the remote file path.");
+                    throw new RuntimeException("Cannot retrieve the remote file path.");
                 }
 
-                // create the directory (where we want to copy the javawrapper jar) if it does not exist
+                // create the directory (where we want to copy the javawrapper jar) if it does
+                // not exist
                 if (!remoteVeracodeFilePath.exists()) {
                     if (debug)
                         ps.println("Making remote dir");
@@ -330,18 +332,22 @@ public class DynamicRescanPipelineRecorder extends Recorder implements SimpleBui
                     String oldjarName = files[0].getRemote();
                     int oldVersion = RemoteScanUtil.getJarVersion(oldjarName);
 
-                    // also copy the jar if there is a newer version in the plugin directory and delete the old one
+                    // also copy the jar if there is a newer version in the plugin directory and
+                    // delete the old one
                     if (newVersion > oldVersion) {
                         if (debug) {
-                            ps.println("Newer veracode library version, copying it to remote machine");
+                            ps.println(
+                                    "Newer veracode library version, copying it to remote machine");
                         }
 
                         remoteVeracodeFilePath.deleteContents();
-                        bRet = copyJarFiles(node, localWorkspaceFilePath, remoteVeracodeFilePath, ps);
+                        bRet = copyJarFiles(node, localWorkspaceFilePath, remoteVeracodeFilePath,
+                                ps);
                     } else // just make sure we have our jarfile (defensive coding)
                     {
                         String jarName = files[0].getRemote();
-                        String newJarName = jarName.replaceAll(Constant.regex, Constant.execJarFile + "$2");
+                        String newJarName = jarName.replaceAll(Constant.regex,
+                                Constant.execJarFile + "$2");
                         FilePath newjarFilePath = new FilePath(node.getChannel(), newJarName);
 
                         if (newjarFilePath.exists())
@@ -361,9 +367,9 @@ public class DynamicRescanPipelineRecorder extends Recorder implements SimpleBui
         return bRet;
     }
 
-
     // invoking the CLI from remote node
-    private boolean runScanFromRemote(Run<?, ?> run, FilePath workspace, TaskListener listener, PrintStream ps) {
+    private boolean runScanFromRemote(Run<?, ?> run, FilePath workspace, TaskListener listener,
+            PrintStream ps) {
         boolean bRet = false;
         boolean autoApplicationName = false;
         boolean autoScanName = true;
@@ -371,15 +377,15 @@ public class DynamicRescanPipelineRecorder extends Recorder implements SimpleBui
 
         Computer comp = workspace.toComputer();
         if (comp == null) {
-        	throw new RuntimeException("Cannot locate the remote workspace.");
+            throw new RuntimeException("Cannot locate the remote workspace.");
         }
         Node node = comp.getNode();
         if (node == null) {
-        	throw new RuntimeException("Cannot locate the remote node.");
+            throw new RuntimeException("Cannot locate the remote node.");
         }
         FilePath remoteVeracodeFilePath = RemoteScanUtil.getRemoteVeracodePath(node);
         if (remoteVeracodeFilePath == null) {
-        	throw new RuntimeException("Cannot retrieve the remote file path.");
+            throw new RuntimeException("Cannot retrieve the remote file path.");
         }
         String jarFilePath = remoteVeracodeFilePath.getRemote();
         String remoteworkspace = workspace.getRemote();
@@ -388,12 +394,11 @@ public class DynamicRescanPipelineRecorder extends Recorder implements SimpleBui
 
         try {
 
-            DynamicRescanArgs pipelineScanArguments =
-                DynamicRescanArgs.pipelineRescanArgs(autoApplicationName, createAutoApplicationDescription,
-                    autoScanName, useProxy, vid, vkey, run.getDisplayName(),
-                    run.getParent().getFullDisplayName(), applicationName, dvrEnabled, pHost, Integer.toString(pPort),
-                    pUser, pPassword, workspace, run.getEnvironment(listener));
-
+            DynamicRescanArgs pipelineScanArguments = DynamicRescanArgs.pipelineRescanArgs(
+                    autoApplicationName, createAutoApplicationDescription, autoScanName, useProxy,
+                    vid, vkey, run.getDisplayName(), run.getParent().getFullDisplayName(),
+                    applicationName, dvrEnabled, pHost, Integer.toString(pPort), pUser, pPassword,
+                    workspace, run.getEnvironment(listener));
 
             String jarPath = jarFilePath + sep + Constant.execJarFile + ".jar";
             String cmd = "java -jar " + jarPath;
@@ -402,7 +407,7 @@ public class DynamicRescanPipelineRecorder extends Recorder implements SimpleBui
             StringBuilder result = new StringBuilder();
             result.append(cmd);
             for (String _cmd : cmds) {
-            	_cmd = RemoteScanUtil.formatParameterValue(_cmd);
+                _cmd = RemoteScanUtil.formatParameterValue(_cmd);
                 result.append(" " + _cmd);
             }
 
@@ -452,7 +457,6 @@ public class DynamicRescanPipelineRecorder extends Recorder implements SimpleBui
             } else if (retcode == 0)
                 bRet = true;
 
-
         } catch (IOException | InterruptedException ex) {
             ex.printStackTrace();
             if (this.canFailJob) {
@@ -462,5 +466,4 @@ public class DynamicRescanPipelineRecorder extends Recorder implements SimpleBui
 
         return bRet;
     }
-
 }
