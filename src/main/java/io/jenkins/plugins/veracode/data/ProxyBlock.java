@@ -1,13 +1,3 @@
-/*******************************************************************************
- * Copyright (c) 2014 Veracode, Inc. All rights observed.
- *
- * Available for use by Veracode customers as described in the accompanying license agreement.
- *
- * Send bug reports or enhancement requests to support@veracode.com.
- *
- * See the license agreement for conditions on submitted materials.
- ******************************************************************************/
-
 package io.jenkins.plugins.veracode.data;
 
 /**
