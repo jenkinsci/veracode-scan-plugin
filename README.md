@@ -1,6 +1,9 @@
 # Veracode Scan Plugin for Jenkins
 [![Contributors](https://img.shields.io/github/contributors/jenkinsci/veracode-scan-plugin.svg)](https://github.com/jenkinsci/veracode-scan-plugin/graphs/contributors)
 [![Build Status](https://ci.jenkins.io/job/Plugins/job/veracode-scan-plugin/job/master/badge/icon)](https://ci.jenkins.io/job/Plugins/job/veracode-scan-plugin/job/master/)
+[![Jenkins Version](https://img.shields.io/badge/Jenkins-2.60-green.svg?label=min.%20Jenkins)](https://jenkins.io/download/)
+![JDK8](https://img.shields.io/badge/jdk-8-yellow.svg?label=min.%20JDK)
+[![License: MIT](https://img.shields.io/badge/license-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ## General
 Veracode has productised a plugin to make it simple for you to submit to Veracode applications already configured in Jenkins.
