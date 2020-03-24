@@ -1,16 +1,5 @@
 <?xml version="1.0"?>
 <?jelly escape-by-default='true'?>
-<!--
-/*******************************************************************************
- * Copyright (c) 2017 Veracode, Inc. All rights observed.
- * 
- * Available for use by Veracode customers as described in the accompanying license agreement.
- * 
- * Send bug reports or enhancement requests to support@veracode.com.
- *
- * See the license agreement for conditions on submitted materials.
- ******************************************************************************/
--->
 
 <!-- Renders the plugin's html elements contributed to the "Job Configuration" page. -->
 
