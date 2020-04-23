@@ -22,8 +22,8 @@ jobs:
     - name: Build with Maven
       run: mvn -B package --file pom.xml
     
-    - name: Download Java Wrapper Version - "$JAVA_WRAPPER_VERSION"
-      run: curl https://repo1.maven.org/maven2/com/veracode/vosp/api/wrappers/vosp-api-wrappers-java/"$JAVA_WRAPPER_VERSION"/vosp-api-wrappers-java-"$JAVA_WRAPPER_VERSION".jar -o VeracodeJavaAPI.jar
+    - name: Download Java Wrapper Version - "%JAVA_WRAPPER_VERSION%"
+      run: curl https://repo1.maven.org/maven2/com/veracode/vosp/api/wrappers/vosp-api-wrappers-java/"%JAVA_WRAPPER_VERSION%"/vosp-api-wrappers-java-"%JAVA_WRAPPER_VERSION%".jar -o VeracodeJavaAPI.jar
     
     - name: Scan with Java Wrapper
       run: java -jar VeracodeJavaAPI.jar -vid ${{ secrets.VERACODE_API_ID }} -vkey ${{ secrets.VERACODE_API_KEY }} -action UploadAndScan -appname "Veracode Jenkins Plugin" -sandboxname "GitHub Sandbox" -createprofile true -createsandbox true -filepath "./target" -include "*.jar" -version 'date +%Y-%m-%d-%H:%M:%S' -pattern "veracode-scan*.jar" -replacement "veracode-scan.jar"
