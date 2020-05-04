@@ -13,8 +13,8 @@ import jenkins.model.Jenkins;
  */
 public class UserAgentUtil {
 
-    private static final String DEFAULT_USER_AGENT = "VeracodeJenkinsPlugin";
-    private static final String VERACODE_PLUGIN_CLASS = "veracode-jenkins-plugin";
+    private static final String DEFAULT_USER_AGENT = "VeracodeScanJenkins";
+    private static final String VERACODE_PLUGIN_CLASS = "veracode-scan";
     private static final String UNKNOWN_VALUE = "Unknown";
     private static final String USERAGENT_HEADER_FORMAT = "%s/%s (Jenkins/%s; Java/%s)";
 
