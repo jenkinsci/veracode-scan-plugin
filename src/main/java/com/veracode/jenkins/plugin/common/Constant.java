@@ -8,7 +8,7 @@ package com.veracode.jenkins.plugin.common;
  */
 public class Constant {
 
-    public static final String nodeJarFileDir = "veracode-jenkins-plugin";
+    public static final String nodeJarFileDir = "veracode-scan";
     public static final String inclusive = "vosp-api-wrappers-java*.jar";
     public static final String execJarFile = "VeracodeJavaAPI";
     public static final String regex = "(vosp-api-wrappers).*?(.jar)";
@@ -18,7 +18,7 @@ public class Constant {
     public static final String CONDITIONAL_PASS = "Conditional pass";
     public static final String DID_NOT_PASS = "Did not pass";
     public static final String PASSED = "Pass";
-    public static final String PLUGIN_NAME = "veracode-jenkins-plugin";
+    public static final String PLUGIN_NAME = "veracode-scan";
     public static final String PLUGIN_ICONS_URI_PREFIX = "/plugin/" + PLUGIN_NAME + "/icons/";
     public static final String VIEW_REPORT_URI_PREFIX = "https://analysiscenter.veracode.com/auth/index.jsp#ViewReportsDetailedReport";
 
