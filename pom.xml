@@ -10,9 +10,9 @@
         <version>2.37</version>
         <relativePath />
     </parent>
-    <groupId>io.jenkins.plugins</groupId>
+    <groupId>com.veracode.jenkins</groupId>
     <artifactId>veracode-scan</artifactId>
-    <version>1.0.4-alpha-SNAPSHOT</version>
+    <version>1.0.5-alpha-SNAPSHOT</version>
     <packaging>hpi</packaging>
     <properties>
         <!-- Baseline Jenkins version you use to build the plugin. Users must have this version or newer to run. -->
