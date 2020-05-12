@@ -10,11 +10,7 @@ pipeline {
         stage('Test') {
             steps {
                 sh 'mvn -B clean test'
-            }
-            post {
-                always {
-                    junit(keepLongStdio: true, testResults: 'target/site/jacoco/jacoco.xml')
-                }
+                jacoco()
             }
         }
     }
