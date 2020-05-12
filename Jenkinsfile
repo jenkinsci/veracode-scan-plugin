@@ -13,7 +13,7 @@ pipeline {
             }
             post {
                 always {
-                    junit(keepLongStdio: true, testResults: 'target/surefire-reports/TEST-*.xml')
+                    junit(keepLongStdio: true, testResults: 'target/site/jacoco/jacoco.xml')
                 }
             }
         }
