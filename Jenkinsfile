@@ -1,3 +1,10 @@
+/* 
+The default buildPlugin() call will trigger the parent build script 
+from jenkins-infra/pipeline-library and will build on both Linux and Windows nodes.
+We are overwriting the default behavior and will only build on Linux node. 
+Also JaCoCo, FindBugs and Checkstyle have been added to the build pipeline.
+*/
+
 node('linux') {
 	
 	stage("Checkout") {
