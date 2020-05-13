@@ -13,12 +13,20 @@ for (x in labels) {
 			}
 			
 			stage('Build') {
-				String command = "mvn clean install findbugs:findbugs checkstyle:checkstyle jacoco:report"
-				if (label == 'linux') {
-					sh command
-				} else {
-					bat command
+				List<String> env = [
+		            "JAVA_HOME=${tool jdk8}",
+		            'PATH+JAVA=${JAVA_HOME}/bin',
+		        ]
+				
+				withEnv(env) {
+					String command = "mvn clean install findbugs:findbugs checkstyle:checkstyle jacoco:report"
+					if (label == 'linux') {
+						sh command
+					} else {
+						bat command
+					}
 				}
+				
 				junit('**/target/surefire-reports/**/*.xml')
 			}
 			
