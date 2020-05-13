@@ -1,15 +1,17 @@
 node('linux') {
 	
-	jdk = tool name: 'JDK8'
-  	env.JAVA_HOME = "${jdk}"
-	sh '$JAVA_HOME/bin/java -version'
-	
 	stage("Checkout") {
 		checkout scm
 	}
 	
 	stage("Build") {
-		sh 'mvn clean install findbugs:findbugs checkstyle:checkstyle jacoco:report'
+		List<String> mavenEnv = [
+                    "JAVA_HOME=${tool 'jdk8'}",
+                    'PATH+JAVA=${JAVA_HOME}/bin',
+                    "PATH+MAVEN=${tool 'mvn'}/bin"]
+		withEnv(mavenEnv) {
+			sh "mvn clean install findbugs:findbugs checkstyle:checkstyle jacoco:report"
+		}
 		junit('**/target/surefire-reports/**/*.xml')
 	}
 	
