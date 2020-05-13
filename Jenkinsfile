@@ -2,14 +2,14 @@ def labels = ['linux', 'windows']
 
 def builders = [:]
 
-for (x in labels) {
-    def label = x
+for (label in labels) {
 	
     builders[label] = {
 		node(label) {
 			
 			stage("Checkout (${label})") {
-				checkout scm
+				// checkout scm
+				git url: 'https://github.com/jenkinsci/veracode-scan-plugin.git', branch: env.BRANCH_NAME
 			}
 			
 			stage("Build (${label})") {
