@@ -8,11 +8,11 @@ for (x in labels) {
     builders[label] = {
 		node(label) {
 			
-			stage('Checkout') {
+			stage('Checkout (${label})') {
 				checkout scm
 			}
 			
-			stage('Build') {
+			stage('Build (${label})') {
 				List<String> env = [
 		            "JAVA_HOME=${tool jdk8}",
 		            'PATH+JAVA=${JAVA_HOME}/bin',
@@ -30,7 +30,7 @@ for (x in labels) {
 				junit('**/target/surefire-reports/**/*.xml')
 			}
 			
-			stage('Archive') {
+			stage('Archive (${label})') {
 				if (isLinux(label)) {
 					findbugs('**/target/findbugsXml.xml')
 					checkstyle('**/target/checkstyle-result.xml')
