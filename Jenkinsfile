@@ -5,15 +5,7 @@ node('linux') {
 	}
 	
 	stage("Build") {
-		List<String> env = [
-            "JAVA_HOME=${tool jdk8}",
-            'PATH+JAVA=${JAVA_HOME}/bin',
-        ]
-		
-		withEnv(env) {
-			sh 'mvn clean install findbugs:findbugs checkstyle:checkstyle jacoco:report'
-		}
-		
+		sh 'mvn clean install findbugs:findbugs checkstyle:checkstyle jacoco:report'
 		junit('**/target/surefire-reports/**/*.xml')
 	}
 	
