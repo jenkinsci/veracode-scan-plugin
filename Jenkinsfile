@@ -1,5 +1,9 @@
 node('linux') {
 	
+	jdk = tool name: 'JDK8'
+  	env.JAVA_HOME = "${jdk}"
+	sh '$JAVA_HOME/bin/java -version'
+	
 	stage("Checkout") {
 		checkout scm
 	}
