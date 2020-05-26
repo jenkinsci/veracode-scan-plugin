@@ -1,7 +1,8 @@
 package com.veracode.jenkins.plugin.enums;
 
 /**
- * Severity levels of flaws or vulnerability
+ * The SeverityLevel class represents the severity levels of flaws or
+ * vulnerability.
  *
  */
 public enum SeverityLevel {
@@ -21,8 +22,9 @@ public enum SeverityLevel {
      * Retrieve the Enum value corresponding to the given level. Level can be an
      * integer between 0 and 5
      *
-     * @param level - A severity level
-     * @return Enum value corresponding to the given level
+     * @param level a int - a severity level.
+     * @return a {@link com.veracode.jenkins.plugin.enums.SeverityLevel} object -
+     *         enum value corresponding to the given level.
      * @throws IllegalArgumentException if level is out of range
      */
     public static SeverityLevel findSevLevel(int level) {

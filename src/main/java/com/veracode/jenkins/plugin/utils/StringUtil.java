@@ -1,12 +1,11 @@
 package com.veracode.jenkins.plugin.utils;
 
 /**
- * A utility class for working with Strings.
+ * The StringUtil is a utility class for working with Strings.
  * <p>
  * Includes some methods with signatures similar to those exposed by .NET's
  * String class.
  * </p>
- *
  *
  */
 public final class StringUtil {
@@ -30,8 +29,8 @@ public final class StringUtil {
      * Determines whether a string is null or empty.
      * </p>
      *
-     * @param input String
-     * @return true if the String is null or empty; false otherwise.
+     * @param input a {@link java.lang.String} object.
+     * @return a boolean.
      */
     public static boolean isNullOrEmpty(String input) {
         return input == null || EMPTY.equals(input);
@@ -42,8 +41,8 @@ public final class StringUtil {
      * Returns null if the input String is empty. Otherwise the String.
      * </p>
      *
-     * @param input String
-     * @return String
+     * @param input a {@link java.lang.String} object.
+     * @return a {@link java.lang.String} object.
      */
     public static String getNullIfEmpty(String input) {
         return !EMPTY.equals(input) ? input : null;
@@ -54,8 +53,8 @@ public final class StringUtil {
      * Returns the empty string if the input String is null. Otherwise the String.
      * </p>
      *
-     * @param input String
-     * @return String
+     * @param input a {@link java.lang.String} object.
+     * @return a {@link java.lang.String} object.
      */
     public static String getEmptyIfNull(String input) {
         return input != null ? input : EMPTY;
@@ -66,9 +65,9 @@ public final class StringUtil {
      * Returns a string that contains the specified character count times.
      * </p>
      *
-     * @param character char
-     * @param count     int
-     * @return String
+     * @param character a char.
+     * @param count     a int.
+     * @return a {@link java.lang.String} object.
      */
     public static String repeatChar(char character, int count) {
         if (count < 0) {
@@ -86,9 +85,9 @@ public final class StringUtil {
      * Appends spaces to a String.
      * </p>
      *
-     * @param input      String
-     * @param totalWidth int
-     * @return String
+     * @param input      a {@link java.lang.String} object.
+     * @param totalWidth a int.
+     * @return a {@link java.lang.String} object.
      */
     public static String padRight(String input, int totalWidth) {
         if (totalWidth < 0) {
@@ -106,9 +105,9 @@ public final class StringUtil {
      * Prepends spaces to a String.
      * </p>
      *
-     * @param input      String
-     * @param totalWidth int
-     * @return String
+     * @param input      a {@link java.lang.String} object.
+     * @param totalWidth a int.
+     * @return a {@link java.lang.String} object.
      */
     public static String padLeft(String input, int totalWidth) {
         if (totalWidth < 0) {
@@ -132,10 +131,10 @@ public final class StringUtil {
      * StringUtil.compare("...", null) = 1
      * </pre>
      *
-     * @param str1       String
-     * @param str2       String
-     * @param ignoreCase boolean
-     * @return 1
+     * @param str1       a {@link java.lang.String} object.
+     * @param str2       a {@link java.lang.String} object.
+     * @param ignoreCase a boolean.
+     * @return a int.
      */
     public static int compare(String str1, String str2, boolean ignoreCase) {
         int result = 0;
@@ -162,9 +161,9 @@ public final class StringUtil {
      * Joins the elements of a {@code String[]} using the specified separator.
      * </p>
      *
-     * @param separator String
-     * @param value     String[]
-     * @return the joined string
+     * @param separator a {@link java.lang.String} object.
+     * @param value     an array of {@link java.lang.String} objects.
+     * @return a {@link java.lang.String} object.
      */
     public static String join(String separator, String[] value) {
         if (value != null) {
@@ -189,6 +188,11 @@ public final class StringUtil {
         }
     }
 
+    /**
+     * <p>
+     * Constructor for StringUtil.
+     * </p>
+     */
     private StringUtil() {
     }
 }

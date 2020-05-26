@@ -3,8 +3,8 @@ package com.veracode.jenkins.plugin.data;
 import com.veracode.jenkins.plugin.enums.SeverityLevel;
 
 /**
- * This class represents the counts and mitigated status of findings at a
- * severity level
+ * The FindingCounts class represents the counts and mitigated status of
+ * findings at a severity level.
  *
  */
 public class FindingCounts {
@@ -16,6 +16,16 @@ public class FindingCounts {
     private final int netCount;
     private final boolean mitigated;
 
+    /**
+     * Constructor for FindingCounts.
+     *
+     * @param sevLevel  a {@link com.veracode.jenkins.plugin.enums.SeverityLevel}
+     *                  object.
+     * @param count     a int.
+     * @param newCount  a int.
+     * @param netCount  a int.
+     * @param mitigated a boolean.
+     */
     public FindingCounts(SeverityLevel sevLevel, int count, int newCount, int netCount,
             boolean mitigated) {
         this.sevLevel = sevLevel;

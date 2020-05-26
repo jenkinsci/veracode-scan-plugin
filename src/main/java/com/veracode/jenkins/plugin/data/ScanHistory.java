@@ -7,8 +7,8 @@ import java.util.Map;
 import com.veracode.jenkins.plugin.utils.StringUtil;
 
 /**
- * This XML-binded class represents the scan history for a Jenkins current/past
- * builds.
+ * This XML-binded ScanHistory class represents the scan history for a Jenkins
+ * current/past builds.
  *
  */
 public class ScanHistory {
@@ -39,6 +39,27 @@ public class ScanHistory {
 
     private final SCAScanHistory scaHistory;
 
+    /**
+     * Constructor for ScanHistory.
+     *
+     * @param accountId              a {@link java.lang.String} object.
+     * @param appId                  a {@link java.lang.String} object.
+     * @param buildId                a {@link java.lang.String} object.
+     * @param policyName             a {@link java.lang.String} object.
+     * @param policyComplianceStatus a {@link java.lang.String} object.
+     * @param score                  a int.
+     * @param veracodeLevel          a {@link java.lang.String} object.
+     * @param scanOverdue            a boolean.
+     * @param totalFlawsCount        a int.
+     * @param flawsCount             an array of {@link int} objects.
+     * @param mitigateFlag           an array of {@link boolean} objects.
+     * @param netChange              an array of {@link int} objects.
+     * @param flawsCountHistory      a {@link java.util.List} object.
+     * @param scaHistory             a
+     *                               {@link com.veracode.jenkins.plugin.data.SCAScanHistory}
+     *                               object.
+     * @param policyaffect           an array of {@link boolean} objects.
+     */
     public ScanHistory(String accountId, String appId, String buildId, String policyName,
             String policyComplianceStatus, int score, String veracodeLevel, boolean scanOverdue,
             int totalFlawsCount, int[] flawsCount, boolean[] mitigateFlag, int[] netChange,

@@ -7,8 +7,7 @@ import hudson.util.VersionNumber;
 import jenkins.model.Jenkins;
 
 /**
- * A utility class for getting version details.
- *
+ * The UserAgentUtil is a utility class for getting version details.
  *
  */
 public class UserAgentUtil {
@@ -18,6 +17,11 @@ public class UserAgentUtil {
     private static final String UNKNOWN_VALUE = "Unknown";
     private static final String USERAGENT_HEADER_FORMAT = "%s/%s (Jenkins/%s; Java/%s)";
 
+    /**
+     * Returns a String of version details of the plugin, Jenkins and Java.
+     *
+     * @return a {@link java.lang.String} object.
+     */
     public static String getVersionDetails() {
         String pluginVersion = getPluginVersion();
         String jenkinsVersion = getJenkinsVersion();
@@ -27,7 +31,11 @@ public class UserAgentUtil {
                 jenkinsVersion, javaVersion);
     }
 
-    // Retrieve Java version from Java Wrapper
+    /**
+     * Returns the retrieved Java version from Veracode API Wrapper.
+     *
+     * @return a {@link java.lang.String} object.
+     */
     private static String getJavaVersion() {
         try {
             final String jreVersion = VeracodeCommand.getJreVersion();
@@ -37,7 +45,11 @@ public class UserAgentUtil {
         }
     }
 
-    // Retrieve plugin version
+    /**
+     * Returns the plugin version.
+     *
+     * @return a {@link java.lang.String} object.
+     */
     private static String getPluginVersion() {
         try {
             PluginWrapper pluginWrapper = Jenkins.getInstance().getPluginManager()
@@ -52,7 +64,11 @@ public class UserAgentUtil {
         }
     }
 
-    // Retrieve Jenkins version
+    /**
+     * Returns the Jenkins version.
+     *
+     * @return a {@link java.lang.String} object.
+     */
     private static String getJenkinsVersion() {
         try {
             VersionNumber versionNumber = Jenkins.getVersion();

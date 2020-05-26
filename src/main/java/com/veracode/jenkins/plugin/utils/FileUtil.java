@@ -13,6 +13,9 @@ import java.util.Properties;
 import org.jenkinsci.remoting.RoleChecker;
 
 import com.veracode.apiwrapper.cli.VeracodeCommand;
+import com.veracode.jenkins.plugin.VeracodeNotifier;
+import com.veracode.jenkins.plugin.VeracodeNotifier.VeracodeDescriptor;
+import com.veracode.jenkins.plugin.common.Constant;
 
 import hudson.FilePath;
 import hudson.model.AbstractBuild;
@@ -20,14 +23,10 @@ import hudson.model.Node;
 import hudson.model.Run;
 import hudson.model.TaskListener;
 import hudson.remoting.VirtualChannel;
-import com.veracode.jenkins.plugin.VeracodeNotifier;
-import com.veracode.jenkins.plugin.VeracodeNotifier.VeracodeDescriptor;
-import com.veracode.jenkins.plugin.common.Constant;
 import jenkins.model.Jenkins;
 
 /**
- * A utility class for working with files and directories.
- *
+ * The FileUtil is a utility class for working with files and directories.
  *
  */
 public final class FileUtil {
@@ -39,8 +38,8 @@ public final class FileUtil {
      * object. If {@code file} represents a directory it also recursively deletes
      * its contents.
      *
-     * @param file File
-     * @return boolean
+     * @param file a {@link java.io.File} object.
+     * @return a boolean.
      */
     public static boolean deleteDirectory(File file) {
         if (file.isDirectory()) {
@@ -59,10 +58,10 @@ public final class FileUtil {
      * representation of the file paths of the files represented by the elements of
      * the specified {@link hudson.FilePath FilePath} array.
      *
-     * @param filePaths FilePath[]
-     * @return String[]
-     * @throws IOException          exception
-     * @throws InterruptedException exception
+     * @param filePaths an array of {@link hudson.FilePath} objects.
+     * @return an array of {@link java.lang.String} objects.
+     * @throws java.io.IOException            if any.
+     * @throws java.lang.InterruptedException if any.
      */
     public static String[] getStringFilePaths(FilePath[] filePaths)
             throws IOException, InterruptedException {
@@ -87,10 +86,10 @@ public final class FileUtil {
      * path of the file represented by the specified {@link hudson.FilePath
      * FilePath} object.
      *
-     * @param filePath FilePath
-     * @return String
-     * @throws IOException          excepton
-     * @throws InterruptedException exception
+     * @param filePath a {@link hudson.FilePath} object.
+     * @return a {@link java.lang.String} object.
+     * @throws java.io.IOException            if any.
+     * @throws java.lang.InterruptedException if any.
      */
     public static String getStringFilePath(FilePath filePath)
             throws IOException, InterruptedException {
@@ -108,7 +107,6 @@ public final class FileUtil {
      * is represented by the {@link hudson.FilePath FilePath} object on which the
      * {@link hudson.FilePath#act(FilePath.FileCallable) act} method is called.
      *
-     *
      */
     public static final class FileCallableImpl implements FilePath.FileCallable<String> {
         private static final long serialVersionUID = 1L;
@@ -124,7 +122,16 @@ public final class FileUtil {
         }
     }
 
-    // copy the wrapper to the remote location
+    /**
+     * Copies the Veracode API Wrapper to the remote location.
+     *
+     * @param build  a {@link hudson.model.AbstractBuild} object.
+     * @param local  a {@link hudson.FilePath} object.
+     * @param remote a {@link hudson.FilePath} object.
+     * @param ps     a {@link java.io.PrintStream} object.
+     * @return a boolean.
+     * @throws java.lang.Exception if any.
+     */
     public static boolean copyJarFiles(AbstractBuild<?, ?> build, FilePath local, FilePath remote,
             PrintStream ps) throws Exception {
         boolean bRet = false;
@@ -158,10 +165,10 @@ public final class FileUtil {
     }
 
     /**
-     * Returns the java wrapper location situated in master
+     * Returns the Veracode API Wrapper location situated in master.
      *
-     * @return FilePath
-     * @throws URISyntaxException exception
+     * @return a {@link hudson.FilePath} object.
+     * @throws java.net.URISyntaxException if any.
      */
     public static FilePath getLocalWorkspaceFilepath() throws URISyntaxException {
         File wrapperFile = new File(VeracodeCommand.class.getProtectionDomain().getCodeSource()
@@ -170,11 +177,11 @@ public final class FileUtil {
     }
 
     /**
-     * Remove the properties for the specified
+     * Deletes the properties file of the specified build.
      *
-     * @param run Run
-     * @return boolean
-     * @param listener TaskListener
+     * @param run      a {@link hudson.model.Run} object.
+     * @param listener a {@link hudson.model.TaskListener} object.
+     * @return a boolean.
      */
     public static boolean cleanUpBuildProperties(Run<?, ?> run, TaskListener listener) {
         File file = null;
@@ -193,13 +200,13 @@ public final class FileUtil {
     }
 
     /**
-     * Creates the properties for the specified
+     * Creates a properties file for the specified build with the given properties.
      *
-     * @param run        Run
-     * @param properties Properties
-     * @param listener   TaskListener
-     * @return boolean
-     * @throws IOException exception
+     * @param run        a {@link hudson.model.Run} object.
+     * @param properties a {@link java.util.Properties} object.
+     * @param listener   a {@link hudson.model.TaskListener} object.
+     * @return a boolean.
+     * @throws java.io.IOException if any.
      */
     public static boolean createBuildPropertiesFile(Run<?, ?> run, Properties properties,
             TaskListener listener) throws IOException {
@@ -225,12 +232,12 @@ public final class FileUtil {
     }
 
     /**
-     * Returns the properties for the specified
+     * Returns the properties of the specified build.
      *
-     * @param run      Run
-     * @param listener TaskListener
-     * @return Properties
-     * @throws IOException exception
+     * @param run      a {@link hudson.model.Run} object.
+     * @param listener a {@link hudson.model.TaskListener} object.
+     * @return a {@link java.util.Properties} object.
+     * @throws java.io.IOException if any.
      */
     public static Properties readBuildPropertiesFile(Run<?, ?> run, TaskListener listener)
             throws IOException {
@@ -258,6 +265,9 @@ public final class FileUtil {
         return properties;
     }
 
+    /**
+     * Constructor for FileUtil.
+     */
     private FileUtil() {
     }
 }

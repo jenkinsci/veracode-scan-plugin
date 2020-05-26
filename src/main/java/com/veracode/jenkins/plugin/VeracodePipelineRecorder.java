@@ -9,9 +9,19 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.jenkinsci.Symbol;
+import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 
 import com.veracode.apiwrapper.cli.VeracodeCommand.VeracodeParser;
+import com.veracode.jenkins.plugin.args.UploadAndScanArgs;
+import com.veracode.jenkins.plugin.data.ProxyBlock;
+import com.veracode.jenkins.plugin.data.ScanHistory;
+import com.veracode.jenkins.plugin.utils.FileUtil;
+import com.veracode.jenkins.plugin.utils.FormValidationUtil;
+import com.veracode.jenkins.plugin.utils.RemoteScanUtil;
+import com.veracode.jenkins.plugin.utils.StringUtil;
+import com.veracode.jenkins.plugin.utils.WrapperUtil;
+import com.veracode.jenkins.plugin.utils.XmlUtil;
 
 import hudson.EnvVars;
 import hudson.FilePath;
@@ -29,17 +39,16 @@ import hudson.tasks.BuildStepMonitor;
 import hudson.tasks.Publisher;
 import hudson.tasks.Recorder;
 import hudson.util.ArgumentListBuilder;
-import com.veracode.jenkins.plugin.args.UploadAndScanArgs;
-import com.veracode.jenkins.plugin.data.ProxyBlock;
-import com.veracode.jenkins.plugin.data.ScanHistory;
-import com.veracode.jenkins.plugin.utils.FileUtil;
-import com.veracode.jenkins.plugin.utils.FormValidationUtil;
-import com.veracode.jenkins.plugin.utils.RemoteScanUtil;
-import com.veracode.jenkins.plugin.utils.StringUtil;
-import com.veracode.jenkins.plugin.utils.WrapperUtil;
-import com.veracode.jenkins.plugin.utils.XmlUtil;
 import jenkins.tasks.SimpleBuildStep;
 
+/**
+ * The VeracodePipelineRecorder class handles processing for "veracode" Pipeline
+ * script. The UI interface of Snippet Generator for "veracode: Upload and Scan
+ * with Veracode Pipeline" is defined in associated config.jelly.
+ * <p>
+ * This class extends the {@link hudson.tasks.Recorder} class.
+ * 
+ */
 public class VeracodePipelineRecorder extends Recorder implements SimpleBuildStep {
 
     @DataBoundSetter
@@ -103,38 +112,36 @@ public class VeracodePipelineRecorder extends Recorder implements SimpleBuildSte
     private static String regex = "(vosp-api-wrappers).*?(.jar)";
 
     /**
-     * {@link org.kohsuke.stapler.DataBoundConstructor DataBoundContructor}
+     * Constructor for VeracodePipelineRecorder.
      *
-     * @param applicationName       String
-     * @param criticality           String
-     * @param sandboxName           String
-     * @param scanName              String
-     * @param waitForScan           boolean
-     * @param timeout               int
-     * @param createProfile         boolean
-     * @param teams                 String
-     * @param createSandbox         boolean
-     * @param timeoutFailsJob       boolean
-     * @param canFailJob            boolean
-     * @param debug                 boolean
-     * @param uploadIncludesPattern String
-     * @param uploadExcludesPattern String
-     * @param scanIncludesPattern   String
-     * @param scanExcludesPattern   String
-     * @param fileNamePattern       String
-     * @param replacementPattern    String
-     * @param vid                   String
-     * @param vkey                  String
-     * @param copyRemoteFiles       String
-     * @param useProxy              boolean
-     * @param pHost                 String
-     * @param pPort                 String
-     * @param pUser                 String
-     * @param pPassword             String
-     * @param vid                   String
-     * @param vkey                  String
+     * @param applicationName       a {@link java.lang.String} object.
+     * @param criticality           a {@link java.lang.String} object.
+     * @param sandboxName           a {@link java.lang.String} object.
+     * @param scanName              a {@link java.lang.String} object.
+     * @param waitForScan           a boolean.
+     * @param timeout               a int.
+     * @param createProfile         a boolean.
+     * @param teams                 a {@link java.lang.String} object.
+     * @param createSandbox         a boolean.
+     * @param timeoutFailsJob       a boolean.
+     * @param canFailJob            a boolean.
+     * @param debug                 a boolean.
+     * @param uploadIncludesPattern a {@link java.lang.String} object.
+     * @param uploadExcludesPattern a {@link java.lang.String} object.
+     * @param scanIncludesPattern   a {@link java.lang.String} object.
+     * @param scanExcludesPattern   a {@link java.lang.String} object.
+     * @param fileNamePattern       a {@link java.lang.String} object.
+     * @param replacementPattern    a {@link java.lang.String} object.
+     * @param copyRemoteFiles       a boolean.
+     * @param useProxy              a boolean.
+     * @param pHost                 a {@link java.lang.String} object.
+     * @param pPort                 a {@link java.lang.String} object.
+     * @param pUser                 a {@link java.lang.String} object.
+     * @param pPassword             a {@link java.lang.String} object.
+     * @param vid                   a {@link java.lang.String} object.
+     * @param vkey                  a {@link java.lang.String} object.
      */
-    @org.kohsuke.stapler.DataBoundConstructor
+    @DataBoundConstructor
     public VeracodePipelineRecorder(String applicationName, String criticality, String sandboxName,
             String scanName, boolean waitForScan, int timeout, boolean createProfile, String teams,
             boolean createSandbox, boolean timeoutFailsJob, boolean canFailJob, boolean debug,
@@ -171,12 +178,19 @@ public class VeracodePipelineRecorder extends Recorder implements SimpleBuildSte
         this.pPassword = useProxy ? pPassword : null;
     }
 
+    /**
+     * Returns an object that represents the scope of the synchronization monitor
+     * expected by the plugin.
+     */
     @Override
     public BuildStepMonitor getRequiredMonitorService() {
-        // TODO Auto-generated method stub
         return null;
     }
 
+    /**
+     * Called by Jenkins after a build for a job specified to use the plugin is
+     * performed.
+     */
     @Override
     public void perform(Run<?, ?> run, FilePath workspace, Launcher launcher, TaskListener listener)
             throws InterruptedException, IOException {
@@ -410,6 +424,12 @@ public class VeracodePipelineRecorder extends Recorder implements SimpleBuildSte
         }
     }
 
+    /**
+     * Returns the
+     * {@link com.veracode.jenkins.plugin.VeracodePipelineRecorder.PipelineDescriptorImpl}
+     * object associated with this instance.
+     *
+     */
     @Override
     public PipelineDescriptorImpl getDescriptor() {
         return (PipelineDescriptorImpl) super.getDescriptor();
@@ -432,7 +452,16 @@ public class VeracodePipelineRecorder extends Recorder implements SimpleBuildSte
 
     }
 
-    // copy the wrapper to the remote location
+    /**
+     * Copies the wrapper to the remote location.
+     *
+     * @param node   a {@link hudson.model.Node} object.
+     * @param local  a {@link hudson.FilePath} object.
+     * @param remote a {@link hudson.FilePath} object.
+     * @param ps     a {@link java.io.PrintStream} object.
+     * @return a boolean.
+     * @throws java.lang.Exception if any.
+     */
     private boolean copyJarFiles(Node node, FilePath local, FilePath remote, PrintStream ps)
             throws Exception {
         boolean bRet = false;
@@ -536,7 +565,17 @@ public class VeracodePipelineRecorder extends Recorder implements SimpleBuildSte
         return bRet;
     }
 
-    // invoking the CLI from remote node
+    /**
+     * Invokes the CLI from remote node.
+     *
+     * @param run       a {@link hudson.model.Run} object.
+     * @param workspace a {@link hudson.FilePath} object.
+     * @param listener  a {@link hudson.model.TaskListener} object.
+     * @param ps        a {@link java.io.PrintStream} object.
+     * @return a boolean.
+     * @throws java.io.IOException            if any.
+     * @throws java.lang.InterruptedException if any.
+     */
     private boolean runScanFromRemote(Run<?, ?> run, FilePath workspace, TaskListener listener,
             PrintStream ps) throws IOException, InterruptedException {
         boolean bRet = false;
@@ -674,12 +713,15 @@ public class VeracodePipelineRecorder extends Recorder implements SimpleBuildSte
     }
 
     /**
-     * Construct the scan result from Detailed Report
+     * Constructs the scan result from Detailed Report.
      *
-     * @param run                 - the current Jenkins build
-     * @param listener            - listener of this task
-     * @param autoApplicationName - automatically generate application name of not
-     * @throws Exception when error happened during the operation
+     * @param run                 a {@link hudson.model.Run} object - the current
+     *                            Jenkins build.
+     * @param listener            a {@link hudson.model.TaskListener} object -
+     *                            listener of this task.
+     * @param autoApplicationName a boolean - automatically generate application
+     *                            name or not.
+     * @throws java.lang.Exception when error happened during the operation.
      */
     private void getScanResults(Run<?, ?> run, TaskListener listener, boolean autoApplicationName)
             throws Exception {

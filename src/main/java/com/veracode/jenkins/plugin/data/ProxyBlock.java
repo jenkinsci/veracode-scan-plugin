@@ -1,9 +1,10 @@
 package com.veracode.jenkins.plugin.data;
 
+import org.kohsuke.stapler.DataBoundConstructor;
+
 /**
- * Corresponds to an "optionalBlock" jelly element that represents proxy
- * configuration data.
- *
+ * The ProxyBlock class corresponds to an "optionalBlock" jelly element that
+ * represents proxy configuration data.
  *
  */
 public final class ProxyBlock {
@@ -16,7 +17,7 @@ public final class ProxyBlock {
     /**
      * Corresponds to the {@code phost} identifier referenced in a jelly file.
      *
-     * @return String
+     * @return a {@link java.lang.String} object.
      */
     public String getPhost() {
         return this._phost;
@@ -25,7 +26,7 @@ public final class ProxyBlock {
     /**
      * Corresponds to the {@code pport} identifier referenced in a jelly file.
      *
-     * @return String
+     * @return a {@link java.lang.String} object.
      */
     public String getPport() {
         return this._pport;
@@ -34,7 +35,7 @@ public final class ProxyBlock {
     /**
      * Corresponds to the {@code puser} identifier referenced in a jelly file.
      *
-     * @return String
+     * @return a {@link java.lang.String} object.
      */
     public String getPuser() {
         return this._puser;
@@ -43,24 +44,22 @@ public final class ProxyBlock {
     /**
      * Corresponds to the {@code ppassword} identifier referenced in a jelly file.
      *
-     * @return String
+     * @return a {@link java.lang.String} object.
      */
     public String getPpassword() {
         return this._ppassword;
     }
 
+    
     /**
-     *
      * Called by Jenkins with form data.
      *
-     * {@link org.kohsuke.stapler.DataBoundConstructor DataBoundContructor}
-     *
-     * @param phost     String
-     * @param pport     String
-     * @param puser     String
-     * @param ppassword String
+     * @param phost     a {@link java.lang.String} object.
+     * @param pport     a {@link java.lang.String} object.
+     * @param puser     a {@link java.lang.String} object.
+     * @param ppassword a {@link java.lang.String} object.
      */
-    @org.kohsuke.stapler.DataBoundConstructor
+    @DataBoundConstructor
     public ProxyBlock(String phost, String pport, String puser, String ppassword) {
         this._phost = phost;
         this._pport = pport;

@@ -28,8 +28,6 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
 import com.veracode.apiwrapper.dynamicanalysis.model.client.ScanOccurrenceInfo;
-
-import hudson.model.Run;
 import com.veracode.jenkins.plugin.DynamicAnalysisResultsAction;
 import com.veracode.jenkins.plugin.VeracodeAction;
 import com.veracode.jenkins.plugin.data.DAScanHistory;
@@ -39,8 +37,10 @@ import com.veracode.jenkins.plugin.data.SCAScanHistory;
 import com.veracode.jenkins.plugin.data.ScanHistory;
 import com.veracode.jenkins.plugin.enums.SeverityLevel;
 
+import hudson.model.Run;
+
 /**
- * Helpers to work with XML
+ * The XmlUtil class contains the helpers to work with XML.
  *
  */
 public class XmlUtil {
@@ -58,12 +58,16 @@ public class XmlUtil {
      * Get the scan results from the detailed report and previous Jenkins builds
      * result to compose the scan result for the current Jenkins build.
      *
-     * @param buildInfoXml      - XML returned from calling GetBuildInfo API
-     * @param detailedReportXml - XML returned from calling GetDetailedReport API
-     * @param build             - The current Jenkins build
-     * @return an ScanHistory instance containing the info to be displayed in the
-     *         Veracode post build step.
-     * @throws Exception when an error is encountered during the operation.
+     * @param buildInfoXml      a {@link java.lang.String} object - the XML returned
+     *                          from calling GetBuildInfo API.
+     * @param detailedReportXml a {@link java.lang.String} object - the XML returned
+     *                          from calling GetDetailedReport API.
+     * @param build             a {@link hudson.model.Run} object - the current
+     *                          Jenkins build.
+     * @return a {@link com.veracode.jenkins.plugin.data.ScanHistory} object - the
+     *         info to be displayed in the Veracode post build step.
+     * @throws java.lang.Exception when an error is encountered during the
+     *                             operation.
      */
     public static final ScanHistory newScanHistory(String buildInfoXml, String detailedReportXml,
             Run<?, ?> build) throws Exception {
@@ -141,14 +145,18 @@ public class XmlUtil {
     }
 
     /**
-     * Retrieve SCA results from the given Detailed Report XML
+     * Retrieve SCA results from the given Detailed Report XML.
      *
-     * @param detailedReportXml String
-     * @param buildDate         long
-     * @param lastSCAHistory    SCAScanHistory
-     * @return an instance of SCAHistory that contains the SCA result in the
-     *         detailed report
-     * @throws Exception when an error is encountered during the operation.
+     * @param detailedReportXml a {@link java.lang.String} object - the XML returned
+     *                          from calling GetDetailedReport API.
+     * @param buildDate         a long - the build date.
+     * @param lastSCAHistory    a
+     *                          {@link com.veracode.jenkins.plugin.data.SCAScanHistory}
+     *                          object.
+     * @return a {@link com.veracode.jenkins.plugin.data.SCAScanHistory} object -
+     *         the SCA result in the detailed report.
+     * @throws java.lang.Exception when an error is encountered during the
+     *                             operation.
      */
     public static final SCAScanHistory newSCAHistory(String detailedReportXml, long buildDate,
             SCAScanHistory lastSCAHistory) throws Exception {
@@ -193,13 +201,18 @@ public class XmlUtil {
      * Get the scan results from the detailed report and scan occurrence result. In
      * addition, comparison of results to previous successful Jenkins build result.
      *
-     * @param detailedReportXml  - XML returned from calling GetDetailedReport API
-     * @param scanOccurrenceInfo - analysis occurrence info returned from DA via
-     *                           REST API
-     * @param build              - linked application id
-     * @return DAScanHistory instance containing the info to be displayed in the
-     *         Veracode post build step.
-     * @throws Exception when an error is encountered during the operation.
+     * @param detailedReportXml  a {@link java.lang.String} object - the XML
+     *                           returned from calling GetDetailedReport API.
+     * @param scanOccurrenceInfo a
+     *                           {@link com.veracode.apiwrapper.dynamicanalysis.model.client.ScanOccurrenceInfo}
+     *                           object - analysis occurrence info returned from DA
+     *                           via REST API.
+     * @param build              a {@link hudson.model.Run} object - the Jenkins
+     *                           build.
+     * @return a {@link com.veracode.jenkins.plugin.data.DAScanHistory} object - the
+     *         info to be displayed in the Veracode post build step.
+     * @throws java.lang.Exception when an error is encountered during the
+     *                             operation.
      */
     public static final DAScanHistory newDAScanHistory(String detailedReportXml,
             ScanOccurrenceInfo scanOccurrenceInfo, Run<?, ?> build) throws Exception {
@@ -294,10 +307,13 @@ public class XmlUtil {
     }
 
     /**
-     * Get the scan score from the detailed report XML
+     * Get the scan score from the detailed report XML.
      *
-     * @param detailedReportXml
-     * @return
+     * @param xPathObj                a {@link javax.xml.xpath.XPath} object.
+     * @param xml                     a {@link org.w3c.dom.Document} object.
+     * @param analysisElementNodeType a {@link java.lang.String} object.
+     * @return a int.
+     * @throws java.lang.Exception if any.
      */
     private static final int parseAnalysisScore(XPath xPathObj, Document xml,
             String analysisElementNodeType) throws Exception {
@@ -313,13 +329,16 @@ public class XmlUtil {
     }
 
     /**
-     * Find the Application ID by its name within an XML document
+     * Find the Application ID by its name within an XML document.
      *
-     * @param appName          - Name of an application
-     * @param xmlAppListResult - XML result from a GetAppList call
-     * @return The ID of the application or null if the ID is not found
-     * @throws Exception when given invalid parameter(s) or an error occurred when
-     *                   parsing the given XML.
+     * @param appName          a {@link java.lang.String} object - the name of an
+     *                         application.
+     * @param xmlAppListResult a {@link java.lang.String} object - the XML result
+     *                         from a GetAppList call.
+     * @return a {@link java.lang.String} object - the ID of the application or null
+     *         if the ID is not found.
+     * @throws java.lang.Exception when given invalid parameter(s) or an error
+     *                             occurred when parsing the given XML.
      */
     public static final String parseAppId(String appName, String xmlAppListResult)
             throws Exception {
@@ -344,13 +363,16 @@ public class XmlUtil {
     }
 
     /**
-     * Find the sandbox ID by its name in an XML document
+     * Find the sandbox ID by its name in an XML document.
      *
-     * @param sandboxName          - Name of a sandbox
-     * @param xmlSandboxListResult - XML from the getSandboxList API
-     * @return The ID of the given sandbox or empty string if none found
-     * @throws Exception when given invalid parameter(s) or an error occurred when
-     *                   parsing the given XML.
+     * @param sandboxName          a {@link java.lang.String} object - the name of a
+     *                             sandbox.
+     * @param xmlSandboxListResult a {@link java.lang.String} object - the XML from
+     *                             the getSandboxList API.
+     * @return a {@link java.lang.String} object - the ID of the given sandbox or
+     *         empty string if none found.
+     * @throws java.lang.Exception when given invalid parameter(s) or an error
+     *                             occurred when parsing the given XML.
      */
     public static final String parseSandboxId(String sandboxName, String xmlSandboxListResult)
             throws Exception {
@@ -374,9 +396,9 @@ public class XmlUtil {
     /**
      * Takes an XML return an creates a DOM tree.
      *
-     * @param xmlString String
-     * @return Document
-     * @throws Exception exception
+     * @param xmlString a {@link java.lang.String} object.
+     * @return a {@link org.w3c.dom.Document} object.
+     * @throws java.lang.Exception if any.
      */
     public static final Document getXmlDocument(String xmlString) throws Exception {
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
@@ -396,12 +418,12 @@ public class XmlUtil {
     /**
      * Find the build ID within a XML document.
      *
-     * @param xmlBuildInfoResult A String that represents the buildinfo XML
-     *                           document, which references the buildinfo.xsd
-     *                           schema.
-     * @return A build ID
-     * @throws Exception when given invalid XML document or an error occurred when
-     *                   parsing the given XML.
+     * @param xmlBuildInfoResult a {@link java.lang.String} object - a String that
+     *                           represents the buildinfo XML document, which
+     *                           references the buildinfo.xsd schema.
+     * @return a {@link java.lang.String} object - a build ID.
+     * @throws java.lang.Exception when given invalid XML document or an error
+     *                             occurred when parsing the given XML.
      */
     public static final String parseBuildId(String xmlBuildInfoResult) throws Exception {
         if (StringUtil.isNullOrEmpty(xmlBuildInfoResult)) {
@@ -423,9 +445,10 @@ public class XmlUtil {
     /**
      * Get the error string, if any, from a XML document.
      *
-     * @param xmlString A XML document
-     * @return The error message in the XML document if found, empty string
-     *         otherwise. The return value will never be null.
+     * @param xmlString a {@link java.lang.String} object - a XML document.
+     * @return a {@link java.lang.String} object - the error message in the XML
+     *         document if found, empty string otherwise. The return value will
+     *         never be null.
      */
     public static final String getErrorString(String xmlString) {
         if (StringUtil.isNullOrEmpty(xmlString)) {
@@ -449,11 +472,13 @@ public class XmlUtil {
     }
 
     /**
-     * Check each severity level for any flaws which affect policy compliance
+     * Check each severity level for any flaws which affect policy compliance.
      *
-     * @param xPathObj, xml
-     * @return Array of flaw count for each severity level, Array of policy
-     *         affection for each severity level
+     * @param xPathObj a {@link javax.xml.xpath.XPath} object.
+     * @param xml      a {@link org.w3c.dom.Document} object.
+     * @param flawType a {@link java.lang.String} object.
+     * @return an array of {@link boolean} objects - array of flaw count for each
+     *         severity level, Array of policy affection for each severity level.
      */
     private static boolean[] getPolicyAffectedness(XPath xPathObj, Document xml, String flawType) {
         boolean[] policyAffectStatus = new boolean[SEVERITY_LEVEL_NUMBER];
@@ -479,9 +504,12 @@ public class XmlUtil {
     /**
      * Get the flaws count (not including mitigated flaws) from a XML document.
      *
-     * @param xPathObj, xml, flawType
-     * @return Object of two Array: Array of flaw count for each severity level,
-     *         Array of mitigation status flag for each severity level
+     * @param xPathObj a {@link javax.xml.xpath.XPath} object.
+     * @param xml      a {@link org.w3c.dom.Document} object.
+     * @param flawType a {@link java.lang.String} object.
+     * @return an array of {@link java.lang.Object} objects - object of two Array:
+     *         Array of flaw count for each severity level, Array of mitigation
+     *         status flag for each severity level.
      */
     private static Object[] getRealFlawCount(XPath xPathObj, Document xml, String flawType) {
 
@@ -544,8 +572,10 @@ public class XmlUtil {
     /**
      * Get the net change flaws count from a XML document.
      *
-     * @param xPathObj, xml
-     * @return Array of net change flaw count for each severity level
+     * @param xPathObj a {@link javax.xml.xpath.XPath} object.
+     * @param xml      a {@link org.w3c.dom.Document} object.
+     * @return an array of {@link int} objects - array of net change flaw count for
+     *         each severity level.
      */
     private static int[] getNetChangeCount(XPath xPathObj, Document xml) {
 
@@ -602,13 +632,16 @@ public class XmlUtil {
 
     /**
      * Find the Max CVSS Score among all the SCA components in the detailed report
-     * XML
+     * XML.
      *
-     * @param xPathObj - XPath evaluation environment
-     * @param xml      - The detailed report XML
-     * @return the max CVSS score, or -1 to indicate none of the SCA components has
-     *         a CVSS score
-     * @throws Exception thrown if error is encountered when finding the score
+     * @param xPathObj a {@link javax.xml.xpath.XPath} object - XPath evaluation
+     *                 environment.
+     * @param xml      a {@link org.w3c.dom.Document} object - the detailed report
+     *                 XML.
+     * @return a double - the max CVSS score, or -1 to indicate none of the SCA
+     *         components has a CVSS score.
+     * @throws java.lang.Exception thrown if error is encountered when finding the
+     *                             score.
      */
     private static final double parseMaxCVSSScore(XPath xPathObj, Document xml) throws Exception {
         final String SCA_COMPONENTS_NODE_XPATH = "/detailedreport/software_composition_analysis/vulnerable_components/*[local-name()='component']";
@@ -645,13 +678,16 @@ public class XmlUtil {
 
     /**
      * Determine if the organization is subscribed to SCA by the existence of the
-     * "software_composition_analysis" XML element
+     * "software_composition_analysis" XML element.
      *
-     * @param xPathObj - XPath evaluation environment
-     * @param xml      - The detailed report XML
-     * @return true if the "software_composition_analysis" XML element exists, false
-     *         otherwise.
-     * @throws Exception thrown if error is encountered during the operation
+     * @param xPathObj a {@link javax.xml.xpath.XPath} object - XPath evaluation
+     *                 environment.
+     * @param xml      a {@link org.w3c.dom.Document} object - the detailed report
+     *                 XML.
+     * @return a boolean - true if the "software_composition_analysis" XML element
+     *         exists, false otherwise.
+     * @throws java.lang.Exception thrown if error is encountered during the
+     *                             operation.
      */
     private static final boolean isSubscribedToSCA(XPath xPathObj, Document xml) throws Exception {
         return (null != xPathObj.evaluate(SCA_XPATH, xml.getDocumentElement(),
@@ -659,13 +695,16 @@ public class XmlUtil {
     }
 
     /**
-     * Find the number of blacklisted components in the detailed report XML
+     * Find the number of blacklisted components in the detailed report XML.
      *
-     * @param xPathObj - XPath evaluation environment
-     * @param xml      - The detailed report XML
-     * @return the number of blacklisted component, or -1 to indicate the count is
-     *         not available
-     * @throws Exception thrown if error is encountered during the operation
+     * @param xPathObj a {@link javax.xml.xpath.XPath} object - XPath evaluation
+     *                 environment.
+     * @param xml      a {@link org.w3c.dom.Document} object - the detailed report
+     *                 XML.
+     * @return a int - the number of blacklisted component, or -1 to indicate the
+     *         count is not available.
+     * @throws java.lang.Exception thrown if error is encountered during the
+     *                             operation.
      */
     private static final int parseBlacklistedCompsCount(XPath xPathObj, Document xml)
             throws Exception {
@@ -689,14 +728,18 @@ public class XmlUtil {
     /**
      * Find the number of SCA vulnerabilities in this build and if any severity
      * level contains mitigated vulnerabilities.
-     *
+     * <p>
      * Calculate the new/net vulnerabilities counts against the last build (which
      * could be empty/null).
      *
-     * @param xPathObj          - XPath evaluation environment
-     * @param xml               - The detailed report XML
-     * @param lastFindingCounts - Finding Counts from the last build
-     * @return an instance of FindingCounts
+     * @param xPathObj       a {@link javax.xml.xpath.XPath} object - XPath
+     *                       evaluation environment.
+     * @param xml            a {@link org.w3c.dom.Document} object - the detailed
+     *                       report XML.
+     * @param lastSCAHistory a
+     *                       {@link com.veracode.jenkins.plugin.data.SCAScanHistory}
+     *                       object - finding Counts from the last build.
+     * @return a {@link java.util.Set} object - an instance of FindingCounts.
      */
     private static final Set<FindingCounts> parseFindingCounts(XPath xPathObj, Document xml,
             SCAScanHistory lastSCAHistory) {
@@ -764,13 +807,15 @@ public class XmlUtil {
 
     /**
      * Parse and provide SCA Component information extracted from the detailed
-     * report XML
+     * report XML.
      *
-     * @param xPathObj - XPath evaluation environment
-     * @param xml      - The detailed report XML
-     * @return an instance of SCAComponent data
-     * @throws Exception thrown if error is encountered when finding the particular
-     *                   component values
+     * @param xPathObj a {@link javax.xml.xpath.XPath} object - XPath evaluation
+     *                 environment.
+     * @param xml      a {@link org.w3c.dom.Document} object - the detailed report
+     *                 XML.
+     * @return a {@link java.util.Set} object - an instance of SCAComponent data.
+     * @throws java.lang.Exception thrown if error is encountered when finding the
+     *                             particular component values.
      */
     private static final Set<SCAComponent> parseSCAComponentInfo(XPath xPathObj, Document xml)
             throws Exception {
@@ -831,11 +876,13 @@ public class XmlUtil {
     }
 
     /**
-     * Create a stats with the given build date and count
+     * Create a stats with the given build date and count.
      *
-     * @param buildDate - Build date
-     * @param count     - Flaw or vulnerability count
-     * @return A map containing the key/value mapping of the 2 parameters
+     * @param buildDate a long - build date.
+     * @param count     a {@link java.lang.Long} object - flaw or vulnerability
+     *                  count.
+     * @return a {@link java.util.Map} object - a map containing the key/value
+     *         mapping of the 2 parameters.
      */
     private static final Map<String, Long> createStats(long buildDate, Long count) {
         Map<String, Long> thisScanStats = new HashMap<String, Long>();
@@ -846,13 +893,15 @@ public class XmlUtil {
     }
 
     /**
-     * Create count history based off the given count history from last build
+     * Create count history based off the given count history from last build.
      *
-     * @param countInThisBuild - The count in the current build. This could be null
-     *                         if no data is available in this build
-     * @param lastCountHistory - Count history from last build
-     * @return count history after combining the count history from last build and
-     *         current build
+     * @param countInThisBuild a {@link java.util.Map} object - the count in the
+     *                         current build. This could be null if no data is
+     *                         available in this build.
+     * @param lastCountHistory a {@link java.util.List} object - count history from
+     *                         last build.
+     * @return a {@link java.util.List} object - count history after combining the
+     *         count history from last build and current build.
      */
     private static final List<Map<String, Long>> createCountHistory(
             Map<String, Long> countInThisBuild, List<Map<String, Long>> lastCountHistory) {

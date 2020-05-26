@@ -5,11 +5,10 @@ import com.veracode.apiwrapper.wrapper.cli.exceptions.ApiException;
 import com.veracode.apiwrapper.wrappers.ResultsAPIWrapper;
 import com.veracode.apiwrapper.wrappers.SandboxAPIWrapper;
 import com.veracode.apiwrapper.wrappers.UploadAPIWrapper;
-
 import com.veracode.jenkins.plugin.data.ProxyBlock;
 
 /**
- * Helpers for using wrappers
+ * The WrapperUtil class contains the helpers for using wrappers.
  *
  */
 public class WrapperUtil {
@@ -17,9 +16,10 @@ public class WrapperUtil {
     /**
      * Setup the credential of a wrapper.
      *
-     * @param wrapper - the target wrapper to set the credential
-     * @param id      - Veracode API ID
-     * @param key     - Veracode API key
+     * @param wrapper a {@link com.veracode.apiwrapper.AbstractAPIWrapper} object -
+     *                the target wrapper to set the credential.
+     * @param id      a {@link java.lang.String} object - the Veracode API ID.
+     * @param key     a {@link java.lang.String} object - the Veracode API key.
      */
     public static final void setupCredential(AbstractAPIWrapper wrapper, String id, String key) {
         if (null == wrapper) {
@@ -30,10 +30,12 @@ public class WrapperUtil {
     }
 
     /**
-     * Setup proxy settings of a wrapper
+     * Setup proxy settings of a wrapper.
      *
-     * @param wrapper   - the target wrapper to set the proxy settings
-     * @param proxyInfo - the proxy settings
+     * @param wrapper   a {@link com.veracode.apiwrapper.AbstractAPIWrapper} object
+     *                  - the target wrapper to set the proxy settings.
+     * @param proxyInfo a {@link com.veracode.jenkins.plugin.data.ProxyBlock} object
+     *                  - the proxy settings.
      */
     public static final void setupProxy(AbstractAPIWrapper wrapper, ProxyBlock proxyInfo) {
         if (null == wrapper || null == proxyInfo) {
@@ -45,16 +47,21 @@ public class WrapperUtil {
     }
 
     /**
-     * Get the latest build info of an application
+     * Get the latest build info of an application.
      *
-     * @param appName     - The target application
-     * @param sandboxName - The name of the sandbox being used for this build. It
-     *                    could be null or empty.
-     * @param id          - Veracode API ID
-     * @param key         - Veracode API key
-     * @param proxy       - the proxy settings. Use null if no proxy is required
-     * @return The ID of the latest build of the given application
-     * @throws Exception when an error is encountered during the process
+     * @param appName     a {@link java.lang.String} object - the target
+     *                    application.
+     * @param sandboxName a {@link java.lang.String} object - the name of the
+     *                    sandbox being used for this build. It could be null or
+     *                    empty.
+     * @param id          a {@link java.lang.String} object - the Veracode API ID.
+     * @param key         a {@link java.lang.String} object - the Veracode API key.
+     * @param proxy       a {@link com.veracode.jenkins.plugin.data.ProxyBlock}
+     *                    object - the proxy settings. Use null if no proxy is
+     *                    required.
+     * @return a {@link java.lang.String} object - the ID of the latest build of the
+     *         given application.
+     * @throws java.lang.Exception when an error is encountered during the process.
      */
     public static final String getBuildInfo(final String appName, final String sandboxName,
             final String id, final String key, final ProxyBlock proxy) throws Exception {
@@ -101,15 +108,17 @@ public class WrapperUtil {
     }
 
     /**
-     * Get the build information for a given build id
+     * Get the build information for a given build id.
      *
-     * @param appId   - The target application ID
-     * @param buildId - The target build ID
-     * @param id      - Veracode API ID
-     * @param key     - Veracode API key
-     * @param proxy   - the proxy settings. Use null if no proxy is required
-     * @return build info XML of the given application ID and build ID
-     * @throws Exception when an error is encountered during the process
+     * @param appId   a {@link java.lang.String} object - the target application ID.
+     * @param buildId a {@link java.lang.String} object - the target build ID.
+     * @param id      a {@link java.lang.String} object - the Veracode API ID.
+     * @param key     a {@link java.lang.String} object - the Veracode API key.
+     * @param proxy   a {@link com.veracode.jenkins.plugin.data.ProxyBlock} object -
+     *                the proxy settings. Use null if no proxy is required.
+     * @return a {@link java.lang.String} object - build info XML of the given
+     *         application ID and build ID.
+     * @throws java.lang.Exception when an error is encountered during the process.
      */
     public static final String getBuildInfoByAppIdBuildId(final String appId, final String buildId,
             final String id, final String key, final ProxyBlock proxy) throws Exception {
@@ -137,14 +146,15 @@ public class WrapperUtil {
     }
 
     /**
-     * Get the detailed report of a given build (by ID)
+     * Get the detailed report of a given build (by ID).
      *
-     * @param buildId - ID of a build
-     * @param id      - Veracode API ID
-     * @param key     - Veracode API key
-     * @param proxy   - the proxy settings. Use null if no proxy is required
-     * @return The detailed report in XML
-     * @throws Exception when an error is encountered during the process
+     * @param buildId a {@link java.lang.String} object - the ID of a build.
+     * @param id      a {@link java.lang.String} object - the Veracode API ID.
+     * @param key     a {@link java.lang.String} object - the Veracode API key.
+     * @param proxy   a {@link com.veracode.jenkins.plugin.data.ProxyBlock} object -
+     *                the proxy settings. Use null if no proxy is required.
+     * @return a {@link java.lang.String} object - the detailed report in XML.
+     * @throws java.lang.Exception when an error is encountered during the process.
      */
     public static final String getDetailedReport(final String buildId, final String id,
             final String key, final ProxyBlock proxy) throws Exception {
@@ -167,14 +177,15 @@ public class WrapperUtil {
     }
 
     /**
-     * Get the list of sandbox of a given application
+     * Get the list of sandbox of a given application.
      *
-     * @param appId - ID of an application
-     * @param id    String
-     * @param key   String
-     * @param proxy ProxyBlock
-     * @return The sandbox list in XML
-     * @throws Exception when an error is encountered during the process
+     * @param appId a {@link java.lang.String} object - the ID of an application.
+     * @param id    a {@link java.lang.String} object - the Veracode API ID.
+     * @param key   a {@link java.lang.String} object - the Veracode API key.
+     * @param proxy a {@link com.veracode.jenkins.plugin.data.ProxyBlock} object -
+     *              the proxy settings. Use null if no proxy is required.
+     * @return a {@link java.lang.String} object - the sandbox list in XML.
+     * @throws java.lang.Exception when an error is encountered during the process.
      */
     public static final String getSandboxList(final String appId, final String id, final String key,
             final ProxyBlock proxy) throws Exception {
@@ -191,6 +202,17 @@ public class WrapperUtil {
         return sandboxApiWrapper.getSandboxList(appId);
     }
 
+    /**
+     * Get the summary report of a given build (by ID).
+     *
+     * @param buildId a {@link java.lang.String} object - the ID of a build.
+     * @param id      a {@link java.lang.String} object - the Veracode API ID.
+     * @param key     a {@link java.lang.String} object - the Veracode API key.
+     * @param proxy   a {@link com.veracode.jenkins.plugin.data.ProxyBlock} object -
+     *                the proxy settings. Use null if no proxy is required.
+     * @return a {@link java.lang.String} object - the summary report in XML.
+     * @throws java.lang.Exception when an error is encountered during the process.
+     */
     public static final String getSummaryReport(final String buildId, final String id,
             final String key, final ProxyBlock proxy) throws Exception {
         if (StringUtil.isNullOrEmpty(buildId)) {

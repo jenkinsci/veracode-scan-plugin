@@ -9,6 +9,15 @@ import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
 
+import com.veracode.jenkins.plugin.VeracodeNotifier.VeracodeDescriptor;
+import com.veracode.jenkins.plugin.common.Constant;
+import com.veracode.jenkins.plugin.common.DAAdapterService;
+import com.veracode.jenkins.plugin.data.CredentialsBlock;
+import com.veracode.jenkins.plugin.data.ProxyBlock;
+import com.veracode.jenkins.plugin.utils.EncryptionUtil;
+import com.veracode.jenkins.plugin.utils.FormValidationUtil;
+import com.veracode.jenkins.plugin.utils.StringUtil;
+
 import hudson.Extension;
 import hudson.Launcher;
 import hudson.model.AbstractBuild;
@@ -19,28 +28,20 @@ import hudson.tasks.BuildStepMonitor;
 import hudson.tasks.Notifier;
 import hudson.tasks.Publisher;
 import hudson.util.FormValidation;
-import com.veracode.jenkins.plugin.VeracodeNotifier.VeracodeDescriptor;
-import com.veracode.jenkins.plugin.common.Constant;
-import com.veracode.jenkins.plugin.common.DAAdapterService;
-import com.veracode.jenkins.plugin.data.CredentialsBlock;
-import com.veracode.jenkins.plugin.data.ProxyBlock;
-import com.veracode.jenkins.plugin.utils.EncryptionUtil;
-import com.veracode.jenkins.plugin.utils.FormValidationUtil;
-import com.veracode.jenkins.plugin.utils.StringUtil;
 import jenkins.model.Jenkins;
 import net.sf.json.JSONObject;
 
-/*
- * DynamicAnalysisResultsNotifier handles processing for post build action "Review Veracode Dynamic Analysis Results".
- * The UI interface is defined in associated config.jelly.
- *
- * User provides:
- *    - how long to wait for analysis results (in minutes)
- *    - whether to use global API credentials or define ID/Key specific to the job.
+/**
+ * The DynamicAnalysisResultsNotifier class handles processing for post build
+ * action "Review Veracode Dynamic Analysis Results". The UI interface is
+ * defined in associated config.jelly.
+ * <p>
+ * User provides: 
+ *  - how long to wait for analysis results (in minutes) 
+ *  - whether to use global API credentials or define ID/Key specific to the job.
  *
  * This class extends the {@link hudson.tasks.Notifier Notifier} class.
  */
-
 public class DynamicAnalysisResultsNotifier extends Notifier {
 
     private final int waitForResultsDuration;
@@ -48,6 +49,15 @@ public class DynamicAnalysisResultsNotifier extends Notifier {
     private final CredentialsBlock credentials;
     private boolean isGlobalCredentialsEnabled;
 
+    /**
+     * Constructor for DynamicAnalysisResultsNotifier.
+     *
+     * @param waitForResultsDuration      a int.
+     * @param failBuildForPolicyViolation a boolean.
+     * @param credentials                 a
+     *                                    {@link com.veracode.jenkins.plugin.data.CredentialsBlock}
+     *                                    object.
+     */
     @DataBoundConstructor
     public DynamicAnalysisResultsNotifier(final int waitForResultsDuration,
             final boolean failBuildForPolicyViolation, final CredentialsBlock credentials) {
@@ -63,6 +73,10 @@ public class DynamicAnalysisResultsNotifier extends Notifier {
         }
     }
 
+    /**
+     * Returns an object that represents the scope of the synchronization monitor
+     * expected by the plugin.
+     */
     @Override
     public BuildStepMonitor getRequiredMonitorService() {
         return BuildStepMonitor.BUILD;
@@ -94,6 +108,12 @@ public class DynamicAnalysisResultsNotifier extends Notifier {
                 descriptor.isDebugEnabled(), proxyBlock);
     }
 
+    /**
+     * Returns the
+     * {@link com.veracode.jenkins.plugin.DynamicAnalysisResultsNotifier.DynamicAnalysisResultsDescriptorImpl}
+     * object associated with this instance.
+     *
+     */
     @Override
     public DynamicAnalysisResultsDescriptorImpl getDescriptor() {
         return (DynamicAnalysisResultsDescriptorImpl) super.getDescriptor();

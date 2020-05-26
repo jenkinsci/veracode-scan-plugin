@@ -6,9 +6,8 @@ import java.util.List;
 import com.veracode.jenkins.plugin.utils.StringUtil;
 
 /**
- * Contributes API-agnostic switches to Veracode API wrapper command line
- * arguments created by derived types.
- *
+ * The AbstractArgs class contributes API-agnostic switches to Veracode API
+ * wrapper command line arguments created by derived types.
  *
  */
 public abstract class AbstractArgs {
@@ -36,6 +35,9 @@ public abstract class AbstractArgs {
      */
     protected final List<String> list = new ArrayList<String>();
 
+    /**
+     * Constructor for AbstractArgs.
+     */
     protected AbstractArgs() {
     }
 
@@ -43,8 +45,8 @@ public abstract class AbstractArgs {
      * Adds the proxy configuration switches and arguments to the command line
      * arguments list.
      *
-     * @param phost String
-     * @param pport String
+     * @param phost a {@link java.lang.String} object.
+     * @param pport a {@link java.lang.String} object.
      */
     protected void addProxyConfiguration(String phost, String pport) {
         if (!StringUtil.isNullOrEmpty(phost)) {
@@ -61,8 +63,8 @@ public abstract class AbstractArgs {
      * Adds the proxy credentials switches and arguments to the command line
      * arguments list.
      *
-     * @param puser     String
-     * @param ppassword String
+     * @param puser     a {@link java.lang.String} object.
+     * @param ppassword a {@link java.lang.String} object.
      */
     protected void addProxyCredentials(String puser, String ppassword) {
         if (!StringUtil.isNullOrEmpty(puser)) {
@@ -77,11 +79,11 @@ public abstract class AbstractArgs {
     }
 
     /**
-     * Adds the veracode api credentials switches and arguments to the command line
+     * Adds the Veracode API credentials switches and arguments to the command line
      * arguments list.
      *
-     * @param vid  String
-     * @param vkey String
+     * @param vid  a {@link java.lang.String} object.
+     * @param vkey a {@link java.lang.String} object.
      */
     protected void addApiCredentials(String vid, String vkey) {
         if (!StringUtil.isNullOrEmpty(vid)) {
@@ -98,7 +100,7 @@ public abstract class AbstractArgs {
     /**
      * Adds the action switch and argument to the command line arguments list.
      *
-     * @param action String
+     * @param action a {@link java.lang.String} object.
      */
     protected void addAction(String action) {
         if (!StringUtil.isNullOrEmpty(action)) {
@@ -111,7 +113,7 @@ public abstract class AbstractArgs {
      * Returns a String that represents the plain text command line arguments added
      * to the command line arguments list.
      *
-     * @return String[]
+     * @return an array of {@link java.lang.String} objects.
      */
     public String[] getArguments() {
         return list.toArray(new String[0]);
@@ -125,7 +127,7 @@ public abstract class AbstractArgs {
      * The length of the sequence of characters is defined by the
      * {@code MASKED_ARG_LENGTH} constant.
      *
-     * @return String[]
+     * @return an array of {@link java.lang.String} objects.
      */
     public String[] getMaskedArguments() {
         String[] args = getArguments();

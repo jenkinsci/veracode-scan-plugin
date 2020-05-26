@@ -4,14 +4,14 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 
 import com.veracode.apiwrapper.cli.VeracodeCommand.VeracodeParser;
-
-import hudson.util.FormValidation;
 import com.veracode.jenkins.plugin.args.GetAppListArgs;
 import com.veracode.jenkins.plugin.data.ProxyBlock;
 
+import hudson.util.FormValidation;
+
 /**
- * A utility class for performing validation of form fields.
- *
+ * The FormValidationUtil is a utility class for performing validation of form
+ * fields.
  *
  */
 public final class FormValidationUtil {
@@ -36,13 +36,12 @@ public final class FormValidationUtil {
      * Determines the result of the form field validation depending on whether two
      * mutually inclusive form fields have user-supplied data.
      *
-     *
-     * @param fieldValue                   String
-     * @param dependencyFieldValue         String
-     * @param fieldDisplayName             String
-     * @param dependencyFieldDisplayName   String
-     * @param dependencyFieldIHelpTextName String
-     * @return FormValidation
+     * @param fieldValue                   a {@link java.lang.String} object.
+     * @param dependencyFieldValue         a {@link java.lang.String} object.
+     * @param fieldDisplayName             a {@link java.lang.String} object.
+     * @param dependencyFieldDisplayName   a {@link java.lang.String} object.
+     * @param dependencyFieldIHelpTextName a {@link java.lang.String} object.
+     * @return a {@link hudson.util.FormValidation} object.
      */
     public static FormValidation checkMutuallyInclusiveFields(String fieldValue,
             String dependencyFieldValue, String fieldDisplayName, String dependencyFieldDisplayName,
@@ -72,13 +71,12 @@ public final class FormValidationUtil {
      * Determines the result of the form field validation depending on whether two
      * form fields have user-supplied data.
      *
-     *
-     * @param fieldValue                   String
-     * @param dependencyFieldValue         String
-     * @param fieldDisplayName             String
-     * @param dependencyFieldDisplayName   String
-     * @param dependencyFieldIHelpTextName String
-     * @return FormValidation
+     * @param fieldValue                   a {@link java.lang.String} object.
+     * @param dependencyFieldValue         a {@link java.lang.String} object.
+     * @param fieldDisplayName             a {@link java.lang.String} object.
+     * @param dependencyFieldDisplayName   a {@link java.lang.String} object.
+     * @param dependencyFieldIHelpTextName a {@link java.lang.String} object.
+     * @return a {@link hudson.util.FormValidation} object.
      */
     public static FormValidation checkFields(String fieldValue, String dependencyFieldValue,
             String fieldDisplayName, String dependencyFieldDisplayName,
@@ -108,13 +106,10 @@ public final class FormValidationUtil {
      * request to Veracode's getapplist.do's API end point with the supplied
      * credentials and proxy settings is successful.
      *
-     * {@link hudson.util.FormValidation FormValidation}
-     * {@link org.kohsuke.stapler.bind.JavaScriptMethod JavaScriptMethod}
-     *
-     * @param id    String
-     * @param key   String
-     * @param proxy boolean
-     * @return FormValidation
+     * @param id    a {@link java.lang.String} object.
+     * @param key   a {@link java.lang.String} object.
+     * @param proxy a {@link com.veracode.jenkins.plugin.data.ProxyBlock} object.
+     * @return a {@link hudson.util.FormValidation} object.
      */
     public static FormValidation checkConnection(String id, String key, ProxyBlock proxy) {
         try {
@@ -147,10 +142,10 @@ public final class FormValidationUtil {
     }
 
     /**
-     * Check if analysis name is empty
+     * Checks if analysis name is empty.
      *
-     * @param analysisName String
-     * @return FormValidation
+     * @param analysisName a {@link java.lang.String} object.
+     * @return a {@link hudson.util.FormValidation} object.
      */
     public static FormValidation checkAnalysisName(String analysisName) {
         if (StringUtil.isNullOrEmpty(analysisName)) {
@@ -171,8 +166,8 @@ public final class FormValidationUtil {
      * Returns error message if entered value is less than minimum number, or
      * greater than maximum number, or not a valid number.
      *
-     * @param maximumDuration String
-     * @return FormValidation
+     * @param maximumDuration a {@link java.lang.String} object.
+     * @return a {@link hudson.util.FormValidation} object.
      */
     public static FormValidation checkMaximumDuration(String maximumDuration) {
         if (!StringUtil.isNullOrEmpty(maximumDuration)) {
@@ -193,8 +188,8 @@ public final class FormValidationUtil {
      * Returns error message if entered value is less than minimum number, or
      * greater than maximum number.
      *
-     * @param maximumDuration int
-     * @return String
+     * @param maximumDuration a int.
+     * @return a {@link java.lang.String} object.
      */
     public static String checkMaximumDuration(int maximumDuration) {
         if (maximumDuration < MINIMUM_VALUE_DA_MAX_DURATION_HOURS
@@ -209,8 +204,8 @@ public final class FormValidationUtil {
      * Returns error message if entered value is less than minimum number, or
      * greater than maximum number, or not a valid number.
      *
-     * @param waitForResultsDuration String
-     * @return FormValidation
+     * @param waitForResultsDuration a {@link java.lang.String} object.
+     * @return a {@link hudson.util.FormValidation} object.
      */
     public static FormValidation checkWaitForResultsDuration(String waitForResultsDuration) {
         if (!StringUtil.isNullOrEmpty(waitForResultsDuration)) {
@@ -231,8 +226,8 @@ public final class FormValidationUtil {
      * Returns error message if entered value is less than minimum number, or
      * greater than maximum number.
      *
-     * @param waitForResultsDuration int
-     * @return String
+     * @param waitForResultsDuration a int.
+     * @return a {@link java.lang.String} object.
      */
     public static String checkWaitForResultsDuration(int waitForResultsDuration) {
         if (waitForResultsDuration < MINIMUM_VALUE_DA_RESULTS_DURATION_HOURS
@@ -244,12 +239,12 @@ public final class FormValidationUtil {
     }
 
     /**
-     * Check if API ID and dependency fields are entered
+     * Checks if API ID and dependency fields are entered.
      *
-     * @param vid                          String
-     * @param vkey                         String
-     * @param hasGlobalApiIdKeyCredentials boolean
-     * @return FormValidation
+     * @param vid                          a {@link java.lang.String} object.
+     * @param vkey                         a {@link java.lang.String} object.
+     * @param hasGlobalApiIdKeyCredentials a boolean.
+     * @return a {@link hudson.util.FormValidation} object.
      */
     public static FormValidation checkApiId(String vid, String vkey,
             boolean hasGlobalApiIdKeyCredentials) {
@@ -271,12 +266,12 @@ public final class FormValidationUtil {
     }
 
     /**
-     * Check if API Key and dependency fields are entered
+     * Checks if API Key and dependency fields are entered.
      *
-     * @param vid                          String
-     * @param vkey                         String
-     * @param hasGlobalApiIdKeyCredentials boolean
-     * @return FormValidation
+     * @param vid                          a {@link java.lang.String} object.
+     * @param vkey                         a {@link java.lang.String} object.
+     * @param hasGlobalApiIdKeyCredentials a boolean.
+     * @return a {@link hudson.util.FormValidation} object.
      */
     public static FormValidation checkApiKey(String vid, String vkey,
             boolean hasGlobalApiIdKeyCredentials) {
@@ -306,8 +301,8 @@ public final class FormValidationUtil {
      * an exception [or error], rather than attempt to process it it re-throws it as
      * the 'cause' of a {@link RuntimeException}).
      *
-     * @param e Throwable
-     * @return String
+     * @param e a {@link java.lang.Throwable} object.
+     * @return a {@link java.lang.String} object.
      */
     private static String getApiWrapperExceptionMessage(Throwable e) {
         if (e instanceof RuntimeException && e.getCause() != null) {
@@ -320,11 +315,11 @@ public final class FormValidationUtil {
     }
 
     /**
-     * Assign a default timeout values if waitForScan is set to true and no timeout
-     * value entered
+     * Assigns a default timeout value if waitForScan is set to true and no timeout
+     * value is entered.
      *
-     * @param timeoutValue String
-     * @return String str_timeout
+     * @param timeoutValue a {@link java.lang.String} object.
+     * @return a {@link java.lang.String} object.
      */
     public static String formatTimeout(final String timeoutValue) {
         String str_timeout;
@@ -337,6 +332,9 @@ public final class FormValidationUtil {
         return str_timeout;
     }
 
+    /**
+     * Constructor for FormValidationUtil.
+     */
     private FormValidationUtil() {
     }
 }

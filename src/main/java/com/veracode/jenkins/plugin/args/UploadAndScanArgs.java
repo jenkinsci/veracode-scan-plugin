@@ -1,8 +1,5 @@
 package com.veracode.jenkins.plugin.args;
 
-import hudson.FilePath;
-import hudson.model.AbstractBuild;
-import hudson.model.Hudson;
 import com.veracode.jenkins.plugin.VeracodeNotifier;
 import com.veracode.jenkins.plugin.VeracodeNotifier.VeracodeDescriptor;
 import com.veracode.jenkins.plugin.common.Constant;
@@ -10,11 +7,14 @@ import com.veracode.jenkins.plugin.utils.FileUtil;
 import com.veracode.jenkins.plugin.utils.StringUtil;
 import com.veracode.jenkins.plugin.utils.UserAgentUtil;
 
+import hudson.FilePath;
+import hudson.model.AbstractBuild;
+import hudson.model.Hudson;
+
 /**
- * Builds the command line argument passed to the Veracode API wrapper that
- * causes it to upload binaries, start the pre-scan, and if the pre-scan is
- * successful, start the scan.
- *
+ * The UploadAndScanArgs class builds the command line argument passed to the
+ * Veracode API wrapper that causes it to upload binaries, start the pre-scan,
+ * and if the pre-scan is successful, start the scan.
  *
  */
 public final class UploadAndScanArgs extends AbstractArgs {
@@ -40,6 +40,9 @@ public final class UploadAndScanArgs extends AbstractArgs {
     private static final String CUSTOM_BUILD_NUMBER_VAR = "buildnumber";
     public static final String CUSTOM_PROJECT_NAME_VAR = "projectname";
 
+    /**
+     * Constructor for UploadAndScanArgs.
+     */
     private UploadAndScanArgs() {
         addAction("UploadAndScan");
     }
@@ -48,10 +51,22 @@ public final class UploadAndScanArgs extends AbstractArgs {
      * Adds the specified arguments and switches for those arguments to the command
      * line arguments list.
      *
-     * @param phost
-     * @param pport
+     * @param bRemoteScan   a boolean.
+     * @param appname       a {@link java.lang.String} object.
+     * @param description   a {@link java.lang.String} object.
+     * @param createprofile a boolean.
+     * @param teams         a {@link java.lang.String} object.
+     * @param criticality   a {@link java.lang.String} object.
+     * @param sandboxname   a {@link java.lang.String} object.
+     * @param createsandbox a boolean.
+     * @param version       a {@link java.lang.String} object.
+     * @param include       a {@link java.lang.String} object.
+     * @param exclude       a {@link java.lang.String} object.
+     * @param pattern       a {@link java.lang.String} object.
+     * @param replacement   a {@link java.lang.String} object.
+     * @param timeOut       a {@link java.lang.String} object.
+     * @param filepath      a {@link java.lang.String} object.
      */
-
     private void addStdArguments(boolean bRemoteScan, String appname, String description,
             boolean createprofile, String teams, String criticality, String sandboxname,
             boolean createsandbox, String version, String include, String exclude, String pattern,
@@ -68,6 +83,24 @@ public final class UploadAndScanArgs extends AbstractArgs {
                 createsandbox, version, include, exclude, pattern, replacement, filepath);
     }
 
+    /**
+     * Adds the specified arguments and switches for those arguments to the command
+     * line arguments list.
+     *
+     * @param appname       a {@link java.lang.String} object.
+     * @param description   a {@link java.lang.String} object.
+     * @param createprofile a boolean.
+     * @param teams         a {@link java.lang.String} object.
+     * @param criticality   a {@link java.lang.String} object.
+     * @param sandboxname   a {@link java.lang.String} object.
+     * @param createsandbox a boolean.
+     * @param version       a {@link java.lang.String} object.
+     * @param include       a {@link java.lang.String} object.
+     * @param exclude       a {@link java.lang.String} object.
+     * @param pattern       a {@link java.lang.String} object.
+     * @param replacement   a {@link java.lang.String} object.
+     * @param filepath      a {@link java.lang.String} object.
+     */
     private void addStdArguments(String appname, String description, boolean createprofile,
             String teams, String criticality, String sandboxname, boolean createsandbox,
             String version, String include, String exclude, String pattern, String replacement,
@@ -149,9 +182,9 @@ public final class UploadAndScanArgs extends AbstractArgs {
     }
 
     /**
-     * Add user agent details got through api
+     * Adds user agent details got through API.
      *
-     * @param userAgent String
+     * @param userAgent a {@link java.lang.String} object.
      */
     protected void addUserAgent(String userAgent) {
         if (!StringUtil.isNullOrEmpty(userAgent)) {
@@ -167,8 +200,8 @@ public final class UploadAndScanArgs extends AbstractArgs {
      * This argument is used when the plugin is configured to include this
      * information when it creates application profiles.
      *
-     * @param workspaceFilePath FilePath
-     * @return String
+     * @param workspaceFilePath a {@link hudson.FilePath} object.
+     * @return a {@link java.lang.String} object.
      */
     private static String createDescriptionArg(FilePath workspaceFilePath) {
         String description_3fs = "Jenkins-URL: %s Host-Name: %s Workspace-Path: %s (Auto-generated by Veracode Jenkins Plugin)";
@@ -207,12 +240,13 @@ public final class UploadAndScanArgs extends AbstractArgs {
      * Returns an UploadAndScanArgs object initialized with the specified arguments.
      * Used by the notifier
      *
-     * @param notifier    VeracodeNotifier
-     * @param build       AbstractBuild
-     * @param envVars     EnvVars
-     * @param filePaths   String
-     * @param bRemoteScan boolean
-     * @return UploadAndScanArgs
+     * @param notifier    a {@link com.veracode.jenkins.plugin.VeracodeNotifier}
+     *                    object.
+     * @param build       a {@link hudson.model.AbstractBuild} object.
+     * @param envVars     a {@link hudson.EnvVars} object.
+     * @param filePaths   an array of {@link java.lang.String} objects.
+     * @param bRemoteScan a boolean.
+     * @return a {@link com.veracode.jenkins.plugin.args.UploadAndScanArgs} object.
      */
     public static UploadAndScanArgs newUploadAndScanArgs(VeracodeNotifier notifier,
             AbstractBuild<?, ?> build, hudson.EnvVars envVars, String[] filePaths,
@@ -255,35 +289,35 @@ public final class UploadAndScanArgs extends AbstractArgs {
      * Returns an UploadAndScanArgs object initialized with the specified arguments.
      * Used by the pipeline recorder.
      *
-     * @param bRemoteScan         boolean
-     * @param autoApplicationName boolean
-     * @param autoDescription     boolean
-     * @param autoScanName        boolean
-     * @param createSandbox       boolean
-     * @param createProfile       boolean
-     * @param teams               String
-     * @param useProxy            boolean
-     * @param vId                 String
-     * @param vKey                String
-     * @param buildNumber         String
-     * @param projectName         String
-     * @param applicationName     String
-     * @param sandboxName         String
-     * @param scanName            String
-     * @param criticality         String
-     * @param scanIncludesPattern String
-     * @param scanExcludesPattern boStringlean
-     * @param fileNamePattern     String
-     * @param replacementPattern  String
-     * @param pHost               String
-     * @param pPort               String
-     * @param pUser               String
-     * @param pCredential         String
-     * @param workspace           FilePath
-     * @param envVars             EnvVars
-     * @param timeOut             String
-     * @param filePaths           String[]
-     * @return UploadAndScanArgs
+     * @param bRemoteScan         a boolean.
+     * @param autoApplicationName a boolean.
+     * @param autoDescription     a boolean.
+     * @param autoScanName        a boolean.
+     * @param createSandbox       a boolean.
+     * @param createProfile       a boolean.
+     * @param teams               a {@link java.lang.String} object.
+     * @param useProxy            a boolean.
+     * @param vId                 a {@link java.lang.String} object.
+     * @param vKey                a {@link java.lang.String} object.
+     * @param buildNumber         a {@link java.lang.String} object.
+     * @param projectName         a {@link java.lang.String} object.
+     * @param applicationName     a {@link java.lang.String} object.
+     * @param sandboxName         a {@link java.lang.String} object.
+     * @param scanName            a {@link java.lang.String} object.
+     * @param criticality         a {@link java.lang.String} object.
+     * @param scanIncludesPattern a {@link java.lang.String} object.
+     * @param scanExcludesPattern a {@link java.lang.String} object.
+     * @param fileNamePattern     a {@link java.lang.String} object.
+     * @param replacementPattern  a {@link java.lang.String} object.
+     * @param pHost               a {@link java.lang.String} object.
+     * @param pPort               a {@link java.lang.String} object.
+     * @param pUser               a {@link java.lang.String} object.
+     * @param pCredential         a {@link java.lang.String} object.
+     * @param workspace           a {@link hudson.FilePath} object.
+     * @param envVars             a {@link hudson.EnvVars} object.
+     * @param timeOut             a {@link java.lang.String} object.
+     * @param filePaths           an array of {@link java.lang.String} objects.
+     * @return a {@link com.veracode.jenkins.plugin.args.UploadAndScanArgs} object.
      */
     public static UploadAndScanArgs newUploadAndScanArgs(boolean bRemoteScan,
             boolean autoApplicationName, boolean autoDescription, boolean autoScanName,
@@ -367,12 +401,12 @@ public final class UploadAndScanArgs extends AbstractArgs {
     }
 
     /**
-     * Set our custom environment variables
+     * Sets our custom environment variables.
      *
-     * @param envVars     - Environment of the build/run
-     * @param buildNumber - String
-     * @param projectName - String
-     *
+     * @param envVars     a {@link hudson.EnvVars} object - environment of the
+     *                    build/run.
+     * @param buildNumber a {@link java.lang.String} object.
+     * @param projectName a {@link java.lang.String} object.
      */
     public static void setEnvVars(hudson.EnvVars envVars, String buildNumber, String projectName) {
         if (null == envVars) {

@@ -11,6 +11,12 @@ import org.kohsuke.stapler.DataBoundSetter;
 import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
 
+import com.veracode.jenkins.plugin.common.Constant;
+import com.veracode.jenkins.plugin.common.DAAdapterService;
+import com.veracode.jenkins.plugin.data.ProxyBlock;
+import com.veracode.jenkins.plugin.utils.FormValidationUtil;
+import com.veracode.jenkins.plugin.utils.StringUtil;
+
 import hudson.Extension;
 import hudson.FilePath;
 import hudson.Launcher;
@@ -23,14 +29,18 @@ import hudson.tasks.BuildStepMonitor;
 import hudson.tasks.Publisher;
 import hudson.tasks.Recorder;
 import hudson.util.FormValidation;
-import com.veracode.jenkins.plugin.common.Constant;
-import com.veracode.jenkins.plugin.common.DAAdapterService;
-import com.veracode.jenkins.plugin.data.ProxyBlock;
-import com.veracode.jenkins.plugin.utils.FormValidationUtil;
-import com.veracode.jenkins.plugin.utils.StringUtil;
 import jenkins.tasks.SimpleBuildStep;
 import net.sf.json.JSONObject;
 
+/**
+ * The DynamicAnalysisResultsPipelineRecorder class handles processing for
+ * "veracodeDynamicAnalysisReview" Pipeline script. The UI interface of Snippet
+ * Generator for "veracodeDynamicAnalysisReview : Review Veracode Dynamic
+ * Analysis Results" is defined in associated config.jelly.
+ * <p>
+ * This class extends the {@link hudson.tasks.Recorder} class.
+ * 
+ */
 public class DynamicAnalysisResultsPipelineRecorder extends Recorder implements SimpleBuildStep {
 
     @DataBoundSetter
@@ -56,18 +66,18 @@ public class DynamicAnalysisResultsPipelineRecorder extends Recorder implements 
     public final String pPassword;
 
     /**
-     * {@link org.kohsuke.stapler.DataBoundConstructor DataBoundContructor}
+     * Constructor for DynamicAnalysisResultsPipelineRecorder.
      *
-     * @param waitForResultsDuration      int
-     * @param failBuildForPolicyViolation boolean
-     * @param debug                       boolean
-     * @param useProxy                    boolean
-     * @param pHost                       String
-     * @param pPort                       String
-     * @param pUser                       String
-     * @param pPassword                   String
-     * @param vid                         String
-     * @param vkey                        String
+     * @param waitForResultsDuration      a int.
+     * @param failBuildForPolicyViolation a boolean.
+     * @param debug                       a boolean.
+     * @param useProxy                    a boolean.
+     * @param pHost                       a {@link java.lang.String} object.
+     * @param pPort                       a {@link java.lang.String} object.
+     * @param pUser                       a {@link java.lang.String} object.
+     * @param pPassword                   a {@link java.lang.String} object.
+     * @param vid                         a {@link java.lang.String} object.
+     * @param vkey                        a {@link java.lang.String} object.
      */
     @DataBoundConstructor
     public DynamicAnalysisResultsPipelineRecorder(int waitForResultsDuration,
@@ -86,11 +96,19 @@ public class DynamicAnalysisResultsPipelineRecorder extends Recorder implements 
         this.pPassword = useProxy ? pPassword : null;
     }
 
+    /**
+     * Returns an object that represents the scope of the synchronization monitor
+     * expected by the plugin.
+     */
     @Override
     public BuildStepMonitor getRequiredMonitorService() {
         return null;
     }
 
+    /**
+     * Called by Jenkins after a build for a job specified to use the plugin is
+     * performed.
+     */
     @Override
     public void perform(Run<?, ?> run, FilePath workspace, Launcher launcher, TaskListener listener)
             throws InterruptedException, IOException {
@@ -107,6 +125,12 @@ public class DynamicAnalysisResultsPipelineRecorder extends Recorder implements 
         run.setResult(buildSuccess ? Result.SUCCESS : Result.FAILURE);
     }
 
+    /**
+     * Returns the
+     * {@link com.veracode.jenkins.plugin.DynamicAnalysisResultsPipelineRecorder.PipelineDynamicAnalysisResultsDescriptorImpl}
+     * object associated with this instance.
+     *
+     */
     @Override
     public PipelineDynamicAnalysisResultsDescriptorImpl getDescriptor() {
         return (PipelineDynamicAnalysisResultsDescriptorImpl) super.getDescriptor();
