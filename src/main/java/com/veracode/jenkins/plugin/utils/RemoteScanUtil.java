@@ -2,14 +2,26 @@ package com.veracode.jenkins.plugin.utils;
 
 import java.util.List;
 
+import com.veracode.jenkins.plugin.common.Constant;
+
 import hudson.FilePath;
 import hudson.model.AbstractBuild;
 import hudson.model.Node;
-import com.veracode.jenkins.plugin.common.Constant;
 
+/**
+ * The RemoteScanUtil is a utility class related to perfoming the scans in
+ * remote location.
+ *
+ */
 public final class RemoteScanUtil {
 
-    // getting the jar version so that we can decide to copy the latest
+    /**
+     * Returns the Veracode API Wrapper jar version in order to decide whether to
+     * copy the latest.
+     *
+     * @param jarName a {@link java.lang.String} object.
+     * @return a int.
+     */
     public static int getJarVersion(String jarName) {
         String regex = ".*?vosp-api-wrappers-java-(.*?).jar";
         String temp = jarName.replaceAll(regex, "$1");
@@ -17,7 +29,12 @@ public final class RemoteScanUtil {
         return Integer.parseInt(strVersion);
     }
 
-    // need to mask the sensitive data
+    /**
+     * Masks the sensitive data.
+     *
+     * @param remoteCmd a {@link java.util.List} object.
+     * @return an array of {@link java.lang.Integer} objects.
+     */
     public static Integer[] getMaskPosition(List<String> remoteCmd) {
 
         Integer[] maskPos;
@@ -37,7 +54,12 @@ public final class RemoteScanUtil {
         return maskPos;
     }
 
-    // Getting the path separator windows or unix
+    /**
+     * Returns the path separator for Windows or Linux.
+     *
+     * @param remote a {@link java.lang.String} object.
+     * @return a {@link java.lang.String} object.
+     */
     public static String getPathSeparator(String remote) {
         if (remote.length() > 3 && remote.charAt(1) == ':' && remote.charAt(2) == '\\')
             return "\\";
@@ -45,7 +67,12 @@ public final class RemoteScanUtil {
             return "/";
     }
 
-    // Getting the remote veracodepath where we will copy the wrapper
+    /**
+     * Returns the remote file path where Veracode API Wrapper is copied.
+     *
+     * @param build a {@link hudson.model.AbstractBuild} object.
+     * @return a {@link hudson.FilePath} object.
+     */
     public static FilePath getRemoteVeracodePath(AbstractBuild<?, ?> build) {
         Node node = build.getBuiltOn();
         if (node == null) {
@@ -63,7 +90,12 @@ public final class RemoteScanUtil {
         return remoteVeracodeFilePath;
     }
 
-    // Getting the remote veracodepath where we will copy the wrapper
+    /**
+     * Returns the remote file path where Veracode API Wrapper is copied.
+     *
+     * @param node a {@link hudson.model.Node} object.
+     * @return a {@link hudson.FilePath} object.
+     */
     public static FilePath getRemoteVeracodePath(Node node) {
         FilePath rootpath = node.getRootPath();
         if (rootpath == null) {
@@ -78,11 +110,11 @@ public final class RemoteScanUtil {
     }
 
     /**
-     * Edit parameter values to avoid splitting if they contain spaces in pipeline
-     * with remote scan
+     * Returns edited parameter values to avoid splitting if they contain spaces in
+     * pipeline with remote scan.
      *
-     * @param parameterValue String
-     * @return String formatted parameter values
+     * @param parameterValue a {@link java.lang.String} object.
+     * @return a {@link java.lang.String} object.
      */
     public static String formatParameterValue(final String parameterValue) {
         if (parameterValue.startsWith("\"") && parameterValue.endsWith("\"")) {

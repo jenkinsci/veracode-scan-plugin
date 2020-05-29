@@ -10,12 +10,26 @@ import java.util.List;
 
 import javax.servlet.ServletException;
 
+import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
 
 import com.veracode.apiwrapper.cli.VeracodeCommand.VeracodeParser;
+import com.veracode.jenkins.plugin.args.UploadAndScanArgs;
+import com.veracode.jenkins.plugin.common.Constant;
+import com.veracode.jenkins.plugin.data.CredentialsBlock;
+import com.veracode.jenkins.plugin.data.ProxyBlock;
+import com.veracode.jenkins.plugin.data.ScanHistory;
+import com.veracode.jenkins.plugin.utils.EncryptionUtil;
+import com.veracode.jenkins.plugin.utils.FileUtil;
+import com.veracode.jenkins.plugin.utils.FormValidationUtil;
+import com.veracode.jenkins.plugin.utils.RemoteScanUtil;
+import com.veracode.jenkins.plugin.utils.StringUtil;
+import com.veracode.jenkins.plugin.utils.WrapperUtil;
+import com.veracode.jenkins.plugin.utils.XmlUtil;
 
 import hudson.EnvVars;
+import hudson.Extension;
 import hudson.FilePath;
 import hudson.Launcher;
 import hudson.Launcher.ProcStarter;
@@ -31,28 +45,15 @@ import hudson.tasks.Publisher;
 import hudson.util.ArgumentListBuilder;
 import hudson.util.FormValidation;
 import hudson.util.ListBoxModel;
-import com.veracode.jenkins.plugin.args.UploadAndScanArgs;
-import com.veracode.jenkins.plugin.common.Constant;
-import com.veracode.jenkins.plugin.data.CredentialsBlock;
-import com.veracode.jenkins.plugin.data.ProxyBlock;
-import com.veracode.jenkins.plugin.data.ScanHistory;
-import com.veracode.jenkins.plugin.utils.EncryptionUtil;
-import com.veracode.jenkins.plugin.utils.FileUtil;
-import com.veracode.jenkins.plugin.utils.FormValidationUtil;
-import com.veracode.jenkins.plugin.utils.RemoteScanUtil;
-import com.veracode.jenkins.plugin.utils.StringUtil;
-import com.veracode.jenkins.plugin.utils.WrapperUtil;
-import com.veracode.jenkins.plugin.utils.XmlUtil;
 import net.sf.json.JSONObject;
 
 /**
- * Contains the code that is executed after a job that is configured to use the
- * Veracode plugin is built and provides getter methods for the form fields
- * defined in config.jelly.
+ * The VeracodeNotifier class contains the code that is executed after a job
+ * that is configured to use the Veracode plugin is built and provides getter
+ * methods for the form fields defined in config.jelly.
  * <p>
  *
  * This class extends the {@link hudson.tasks.Notifier Notifier} class.
- *
  *
  */
 public class VeracodeNotifier extends Notifier {
@@ -67,9 +68,8 @@ public class VeracodeNotifier extends Notifier {
      * understanding that doing so might prevent the plugin from working properly if
      * not at all.
      *
-     *
      */
-    @hudson.Extension
+    @Extension
     public static final class VeracodeDescriptor extends BuildStepDescriptor<Publisher> {
 
         private static final String PostBuildActionDisplayText = "Upload and Scan with Veracode";
@@ -89,6 +89,7 @@ public class VeracodeNotifier extends Notifier {
         // Backing fields for methods that correspond to identifiers referenced in
         // global.jelly
         // --------------------------------------------------------------------------------------
+        
         private String gvid;
         private String gvkey;
         private boolean failbuild = true;
@@ -106,6 +107,7 @@ public class VeracodeNotifier extends Notifier {
         // -------------------------------------------------------------------
         // Methods that correspond to identifiers referenced in global.jelly
         // -------------------------------------------------------------------
+        
         public String getGvid() {
             return EncryptionUtil.decrypt(gvid);
         }
@@ -163,6 +165,7 @@ public class VeracodeNotifier extends Notifier {
         // Methods that correspond to validation of data supplied in the "Configure
         // System" page and the "Job Configuration" page
         // ------------------------------------------------------------------------------------------------------------------------
+        
         public FormValidation doTestConnection(@QueryParameter("gvid") final String gv_id,
                 @QueryParameter("gvkey") final String gv_key,
                 @QueryParameter("proxy") final boolean _proxy,
@@ -292,6 +295,7 @@ public class VeracodeNotifier extends Notifier {
         // --------------------------------------------------------------
         // Overridden methods
         // --------------------------------------------------------------
+        
         /**
          * The name of the plugin displayed in the UI.
          */
@@ -347,6 +351,7 @@ public class VeracodeNotifier extends Notifier {
         // --------------------------------------------------------------
         // Helper methods
         // --------------------------------------------------------------
+        
         /**
          * Whether Veracode credentials were supplied in the "Configure System" page.
          * <p>
@@ -440,6 +445,7 @@ public class VeracodeNotifier extends Notifier {
     // Backing fields for methods that correspond to identifiers referenced in
     // config.jelly
     // --------------------------------------------------------------------------------------
+    
     private final String _appname;
     private final boolean _createprofile;
     private final String _teams;
@@ -460,6 +466,7 @@ public class VeracodeNotifier extends Notifier {
     // -------------------------------------------------------------------
     // Methods that correspond to identifiers referenced in config.jelly
     // -------------------------------------------------------------------
+    
     public String getAppname() {
         return EncryptionUtil.decrypt(this._appname);
     }
@@ -538,6 +545,7 @@ public class VeracodeNotifier extends Notifier {
     // --------------------------------------------------------------
     // Overridden methods
     // --------------------------------------------------------------
+    
     /**
      * Returns the
      * {@link com.veracode.jenkins.plugin.VeracodeNotifier.VeracodeDescriptor
@@ -562,7 +570,6 @@ public class VeracodeNotifier extends Notifier {
      * In this overridden method we are taking care of copying the wrapper to remote
      * location and making the build ready for scan
      **/
-
     @Override
     public boolean prebuild(AbstractBuild<?, ?> build, BuildListener listener) {
         boolean bRet = false;
@@ -844,30 +851,31 @@ public class VeracodeNotifier extends Notifier {
         }
     }
 
-    // --------------------------------------------------------------
-    // Constructor
-    // --------------------------------------------------------------
     /**
+     * Constructor for VeracodeNotifier.
+     * <p>
      * Called by Jenkins with data supplied in the "Job Configuration" page.
      *
-     * @param appname               String
-     * @param createprofile         boolean
-     * @param teams                 String
-     * @param criticality           String
-     * @param sandboxname           String
-     * @param createsandbox         boolean
-     * @param version               String
-     * @param filenamepattern       String
-     * @param replacementpattern    String
-     * @param uploadincludespattern String
-     * @param uploadexcludespattern String
-     * @param scanincludespattern   String
-     * @param scanexcludespattern   String
-     * @param waitForScan           boolean
-     * @param timeout               String
-     * @param credentials           CredentialsBlock
+     * @param appname               a {@link java.lang.String} object.
+     * @param createprofile         a boolean.
+     * @param teams                 a {@link java.lang.String} object.
+     * @param criticality           a {@link java.lang.String} object.
+     * @param sandboxname           a {@link java.lang.String} object.
+     * @param createsandbox         a boolean.
+     * @param version               a {@link java.lang.String} object.
+     * @param filenamepattern       a {@link java.lang.String} object.
+     * @param replacementpattern    a {@link java.lang.String} object.
+     * @param uploadincludespattern a {@link java.lang.String} object.
+     * @param uploadexcludespattern a {@link java.lang.String} object.
+     * @param scanincludespattern   a {@link java.lang.String} object.
+     * @param scanexcludespattern   a {@link java.lang.String} object.
+     * @param waitForScan           a boolean.
+     * @param timeout               a {@link java.lang.String} object.
+     * @param credentials           a
+     *                              {@link com.veracode.jenkins.plugin.data.CredentialsBlock}
+     *                              object.
      */
-    @org.kohsuke.stapler.DataBoundConstructor
+    @DataBoundConstructor
     public VeracodeNotifier(String appname, boolean createprofile, String teams, String criticality,
             String sandboxname, boolean createsandbox, String version, String filenamepattern,
             String replacementpattern, String uploadincludespattern, String uploadexcludespattern,
@@ -896,7 +904,17 @@ public class VeracodeNotifier extends Notifier {
         this._credentials = credentials;
     }
 
-    // invoking the CLI from remote node
+    /**
+     * Invokes the CLI from remote node.
+     *
+     * @param build    a {@link hudson.model.AbstractBuild} object.
+     * @param listener a {@link hudson.model.BuildListener} object.
+     * @param ps       a {@link java.io.PrintStream} object.
+     * @param bDebug   a boolean.
+     * @return a boolean.
+     * @throws java.io.IOException            if any.
+     * @throws java.lang.InterruptedException if any.
+     */
     private boolean runScanFromRemote(AbstractBuild<?, ?> build, BuildListener listener,
             PrintStream ps, boolean bDebug) throws IOException, InterruptedException {
         boolean bRet = false;
@@ -1010,11 +1028,13 @@ public class VeracodeNotifier extends Notifier {
     }
 
     /**
-     * Construct the scan result from Detailed Report
+     * Constructs the scan result from Detailed Report.
      *
-     * @param run      - the current Jenkins build
-     * @param listener - listener of this task
-     * @throws Exception when error happened during the operation
+     * @param build    a {@link hudson.model.AbstractBuild} object - the current
+     *                 Jenkins build.
+     * @param listener a {@link hudson.model.BuildListener} object - listener of
+     *                 this task.
+     * @throws java.lang.Exception when error happened during the operation.
      */
     private void getScanResults(AbstractBuild<?, ?> build, BuildListener listener)
             throws Exception {

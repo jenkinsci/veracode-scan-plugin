@@ -10,10 +10,11 @@ import org.apache.commons.lang.StringEscapeUtils;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
 
-import hudson.model.Run;
 import com.veracode.jenkins.plugin.common.Constant;
 import com.veracode.jenkins.plugin.data.BuildHistory;
 import com.veracode.jenkins.plugin.data.DAScanHistory;
+
+import hudson.model.Run;
 import jenkins.model.RunAction2;
 
 /**
@@ -28,11 +29,20 @@ public class DynamicAnalysisResultsAction implements RunAction2 {
     // The Jenkins build containing this action
     private transient Run<?, ?> build;
 
+    /**
+     * Constructor for DynamicAnalysisResultsAction.
+     */
     public DynamicAnalysisResultsAction() {
         scanHistory = null;
         build = null;
     }
 
+    /**
+     * Constructor for DynamicAnalysisResultsAction.
+     *
+     * @param scanHistory a {@link com.veracode.jenkins.plugin.data.DAScanHistory}
+     *                    object.
+     */
     public DynamicAnalysisResultsAction(DAScanHistory scanHistory) {
         if (null == scanHistory) {
             throw new IllegalArgumentException(
@@ -43,8 +53,8 @@ public class DynamicAnalysisResultsAction implements RunAction2 {
     }
 
     /**
-     * Use by Jenkins framework to display our logo on the left panel on the build
-     * page
+     * Used by Jenkins framework to display our logo on the left panel on the build
+     * page.
      *
      * @return URI to the 24x24 Veracode logo icon
      */
@@ -139,7 +149,7 @@ public class DynamicAnalysisResultsAction implements RunAction2 {
     }
 
     /**
-     * Use by summary.jelly for DynamicAnalysisResultsAction to display our logo
+     * Used by summary.jelly for DynamicAnalysisResultsAction to display our logo.
      *
      * @return URI to the 48x48 Veracode logo icon
      */
@@ -148,8 +158,8 @@ public class DynamicAnalysisResultsAction implements RunAction2 {
     }
 
     /**
-     * Use by summary.jelly for DynamicAnalysisResultsAction to display the correct
-     * status icon (16x16)
+     * Used by summary.jelly for DynamicAnalysisResultsAction to display the correct
+     * status icon (16x16).
      *
      * @return relative URI of the status icon
      */
@@ -193,7 +203,7 @@ public class DynamicAnalysisResultsAction implements RunAction2 {
 
     /**
      * Used by summary.jelly for DynamicAnalysisResultsAction to display the correct
-     * status icon (32x32)
+     * status icon (32x32).
      *
      * @return relative URI of the status icon
      */
@@ -215,7 +225,7 @@ public class DynamicAnalysisResultsAction implements RunAction2 {
 
     /**
      * Used by summary.jelly for DynamicAnalysisResultsAction to display the correct
-     * status icon
+     * status icon.
      *
      * @return relative URI of the status icon
      */
@@ -323,6 +333,12 @@ public class DynamicAnalysisResultsAction implements RunAction2 {
         return scanHistory.getFlawsCountHistory();
     }
 
+    /**
+     * Creates a trend chart with scan history.
+     *
+     * @param request  a {@link org.kohsuke.stapler.StaplerRequest} object.
+     * @param response a {@link org.kohsuke.stapler.StaplerResponse} object.
+     */
     public void doGraph(StaplerRequest request, StaplerResponse response) {
         try {
             BuildHistory buildHistory = new BuildHistory("Dynamic Vulnerabilities",

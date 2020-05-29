@@ -11,7 +11,6 @@ import org.apache.commons.lang.StringEscapeUtils;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
 
-import hudson.model.Run;
 import com.veracode.jenkins.plugin.common.Constant;
 import com.veracode.jenkins.plugin.data.BuildHistory;
 import com.veracode.jenkins.plugin.data.FindingCounts;
@@ -19,6 +18,8 @@ import com.veracode.jenkins.plugin.data.SCAComponent;
 import com.veracode.jenkins.plugin.data.SCAScanHistory;
 import com.veracode.jenkins.plugin.data.ScanHistory;
 import com.veracode.jenkins.plugin.enums.SeverityLevel;
+
+import hudson.model.Run;
 import jenkins.model.RunAction2;
 
 /**
@@ -33,11 +34,19 @@ public class VeracodeAction implements RunAction2 {
     // The Jenkins build containing this action
     private transient Run<?, ?> build;
 
+    /**
+     * <p>Constructor for VeracodeAction.</p>
+     */
     public VeracodeAction() {
         scanHistory = null;
         build = null;
     }
 
+    /**
+     * <p>Constructor for VeracodeAction.</p>
+     *
+     * @param scanHistory a {@link com.veracode.jenkins.plugin.data.ScanHistory} object.
+     */
     public VeracodeAction(ScanHistory scanHistory) {
         if (null == scanHistory) {
             throw new IllegalArgumentException(
@@ -322,6 +331,12 @@ public class VeracodeAction implements RunAction2 {
         return scanHistory.getFlawsCountHistory();
     }
 
+    /**
+     * Creates a trend chart with scan history.
+     *
+     * @param request  a {@link org.kohsuke.stapler.StaplerRequest} object.
+     * @param response a {@link org.kohsuke.stapler.StaplerResponse} object.
+     */
     public void doGraph(StaplerRequest request, StaplerResponse response) {
         try {
             Collection<BuildHistory> buildHistoryList = new ArrayList<BuildHistory>();

@@ -1,9 +1,10 @@
 package com.veracode.jenkins.plugin.data;
 
+import org.kohsuke.stapler.DataBoundConstructor;
+
 /**
- * Corresponds to an "optionalBlock" jelly element that represents user
- * credentials data.
- *
+ * The CredentialsBlock class corresponds to an "optionalBlock" jelly element
+ * that represents user credentials data.
  *
  */
 public final class CredentialsBlock {
@@ -14,7 +15,7 @@ public final class CredentialsBlock {
     /**
      * Corresponds to the {@code vid} identifier referenced in a jelly file.
      *
-     * @return String
+     * @return a {@link java.lang.String} object.
      */
     public String getVid() {
         return this._vid;
@@ -23,21 +24,21 @@ public final class CredentialsBlock {
     /**
      * Corresponds to the {@code vkey} identifier referenced in a jelly file.
      *
-     * @return String
+     * @return a {@link java.lang.String} object.
      */
     public String getVkey() {
         return this._vkey;
     }
 
     /**
+     * Constructor for CredentialsBlock.
+     * <p>
      * Called by Jenkins with form data.
      *
-     * {@link org.kohsuke.stapler.DataBoundConstructor DataBoundContructor}
-     *
-     * @param vid  String
-     * @param vkey String
+     * @param vid  a {@link java.lang.String} object.
+     * @param vkey a {@link java.lang.String} object.
      */
-    @org.kohsuke.stapler.DataBoundConstructor
+    @DataBoundConstructor
     public CredentialsBlock(String vid, String vkey) {
         this._vid = vid;
         this._vkey = vkey;

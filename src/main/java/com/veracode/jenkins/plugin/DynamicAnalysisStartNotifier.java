@@ -9,6 +9,15 @@ import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
 
+import com.veracode.jenkins.plugin.VeracodeNotifier.VeracodeDescriptor;
+import com.veracode.jenkins.plugin.common.Constant;
+import com.veracode.jenkins.plugin.common.DAAdapterService;
+import com.veracode.jenkins.plugin.data.CredentialsBlock;
+import com.veracode.jenkins.plugin.data.ProxyBlock;
+import com.veracode.jenkins.plugin.utils.EncryptionUtil;
+import com.veracode.jenkins.plugin.utils.FormValidationUtil;
+import com.veracode.jenkins.plugin.utils.StringUtil;
+
 import hudson.Extension;
 import hudson.Launcher;
 import hudson.model.AbstractBuild;
@@ -19,30 +28,22 @@ import hudson.tasks.BuildStepMonitor;
 import hudson.tasks.Notifier;
 import hudson.tasks.Publisher;
 import hudson.util.FormValidation;
-import com.veracode.jenkins.plugin.VeracodeNotifier.VeracodeDescriptor;
-import com.veracode.jenkins.plugin.common.Constant;
-import com.veracode.jenkins.plugin.common.DAAdapterService;
-import com.veracode.jenkins.plugin.data.CredentialsBlock;
-import com.veracode.jenkins.plugin.data.ProxyBlock;
-import com.veracode.jenkins.plugin.utils.EncryptionUtil;
-import com.veracode.jenkins.plugin.utils.FormValidationUtil;
-import com.veracode.jenkins.plugin.utils.StringUtil;
 import jenkins.model.Jenkins;
 import net.sf.json.JSONObject;
 
-/*
- * DynamicAnalysisStartNotifier handles processing for post build action "Resubmit Veracode Dynamic Analysis".
- * The UI interface is defined in associated config.jelly.
- *
- * User provides:
- *    - Dynamic Analysis name
- *    - max duration in hours for analysis scan
- *    - whether to fail Jenkins build if the analysis fails to run
- *    - whether to use global API credentials or define ID/Key specific to the job.
+/**
+ * The DynamicAnalysisStartNotifier class handles processing for post build
+ * action "Resubmit Veracode Dynamic Analysis". The UI interface is defined in
+ * associated config.jelly.
+ * <p>
+ * User provides: 
+ *  - Dynamic Analysis name 
+ *  - max duration in hours for analysis scan 
+ *  - whether to fail Jenkins build if the analysis fails to run 
+ *  - whether to use global API credentials or define ID/Key specific to the job.
  *
  * This class extends the {@link hudson.tasks.Notifier Notifier} class.
  */
-
 public class DynamicAnalysisStartNotifier extends Notifier {
 
     private final String analysisName;
@@ -51,6 +52,16 @@ public class DynamicAnalysisStartNotifier extends Notifier {
     private final CredentialsBlock credentials;
     private boolean isGlobalCredentialsEnabled;
 
+    /**
+     * Constructor for DynamicAnalysisStartNotifier.
+     *
+     * @param analysisName          a {@link java.lang.String} object.
+     * @param maximumDuration       a int.
+     * @param failBuildAsScanFailed a boolean.
+     * @param credentials           a
+     *                              {@link com.veracode.jenkins.plugin.data.CredentialsBlock}
+     *                              object.
+     */
     @DataBoundConstructor
     public DynamicAnalysisStartNotifier(final String analysisName, final int maximumDuration,
             final boolean failBuildAsScanFailed, final CredentialsBlock credentials) {
@@ -67,6 +78,10 @@ public class DynamicAnalysisStartNotifier extends Notifier {
         }
     }
 
+    /**
+     * Returns an object that represents the scope of the synchronization monitor
+     * expected by the plugin.
+     */
     @Override
     public BuildStepMonitor getRequiredMonitorService() {
         return BuildStepMonitor.BUILD;
@@ -98,6 +113,12 @@ public class DynamicAnalysisStartNotifier extends Notifier {
                 descriptor.isDebugEnabled(), proxyBlock);
     }
 
+    /**
+     * Returns the
+     * {@link com.veracode.jenkins.plugin.DynamicAnalysisStartNotifier.DynamicAnalysisStartDescriptor}
+     * object associated with this instance.
+     *
+     */
     @Override
     public DynamicAnalysisStartDescriptor getDescriptor() {
         return (DynamicAnalysisStartDescriptor) super.getDescriptor();

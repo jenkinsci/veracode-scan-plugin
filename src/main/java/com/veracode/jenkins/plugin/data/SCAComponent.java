@@ -1,7 +1,8 @@
 package com.veracode.jenkins.plugin.data;
 
 /**
- * This class represents a SCA Component (based on the detailed report)
+ * The SCAComponent class represents a SCA Component (based on the detailed
+ * report)
  *
  */
 public class SCAComponent {
@@ -11,6 +12,14 @@ public class SCAComponent {
     private final boolean isNew;
     private final boolean violatedPolicy;
 
+    /**
+     * Constructor for SCAComponent.
+     *
+     * @param name           a {@link java.lang.String} object.
+     * @param isBacklisted   a boolean.
+     * @param isNew          a boolean.
+     * @param violatedPolicy a boolean.
+     */
     public SCAComponent(String name, boolean isBacklisted, boolean isNew, boolean violatedPolicy) {
         this.name = name;
         this.isBacklisted = isBacklisted;

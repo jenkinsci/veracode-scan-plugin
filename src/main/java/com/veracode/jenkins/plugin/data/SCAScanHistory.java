@@ -9,7 +9,8 @@ import java.util.Set;
 import com.veracode.jenkins.plugin.enums.SeverityLevel;
 
 /**
- * This class represents the SCA Scan history for a Jenkins current/past build.
+ * This SCAScanHistory class represents the SCA Scan history for a Jenkins
+ * current/past build.
  *
  */
 public class SCAScanHistory {
@@ -31,6 +32,9 @@ public class SCAScanHistory {
                                              // severity level.
     private final Set<SCAComponent> scaComponents;
 
+    /**
+     * Constructor for SCAScanHistory.
+     */
     public SCAScanHistory() {
         subscribed = false;
         blComponentsCount = 0;
@@ -43,6 +47,11 @@ public class SCAScanHistory {
         totalNetVulCount = 0;
     }
 
+    /**
+     * Constructor for SCAScanHistory.
+     *
+     * @param vulCountHistory a {@link java.util.List} object.
+     */
     public SCAScanHistory(List<Map<String, Long>> vulCountHistory) {
         subscribed = false;
         blComponentsCount = 0;
@@ -55,6 +64,15 @@ public class SCAScanHistory {
         totalNetVulCount = 0;
     }
 
+    /**
+     * Constructor for SCAScanHistory.
+     *
+     * @param maxCVSSScore      a double.
+     * @param blComponentsCount a int.
+     * @param vulCounts         a {@link java.util.Set} object.
+     * @param scaComponents     a {@link java.util.Set} object.
+     * @param vulCountHistory   a {@link java.util.List} object.
+     */
     public SCAScanHistory(double maxCVSSScore, int blComponentsCount, Set<FindingCounts> vulCounts,
             Set<SCAComponent> scaComponents, List<Map<String, Long>> vulCountHistory) {
         this.subscribed = true;

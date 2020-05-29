@@ -13,9 +13,8 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 /**
- * A utility class for encrypting and decrypting plugin-related configuration
- * data.
- *
+ * The EncryptionUtil is a utility class for encrypting and decrypting
+ * plugin-related configuration data.
  *
  */
 public final class EncryptionUtil {
@@ -26,9 +25,9 @@ public final class EncryptionUtil {
      * {@link net.sf.json.JSONObject JSONObject} object before it is persisted to
      * disk.
      *
-     * @param req      StaplerRequest
-     * @param formData JSONObject
-     * @throws ServletException exception
+     * @param req      a {@link org.kohsuke.stapler.StaplerRequest} object.
+     * @param formData a {@link net.sf.json.JSONObject} object.
+     * @throws javax.servlet.ServletException if any.
      */
     public static void encrypt(StaplerRequest req, JSONObject formData) throws ServletException {
         try {
@@ -53,6 +52,8 @@ public final class EncryptionUtil {
      *        JSONObject=unordered collection of name/value pairs. <br>
      *        JSONNull=represents java-script null. <br>
      *        values=boolean, number, string, JSONArray, JSONObject, JSONNull.
+     * @param json     a {@link net.sf.json.JSON} object.
+     * @param formData a {@link net.sf.json.JSONObject} object.
      */
     @SuppressWarnings({
             "rawtypes", "unchecked"
@@ -94,6 +95,7 @@ public final class EncryptionUtil {
      *        JSONObject=unordered collection of name/value pairs.<br>
      *        JSONNull=represents java-script null.<br>
      *        values=boolean, number, string, JSONArray, JSONObject, JSONNull.
+     * @param json a {@link net.sf.json.JSON} object.
      */
     @SuppressWarnings({
             "rawtypes", "unchecked"
@@ -132,9 +134,8 @@ public final class EncryptionUtil {
     /**
      * Encrypts a plain text String.
      *
-     *
-     * @param data String
-     * @return String
+     * @param data a {@link java.lang.String} object.
+     * @return a {@link java.lang.String} object.
      */
     public static String encrypt(String data) {
         return Secret.fromString(data).getEncryptedValue();
@@ -143,14 +144,16 @@ public final class EncryptionUtil {
     /**
      * Decrypts an encrypted text String.
      *
-     *
-     * @param data String
-     * @return String
+     * @param data a {@link java.lang.String} object.
+     * @return a {@link java.lang.String} object.
      */
     public static String decrypt(String data) {
         return Secret.toString(Secret.fromString(data));
     }
 
+    /**
+     * Constructor for EncryptionUtil.
+     */
     private EncryptionUtil() {
     }
 }

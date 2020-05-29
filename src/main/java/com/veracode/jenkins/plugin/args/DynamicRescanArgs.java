@@ -1,18 +1,21 @@
 package com.veracode.jenkins.plugin.args;
 
-import hudson.EnvVars;
-import hudson.FilePath;
-import hudson.model.AbstractBuild;
 import com.veracode.jenkins.plugin.DynamicRescanNotifier;
 import com.veracode.jenkins.plugin.VeracodeNotifier;
 import com.veracode.jenkins.plugin.VeracodeNotifier.VeracodeDescriptor;
 import com.veracode.jenkins.plugin.utils.StringUtil;
 import com.veracode.jenkins.plugin.utils.UserAgentUtil;
+
+import hudson.EnvVars;
+import hudson.FilePath;
+import hudson.model.AbstractBuild;
 import jenkins.model.Jenkins;
 
 /**
- * Builds the command line argument passed to the Veracode API wrapper that
- * causes it to create dynamic scan request and submit the created dynamic scan.
+ * The DynamicRescanArgs class builds the command line argument passed to the
+ * Veracode API wrapper that causes it to create dynamic scan request and submit
+ * the created dynamic scan.
+ *
  */
 public final class DynamicRescanArgs extends AbstractArgs {
 
@@ -21,17 +24,22 @@ public final class DynamicRescanArgs extends AbstractArgs {
     private static final String FLAWONLY = SWITCH + "flawonly";
     private static final String CUSTOM_PROJECT_NAME_VAR = "projectname";
 
+    /**
+     * Constructor for DynamicRescanArgs.
+     */
     private DynamicRescanArgs() {
         addAction("CreateAndSubmitDynamicRescan");
     }
 
     /**
-     * process arguments
+     * Processes arguments.
      *
-     * @param dynamicScanDescriptor DynamicRescanNotifier
-     * @param build                 AbstractBuild
-     * @param environment           EnvVars
-     * @return DynamicRescanArgs
+     * @param dynamicScanDescriptor a
+     *                              {@link com.veracode.jenkins.plugin.DynamicRescanNotifier}
+     *                              object.
+     * @param build                 a {@link hudson.model.AbstractBuild} object.
+     * @param environment           a {@link hudson.EnvVars} object.
+     * @return a {@link com.veracode.jenkins.plugin.args.DynamicRescanArgs} object.
      */
     public static DynamicRescanArgs dynamicScanArgs(DynamicRescanNotifier dynamicScanDescriptor,
             AbstractBuild<?, ?> build, EnvVars environment) {
@@ -86,12 +94,12 @@ public final class DynamicRescanArgs extends AbstractArgs {
     }
 
     /**
-     * add argument to the argument list
+     * Adds arguments to the argument list.
      *
-     * @param appname     String
-     * @param version     String
-     * @param isDvr       Boolean
-     * @param autoVersion Boolean
+     * @param appname     a {@link java.lang.String} object.
+     * @param version     a {@link java.lang.String} object.
+     * @param isDvr       a {@link java.lang.Boolean} object.
+     * @param autoVersion a {@link java.lang.Boolean} object.
      */
     private void addStdArguments(String appname, String version, Boolean isDvr,
             Boolean autoVersion) {
@@ -110,9 +118,9 @@ public final class DynamicRescanArgs extends AbstractArgs {
     }
 
     /**
-     * Add user agent details got through api
+     * Adds user agent details got through API.
      *
-     * @param userAgent String
+     * @param userAgent a {@link java.lang.String} object.
      */
     protected void addUserAgent(String userAgent) {
         if (!StringUtil.isNullOrEmpty(userAgent)) {
@@ -122,10 +130,14 @@ public final class DynamicRescanArgs extends AbstractArgs {
     }
 
     /**
-     * set proxy setting
+     * Sets proxy settings.
      *
-     * @param veracodeDescriptor VeracodeDescriptor
-     * @param args               DynamicRescanArgs
+     * @param veracodeDescriptor a
+     *                           {@link com.veracode.jenkins.plugin.VeracodeNotifier.VeracodeDescriptor}
+     *                           object.
+     * @param args               a
+     *                           {@link com.veracode.jenkins.plugin.args.DynamicRescanArgs}
+     *                           object.
      */
     private void setProxy(VeracodeDescriptor veracodeDescriptor, DynamicRescanArgs args) {
         String phost = null;
@@ -145,25 +157,25 @@ public final class DynamicRescanArgs extends AbstractArgs {
     }
 
     /**
-     * create argument for pipeline in dynamicRescan
+     * Creates argument for pipeline in dynamicRescan.
      *
-     * @param autoApplicationName boolean
-     * @param autoDescription     boolean
-     * @param autoScanName        boolean
-     * @param useProxy            boolean
-     * @param vId                 String
-     * @param vKey                String
-     * @param version             String
-     * @param projectName         String
-     * @param applicationName     String
-     * @param DVREnabled          boolean
-     * @param pHost               String
-     * @param pPort               String
-     * @param pUser               String
-     * @param pCredential         String
-     * @param workspace           FilePath
-     * @param envVars             EnvVars
-     * @return DynamicRescanArgs
+     * @param autoApplicationName a boolean.
+     * @param autoDescription     a boolean.
+     * @param autoScanName        a boolean.
+     * @param useProxy            a boolean.
+     * @param vId                 a {@link java.lang.String} object.
+     * @param vKey                a {@link java.lang.String} object.
+     * @param version             a {@link java.lang.String} object.
+     * @param projectName         a {@link java.lang.String} object.
+     * @param applicationName     a {@link java.lang.String} object.
+     * @param DVREnabled          a boolean.
+     * @param pHost               a {@link java.lang.String} object.
+     * @param pPort               a {@link java.lang.String} object.
+     * @param pUser               a {@link java.lang.String} object.
+     * @param pCredential         a {@link java.lang.String} object.
+     * @param workspace           a {@link hudson.FilePath} object.
+     * @param envVars             a {@link hudson.EnvVars} object.
+     * @return a {@link com.veracode.jenkins.plugin.args.DynamicRescanArgs} object.
      */
     public static DynamicRescanArgs pipelineRescanArgs(boolean autoApplicationName,
             boolean autoDescription, boolean autoScanName, boolean useProxy, String vId,

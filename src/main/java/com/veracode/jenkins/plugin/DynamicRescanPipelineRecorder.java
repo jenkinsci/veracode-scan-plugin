@@ -9,9 +9,15 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.jenkinsci.Symbol;
+import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 
 import com.veracode.apiwrapper.cli.VeracodeCommand.VeracodeParser;
+import com.veracode.jenkins.plugin.args.DynamicRescanArgs;
+import com.veracode.jenkins.plugin.common.Constant;
+import com.veracode.jenkins.plugin.utils.FileUtil;
+import com.veracode.jenkins.plugin.utils.RemoteScanUtil;
+import com.veracode.jenkins.plugin.utils.StringUtil;
 
 import hudson.FilePath;
 import hudson.Launcher;
@@ -28,13 +34,17 @@ import hudson.tasks.BuildStepMonitor;
 import hudson.tasks.Publisher;
 import hudson.tasks.Recorder;
 import hudson.util.ArgumentListBuilder;
-import com.veracode.jenkins.plugin.args.DynamicRescanArgs;
-import com.veracode.jenkins.plugin.common.Constant;
-import com.veracode.jenkins.plugin.utils.FileUtil;
-import com.veracode.jenkins.plugin.utils.RemoteScanUtil;
-import com.veracode.jenkins.plugin.utils.StringUtil;
 import jenkins.tasks.SimpleBuildStep;
 
+/**
+ * The DynamicRescanPipelineRecorder class handles processing for
+ * "veracodeDynamicRescan" Pipeline script. The UI interface of Snippet
+ * Generator for "veracodeDynamicRescan: Dynamic Rescan with Veracode Pipeline"
+ * is defined in associated config.jelly.
+ * <p>
+ * This class extends the {@link hudson.tasks.Recorder} class.
+ * 
+ */
 public class DynamicRescanPipelineRecorder extends Recorder implements SimpleBuildStep {
 
     @DataBoundSetter
@@ -64,23 +74,21 @@ public class DynamicRescanPipelineRecorder extends Recorder implements SimpleBui
     public final String pPassword;
 
     /**
-     * {@link org.kohsuke.stapler.DataBoundConstructor DataBoundContructor}
+     * Constructor for DynamicRescanPipelineRecorder.
      *
-     * @param applicationName String
-     * @param dvrEnabled      boolean
-     * @param canFailJob      boolean
-     * @param debug           boolean
-     * @param vid             String
-     * @param vkey            String
-     * @param useProxy        boolean
-     * @param pHost           String
-     * @param pPort           int
-     * @param pUser           String
-     * @param pPassword       String
-     * @param vid             String
-     * @param vkey            String
+     * @param applicationName a {@link java.lang.String} object.
+     * @param dvrEnabled      a boolean.
+     * @param canFailJob      a boolean.
+     * @param debug           a boolean.
+     * @param useProxy        a boolean.
+     * @param pHost           a {@link java.lang.String} object.
+     * @param pPort           a int.
+     * @param pUser           a {@link java.lang.String} object.
+     * @param pPassword       a {@link java.lang.String} object.
+     * @param vid             a {@link java.lang.String} object.
+     * @param vkey            a {@link java.lang.String} object.
      */
-    @org.kohsuke.stapler.DataBoundConstructor
+    @DataBoundConstructor
     public DynamicRescanPipelineRecorder(String applicationName, boolean dvrEnabled,
             boolean canFailJob, boolean debug, boolean useProxy, String pHost, int pPort,
             String pUser, String pPassword, String vid, String vkey) {
@@ -98,12 +106,19 @@ public class DynamicRescanPipelineRecorder extends Recorder implements SimpleBui
         this.pPassword = pPassword;
     }
 
+    /**
+     * Returns an object that represents the scope of the synchronization monitor
+     * expected by the plugin.
+     */
     @Override
     public BuildStepMonitor getRequiredMonitorService() {
-        // TODO Auto-generated method stub
         return null;
     }
 
+    /**
+     * Called by Jenkins after a build for a job specified to use the plugin is
+     * performed.
+     */
     @Override
     public void perform(Run<?, ?> run, FilePath workspace, Launcher launcher, TaskListener listener)
             throws InterruptedException, IOException {
@@ -228,6 +243,12 @@ public class DynamicRescanPipelineRecorder extends Recorder implements SimpleBui
         }
     }
 
+    /**
+     * Returns the
+     * {@link com.veracode.jenkins.plugin.DynamicRescanPipelineRecorder.PipelineDynamicRescanDescriptorImpl}
+     * object associated with this instance.
+     *
+     */
     @Override
     public PipelineDynamicRescanDescriptorImpl getDescriptor() {
         return (PipelineDynamicRescanDescriptorImpl) super.getDescriptor();
@@ -251,7 +272,16 @@ public class DynamicRescanPipelineRecorder extends Recorder implements SimpleBui
 
     }
 
-    // copy the wrapper to the remote location
+    /**
+     * Copies the Veracode API Wrapper to the remote location.
+     *
+     * @param node   a {@link hudson.model.Node} object.
+     * @param local  a {@link hudson.FilePath} object.
+     * @param remote a {@link hudson.FilePath} object.
+     * @param ps     a {@link java.io.PrintStream} object.
+     * @return a boolean.
+     * @throws java.lang.Exception if any.
+     */
     private boolean copyJarFiles(Node node, FilePath local, FilePath remote, PrintStream ps)
             throws Exception {
         boolean bRet = false;
@@ -358,7 +388,15 @@ public class DynamicRescanPipelineRecorder extends Recorder implements SimpleBui
         return bRet;
     }
 
-    // invoking the CLI from remote node
+    /**
+     * Invokes the CLI from remote node.
+     *
+     * @param run       a {@link hudson.model.Run} object.
+     * @param workspace a {@link hudson.FilePath} object.
+     * @param listener  a {@link hudson.model.TaskListener} object.
+     * @param ps        a {@link java.io.PrintStream} object.
+     * @return a boolean.
+     */
     private boolean runScanFromRemote(Run<?, ?> run, FilePath workspace, TaskListener listener,
             PrintStream ps) {
         boolean bRet = false;

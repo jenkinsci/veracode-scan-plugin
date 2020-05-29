@@ -8,10 +8,19 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.List;
 
+import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.StaplerRequest;
 
 import com.veracode.apiwrapper.cli.VeracodeCommand.VeracodeParser;
+import com.veracode.jenkins.plugin.VeracodeNotifier.VeracodeDescriptor;
+import com.veracode.jenkins.plugin.args.DynamicRescanArgs;
+import com.veracode.jenkins.plugin.common.Constant;
+import com.veracode.jenkins.plugin.utils.EncryptionUtil;
+import com.veracode.jenkins.plugin.utils.FileUtil;
+import com.veracode.jenkins.plugin.utils.RemoteScanUtil;
+import com.veracode.jenkins.plugin.utils.StringUtil;
 
+import hudson.Extension;
 import hudson.FilePath;
 import hudson.Launcher;
 import hudson.Launcher.ProcStarter;
@@ -25,23 +34,16 @@ import hudson.tasks.BuildStepMonitor;
 import hudson.tasks.Notifier;
 import hudson.tasks.Publisher;
 import hudson.util.ArgumentListBuilder;
-import com.veracode.jenkins.plugin.VeracodeNotifier.VeracodeDescriptor;
-import com.veracode.jenkins.plugin.args.DynamicRescanArgs;
-import com.veracode.jenkins.plugin.common.Constant;
-import com.veracode.jenkins.plugin.utils.EncryptionUtil;
-import com.veracode.jenkins.plugin.utils.FileUtil;
-import com.veracode.jenkins.plugin.utils.RemoteScanUtil;
-import com.veracode.jenkins.plugin.utils.StringUtil;
 import jenkins.model.Jenkins;
 import net.sf.json.JSONObject;
 
 /**
- * Contains the code that is executed after a job that is configured to use the
- * Veracode plugin is built and provides getter methods for the form fields
- * defined in config.jelly.
+ * The DynamicRescanNotifier class contains the code that is executed after a
+ * job that is configured to use the Veracode plugin is built and provides
+ * getter methods for the form fields defined in config.jelly.
  * <p>
- *
  * This class extends the {@link hudson.tasks.Notifier Notifier} class.
+ * 
  */
 public class DynamicRescanNotifier extends Notifier {
 
@@ -58,7 +60,7 @@ public class DynamicRescanNotifier extends Notifier {
      * not at all.
      *
      */
-    @hudson.Extension
+    @Extension
     public static final class DynamicScanDescriptor extends BuildStepDescriptor<Publisher> {
 
         private static final String PostBuildActionDisplayText = "Dynamic Rescan with Veracode";
@@ -141,12 +143,14 @@ public class DynamicRescanNotifier extends Notifier {
     // Backing fields for methods that correspond to identifiers referenced in
     // config.jelly
     // --------------------------------------------------------------------------------------
+    
     private final String _appname;
     private final boolean _dvrenabled;
 
     // -------------------------------------------------------------------
     // Methods that correspond to identifiers referenced in config.jelly
     // -------------------------------------------------------------------
+    
     public String getAppname() {
         return EncryptionUtil.decrypt(this._appname);
     }
@@ -155,6 +159,12 @@ public class DynamicRescanNotifier extends Notifier {
         return this._dvrenabled;
     }
 
+    /**
+     * Returns the
+     * {@link com.veracode.jenkins.plugin.DynamicRescanNotifier.DynamicScanDescriptor }
+     * object associated with this instance.
+     *
+     */
     @Override
     public DynamicScanDescriptor getDescriptor() {
         return (DynamicScanDescriptor) super.getDescriptor();
@@ -173,7 +183,6 @@ public class DynamicRescanNotifier extends Notifier {
      * In this overridden method we are taking care of copying the wrapper to remote
      * location and making the build ready for scan
      **/
-
     @Override
     public boolean prebuild(AbstractBuild<?, ?> build, BuildListener listener) {
         boolean bRet = false;
@@ -363,18 +372,28 @@ public class DynamicRescanNotifier extends Notifier {
     }
 
     /**
+     * Constructor for DynamicRescanNotifier.
+     * <p>
      * Called by Jenkins with data supplied in the "Job Configuration" page.
      *
-     * @param appname    String
-     * @param dvrenabled boolean
+     * @param appname    a {@link java.lang.String} object.
+     * @param dvrenabled a boolean.
      */
-    @org.kohsuke.stapler.DataBoundConstructor
+    @DataBoundConstructor
     public DynamicRescanNotifier(String appname, boolean dvrenabled) {
         this._appname = appname;
         this._dvrenabled = dvrenabled;
     }
 
-    // invoking the CLI from remote node
+    /**
+     * Invokes the CLI from remote node.
+     *
+     * @param build    a {@link hudson.model.AbstractBuild} object.
+     * @param listener a {@link hudson.model.BuildListener} object.
+     * @param ps       a {@link java.io.PrintStream} object.
+     * @param bDebug   a boolean.
+     * @return a boolean.
+     */
     private boolean runScanFromRemote(AbstractBuild<?, ?> build, BuildListener listener,
             PrintStream ps, boolean bDebug) {
         boolean bRet = false;

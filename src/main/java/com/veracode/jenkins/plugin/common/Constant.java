@@ -1,9 +1,7 @@
 package com.veracode.jenkins.plugin.common;
 
 /**
- * Commonly used strings in both extentions
- *
- * @author harsha
+ * The Constant class contains the commonly used strings in the plugin.
  *
  */
 public class Constant {

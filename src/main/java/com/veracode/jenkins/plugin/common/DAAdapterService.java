@@ -19,12 +19,6 @@ import com.veracode.apiwrapper.dynamicanalysis.model.client.ScanOccurrenceInfo;
 import com.veracode.apiwrapper.exceptions.ApiException;
 import com.veracode.apiwrapper.services.APIServiceManager;
 import com.veracode.apiwrapper.services.DynamicAnalysisAPIService;
-import com.veracode.parser.enums.CredentialTypes;
-import com.veracode.parser.util.XmlUtils;
-
-import hudson.FilePath;
-import hudson.model.Run;
-import hudson.model.TaskListener;
 import com.veracode.jenkins.plugin.DynamicAnalysisResultsAction;
 import com.veracode.jenkins.plugin.data.DAScanHistory;
 import com.veracode.jenkins.plugin.data.ProxyBlock;
@@ -33,7 +27,18 @@ import com.veracode.jenkins.plugin.utils.FormValidationUtil;
 import com.veracode.jenkins.plugin.utils.StringUtil;
 import com.veracode.jenkins.plugin.utils.WrapperUtil;
 import com.veracode.jenkins.plugin.utils.XmlUtil;
+import com.veracode.parser.enums.CredentialTypes;
+import com.veracode.parser.util.XmlUtils;
 
+import hudson.FilePath;
+import hudson.model.Run;
+import hudson.model.TaskListener;
+
+/**
+ * The DAAdapterService class contains the methods for resubmitting and
+ * retrieving Dynamic Analysis for both Freestyle and Pipeline.
+ *
+ */
 public class DAAdapterService {
 
     private static final String PARAM_DA_ANALYSIS_NAME = "DA_ANALYSIS_NAME";
@@ -42,20 +47,22 @@ public class DAAdapterService {
     private static final short MAX_ALLOWED_CONSECUTIVE_API_EXCEPTIONS = 5;
 
     /**
-     * Resubmit Veracode Dynamic Analysis - A common method for both Freestyle and
+     * Resubmits Veracode Dynamic Analysis - A common method for both Freestyle and
      * Pipeline
      *
-     * @param run                   Run
-     * @param workspace             FilePath
-     * @param listener              TaskListener
-     * @param analysisName          String
-     * @param maximumDuration       int
-     * @param failBuildAsScanFailed boolean
-     * @param apiID                 String
-     * @param apiKey                String
-     * @param debugEnabled          boolean
-     * @param proxyBlock            ProxyBlock
-     * @return boolean
+     * @param run                   a {@link hudson.model.Run} object.
+     * @param workspace             a {@link hudson.FilePath} object.
+     * @param listener              a {@link hudson.model.TaskListener} object.
+     * @param analysisName          a {@link java.lang.String} object.
+     * @param maximumDuration       a int.
+     * @param failBuildAsScanFailed a boolean.
+     * @param apiID                 a {@link java.lang.String} object.
+     * @param apiKey                a {@link java.lang.String} object.
+     * @param debugEnabled          a boolean.
+     * @param proxyBlock            a
+     *                              {@link com.veracode.jenkins.plugin.data.ProxyBlock}
+     *                              object.
+     * @return a boolean.
      */
     public boolean resubmitDynamicAnalysis(Run<?, ?> run, FilePath workspace, TaskListener listener,
             final String analysisName, final int maximumDuration,
@@ -142,14 +149,14 @@ public class DAAdapterService {
     }
 
     /**
-     * Validate user inputs for Resubmit post build action
+     * Validates user inputs for Resubmit post build action.
      *
-     * @param apiID
-     * @param apiKey
-     * @param analysisName
-     * @param maximumDuration
-     * @param listener
-     * @return
+     * @param apiID           a {@link java.lang.String} object.
+     * @param apiKey          a {@link java.lang.String} object.
+     * @param analysisName    a {@link java.lang.String} object.
+     * @param maximumDuration a int.
+     * @param listener        a {@link hudson.model.TaskListener} object.
+     * @return a boolean.
      */
     private boolean validateUserInputsForResubmit(String apiID, String apiKey, String analysisName,
             int maximumDuration, TaskListener listener) {
@@ -178,12 +185,16 @@ public class DAAdapterService {
     }
 
     /**
-     * Retrieve analysis information
+     * Retrieves analysis information.
      *
-     * @param analysisName
-     * @param daApiService
-     * @param listener
-     * @return
+     * @param daApiService a
+     *                     {@link com.veracode.apiwrapper.services.DynamicAnalysisAPIService}
+     *                     object.
+     * @param analysisName a {@link java.lang.String} object.
+     * @param listener     a {@link hudson.model.TaskListener} object.
+     * @return a
+     *         {@link com.veracode.apiwrapper.dynamicanalysis.model.client.AnalysisInfo}
+     *         object.
      */
     private AnalysisInfo getAnalysisInfo(DynamicAnalysisAPIService daApiService,
             String analysisName, TaskListener listener) {
@@ -203,13 +214,17 @@ public class DAAdapterService {
     }
 
     /**
-     * Resubmit Dynamic Analysis
+     * Resubmits Dynamic Analysis.
      *
-     * @param analysisInfo
-     * @param maximumDuration
-     * @param daApiService
-     * @param listener
-     * @return
+     * @param daApiService    a
+     *                        {@link com.veracode.apiwrapper.services.DynamicAnalysisAPIService}
+     *                        object.
+     * @param analysisInfo    a
+     *                        {@link com.veracode.apiwrapper.dynamicanalysis.model.client.AnalysisInfo}
+     *                        object.
+     * @param maximumDuration a int.
+     * @param listener        a {@link hudson.model.TaskListener} object.
+     * @return a boolean.
      */
     private boolean resubmitAnalysis(DynamicAnalysisAPIService daApiService,
             AnalysisInfo analysisInfo, int maximumDuration, TaskListener listener) {
@@ -240,19 +255,22 @@ public class DAAdapterService {
     }
 
     /**
-     * Review Veracode Dynamic Analysis Results - A common method for both Freestyle
-     * and Pipeline
+     * Reviews Veracode Dynamic Analysis Results - A common method for both
+     * Freestyle and Pipeline
      *
-     * @param build                       Run
-     * @param workspace                   FilePath
-     * @param listener                    TaskListener
-     * @param waitForResultsDuration      int
-     * @param failBuildForPolicyViolation boolean
-     * @param apiID                       String
-     * @param apiKey                      String
-     * @param debugEnabled                boolean
-     * @param proxyBlock                  ProxyBlock
-     * @return boolean
+     * @param build                       a {@link hudson.model.Run} object.
+     * @param workspace                   a {@link hudson.FilePath} object.
+     * @param listener                    a {@link hudson.model.TaskListener}
+     *                                    object.
+     * @param waitForResultsDuration      a int.
+     * @param failBuildForPolicyViolation a boolean.
+     * @param apiID                       a {@link java.lang.String} object.
+     * @param apiKey                      a {@link java.lang.String} object.
+     * @param debugEnabled                a boolean.
+     * @param proxyBlock                  a
+     *                                    {@link com.veracode.jenkins.plugin.data.ProxyBlock}
+     *                                    object.
+     * @return a boolean.
      */
     public boolean reviewDynamicAnalysis(Run<?, ?> build, FilePath workspace, TaskListener listener,
             final int waitForResultsDuration, final boolean failBuildForPolicyViolation,
@@ -471,14 +489,14 @@ public class DAAdapterService {
     }
 
     /**
-     * Validate user inputs for Review post build action
+     * Validate user inputs for Review post build action.
      *
-     * @param apiID
-     * @param apiKey
-     * @param analysisName
-     * @param waitForResultsDuration
-     * @param listener
-     * @return
+     * @param apiID                  a {@link java.lang.String} object.
+     * @param apiKey                 a {@link java.lang.String} object.
+     * @param analysisName           a {@link java.lang.String} object.
+     * @param waitForResultsDuration a int.
+     * @param listener               a {@link hudson.model.TaskListener} object.
+     * @return a boolean.
      */
     private boolean validateUserInputsForReview(String apiID, String apiKey, String analysisName,
             int waitForResultsDuration, TaskListener listener) {
@@ -510,6 +528,19 @@ public class DAAdapterService {
         return true;
     }
 
+    /**
+     * Returns Analysis Occurrence ID.
+     *
+     * @param daApiService              a
+     *                                  {@link com.veracode.apiwrapper.services.DynamicAnalysisAPIService}
+     *                                  object.
+     * @param analysisName              a {@link java.lang.String} object.
+     * @param previousOccurrenceId      a {@link java.lang.String} object.
+     * @param expirationResultsWaitTime a long.
+     * @param listener                  a {@link hudson.model.TaskListener} object.
+     * @return a {@link java.lang.String} object.
+     * @throws java.lang.Exception if any.
+     */
     private String determineAnalysisOccurrenceId(DynamicAnalysisAPIService daApiService,
             String analysisName, String previousOccurrenceId, long expirationResultsWaitTime,
             TaskListener listener) throws Exception {
@@ -566,6 +597,18 @@ public class DAAdapterService {
         return currentOccurrenceId;
     }
 
+    /**
+     * Waits for Analysis to complete.
+     *
+     * @param daApiService              a
+     *                                  {@link com.veracode.apiwrapper.services.DynamicAnalysisAPIService}
+     *                                  object.
+     * @param currentOccurrenceId       a {@link java.lang.String} object.
+     * @param expirationResultsWaitTime a long.
+     * @param listener                  a {@link hudson.model.TaskListener} object.
+     * @return a boolean.
+     * @throws java.lang.Exception if any.
+     */
     private boolean waitForAnalysisToComplete(DynamicAnalysisAPIService daApiService,
             String currentOccurrenceId, long expirationResultsWaitTime, TaskListener listener)
             throws Exception {
@@ -655,6 +698,20 @@ public class DAAdapterService {
         return isAnalysisFinished;
     }
 
+    /**
+     * Waits for linked Analysis results info and returns Scan Occurrence Info.
+     *
+     * @param daApiService              a
+     *                                  {@link com.veracode.apiwrapper.services.DynamicAnalysisAPIService}
+     *                                  object.
+     * @param occurrenceId              a {@link java.lang.String} object.
+     * @param expirationResultsWaitTime a long.
+     * @param listener                  a {@link hudson.model.TaskListener} object.
+     * @return a
+     *         {@link com.veracode.apiwrapper.dynamicanalysis.model.client.ScanOccurrenceInfo}
+     *         object.
+     * @throws java.lang.Exception if any.
+     */
     private ScanOccurrenceInfo getLinkedAnalysisResults(DynamicAnalysisAPIService daApiService,
             String occurrenceId, long expirationResultsWaitTime, TaskListener listener)
             throws Exception {
@@ -745,6 +802,22 @@ public class DAAdapterService {
         return scanOccurrenceResultsInfo;
     }
 
+    /**
+     * Waits and checks for build status.
+     *
+     * @param scanOccurrenceInfo        a
+     *                                  {@link com.veracode.apiwrapper.dynamicanalysis.model.client.ScanOccurrenceInfo}
+     *                                  object.
+     * @param apiID                     a {@link java.lang.String} object.
+     * @param apiKey                    a {@link java.lang.String} object.
+     * @param proxyBlock                a
+     *                                  {@link com.veracode.jenkins.plugin.data.ProxyBlock}
+     *                                  object.
+     * @param expirationResultsWaitTime a long.
+     * @param listener                  a {@link hudson.model.TaskListener} object.
+     * @return a boolean.
+     * @throws java.lang.Exception if any.
+     */
     private boolean waitForBuildReady(ScanOccurrenceInfo scanOccurrenceInfo, String apiID,
             String apiKey, ProxyBlock proxyBlock, long expirationResultsWaitTime,
             TaskListener listener) throws Exception {
@@ -817,14 +890,20 @@ public class DAAdapterService {
         return isBuildReady;
     }
 
+    /**
+     * Checks if wait time duration expired.
+     *
+     * @param expirationResultsWaitTime a long.
+     * @return a boolean.
+     */
     private boolean isWaitTimeDurationExpired(long expirationResultsWaitTime) {
         return (System.currentTimeMillis() > expirationResultsWaitTime);
     }
 
     /**
-     * Find and display the location of the HPI file
+     * Finds and displays the location of the HPI file.
      *
-     * @param listener
+     * @param listener a {@link hudson.model.TaskListener} object.
      */
     private void showHPILocation(TaskListener listener) {
         try {
@@ -841,11 +920,12 @@ public class DAAdapterService {
     }
 
     /**
-     * Setup proxy
+     * Sets up proxy settings.
      *
-     * @param proxyBlock
-     * @param listener
-     * @return
+     * @param proxyBlock a {@link com.veracode.jenkins.plugin.data.ProxyBlock}
+     *                   object.
+     * @param listener   a {@link hudson.model.TaskListener} object.
+     * @return a {@link java.net.Proxy} object.
      */
     private Proxy setupProxy(final ProxyBlock proxyBlock, TaskListener listener) {
         try {
@@ -882,22 +962,22 @@ public class DAAdapterService {
     }
 
     /**
-     * Log information
+     * Logs information.
      *
-     * @param listener
-     * @param format
-     * @param args
+     * @param listener a {@link hudson.model.TaskListener} object.
+     * @param format   a {@link java.lang.String} object.
+     * @param args     a {@link java.lang.Object} object.
      */
     private final void log(TaskListener listener, String format, Object... args) {
         listener.getLogger().printf(Constant.NEWLINE + format + Constant.NEWLINE, args);
     }
 
     /**
-     * Log information with timestamp
+     * Logs information with timestamp.
      *
-     * @param listener
-     * @param format
-     * @param args
+     * @param listener a {@link hudson.model.TaskListener} object.
+     * @param format   a {@link java.lang.String} object.
+     * @param args     a {@link java.lang.Object} object.
      */
     private final void logWithTimeStamp(TaskListener listener, String format, Object... args) {
         listener.getLogger().printf(Constant.NEWLINE + timestamp() + format, args);
@@ -905,19 +985,19 @@ public class DAAdapterService {
     }
 
     /**
-     * Get the timestamp
+     * Gets the timestamp.
      *
-     * @return
+     * @return a {@link java.lang.String} object.
      */
     private static String timestamp() {
         return String.format("[%s] ", new SimpleDateFormat("yy.MM.dd HH:mm:ss").format(new Date()));
     }
 
     /**
-     * Log error response
+     * Logs error response.
      *
-     * @param responseCode
-     * @param listener
+     * @param responseCode a int.
+     * @param listener     a {@link hudson.model.TaskListener} object.
      */
     private final void logErrorResponse(int responseCode, TaskListener listener) {
         if (responseCode == 401) {
