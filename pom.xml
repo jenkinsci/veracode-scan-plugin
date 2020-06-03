@@ -10,9 +10,9 @@
         <version>2.37</version>
         <relativePath />
     </parent>
-    <groupId>io.jenkins.plugins</groupId>
+    <groupId>com.veracode.jenkins</groupId>
     <artifactId>veracode-scan</artifactId>
-    <version>1.0.4-alpha-SNAPSHOT</version>
+    <version>20.6.10.0-alpha-SNAPSHOT</version>
     <packaging>hpi</packaging>
     <properties>
         <!-- Baseline Jenkins version you use to build the plugin. Users must have this version or newer to run. -->
@@ -105,4 +105,27 @@
             <url>https://repo.jenkins-ci.org/public/</url>
         </pluginRepository>
     </pluginRepositories>
+    <build>
+		<plugins>
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>0.8.5</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>report</id>
+						<phase>test</phase>
+						<goals>
+							<goal>report</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
 </project>
