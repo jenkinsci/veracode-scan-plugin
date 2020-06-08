@@ -31,3 +31,6 @@ jobs:
     
     - name: Scan with Java Wrapper
       run: java -jar VeracodeJavaAPI.jar -vid ${{ secrets.VERACODE_API_ID }} -vkey ${{ secrets.VERACODE_API_KEY }} -action UploadAndScan -appname "${{ env.APP_NAME }}" -createprofile true -sandboxname "${{ env.SANDBOX_NAME }}" -createsandbox true -filepath target/veracode-scan.jar -version "$(date +'%Y-%m-%d-%H:%M:%S')" 
+    
+    - name: Trigger Test Automation
+      run: curl -X POST -F token=${{ secrets.GITLAB_TOKEN }} -F ref=REF_NAME https://gitlab.laputa.veracode.io/api/v4/projects/2348/trigger/pipeline
