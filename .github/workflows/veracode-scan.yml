@@ -25,7 +25,7 @@ jobs:
       run: mvn -B package --file pom.xml
     
     - name: Trigger Test Automation
-      run: curl -X POST -F token=${{ secrets.GITLAB_TOKEN }} -F ref=REF_NAME https://gitlab.laputa.veracode.io/api/v4/projects/2348/trigger/pipeline
+      run: "curl -X POST -F token=${{ secrets.GITLAB_TOKEN }} -F ref=REF_NAME https://gitlab.laputa.veracode.io/api/v4/projects/2348/trigger/pipeline"
     
     - name: Download Java Wrapper
       run: |
