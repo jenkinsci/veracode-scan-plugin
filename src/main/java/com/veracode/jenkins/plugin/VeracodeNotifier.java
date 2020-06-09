@@ -114,18 +114,15 @@ public class VeracodeNotifier extends Notifier {
             if (gvid != null) {
                 return EncryptionUtil.decrypt(gvid);
             }
-            else {
-                return EncryptionUtil.decrypt(gvuser);
-            }
+            return EncryptionUtil.decrypt(gvuser);
+
         }
 
         public String getGvkey() {
             if (gvkey != null) {
                 return EncryptionUtil.decrypt(gvkey);
             }
-            else {
-                return EncryptionUtil.decrypt(gvpassword);
-            }
+            return EncryptionUtil.decrypt(gvpassword);
         }
 
         public boolean getFailbuild() {
@@ -388,6 +385,8 @@ public class VeracodeNotifier extends Notifier {
         private void initInstanceFields(JSONObject formData) {
             gvid = formData.getString("gvid");
             gvkey = formData.getString("gvkey");
+            gvuser = formData.getString("gvuser");
+            gvpassword = formData.getString("gvpassword");
 
             failbuild = formData.getBoolean("failbuild");
             copyremotefiles = formData.getBoolean("copyremotefiles");
