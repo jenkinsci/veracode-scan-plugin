@@ -33,7 +33,7 @@ jobs:
         GITLAB_USERNAME: "pmathur"
         GITLAB_PASSWORD: ${{ secrets.GITLAB_PRIVATE_TOKEN }}
         GITLAB_PROJECT_ID: "2348"
-        GITHUB_TOKEN: ${{ secrets.TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       #run: "curl -X POST -F ref=master https://gitlab.laputa.veracode.io/api/v4/projects/2348/trigger/pipeline??private_token=${{ secrets.GITLAB_TOKEN }}"
     
     - name: Download Java Wrapper
