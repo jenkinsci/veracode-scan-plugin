@@ -20,7 +20,7 @@ public final class CredentialsBlock {
      * @return a {@link java.lang.String} object.
      */
     public String getVid() {
-        if (_vid != null) {
+        if (this._vid != null) {
             return this._vid;
         }
         return this._vuser;
@@ -32,7 +32,7 @@ public final class CredentialsBlock {
      * @return a {@link java.lang.String} object.
      */
     public String getVkey() {
-        if (_vkey != null) {
+        if (this._vkey != null) {
             return this._vkey;
         }
         return this._vpassword;
