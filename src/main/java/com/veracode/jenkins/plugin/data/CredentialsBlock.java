@@ -23,7 +23,9 @@ public final class CredentialsBlock {
         if (this._vid != null) {
             return this._vid;
         }
-        return this._vuser;
+        else {
+            return this._vuser;
+        }
     }
 
     /**
@@ -35,7 +37,9 @@ public final class CredentialsBlock {
         if (this._vkey != null) {
             return this._vkey;
         }
-        return this._vpassword;
+        else {
+            return this._vpassword;
+        }
     }
 
     /**

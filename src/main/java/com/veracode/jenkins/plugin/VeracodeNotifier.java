@@ -114,14 +114,18 @@ public class VeracodeNotifier extends Notifier {
             if (gvid != null) {
                 return EncryptionUtil.decrypt(gvid);
             }
-            return EncryptionUtil.decrypt(gvuser);
+            else {
+                return EncryptionUtil.decrypt(gvuser);
+            }
         }
 
         public String getGvkey() {
             if (gvkey != null) {
                 return EncryptionUtil.decrypt(gvkey);
             }
-            return EncryptionUtil.decrypt(gvpassword);
+            else {
+                return EncryptionUtil.decrypt(gvpassword);
+            }
         }
 
         public boolean getFailbuild() {
