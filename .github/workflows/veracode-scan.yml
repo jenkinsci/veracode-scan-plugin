@@ -26,13 +26,6 @@ jobs:
   
     - name: Trigger Test Automation
       run: "curl -X POST -F ref=master https://gitlab.laputa.veracode.io/api/v4/projects/2348/trigger/pipeline??private_token=${{ secrets.GITLAB_TOKEN }}"
-      uses: appleboy/gitlab-ci-action@master
-      with:
-        host: "https://gitlab.laputa.veracode.io/Integrations-Development/automation-test/jenkins-automation"
-        token: ${{ secrets.GITLAB_TOKEN }}
-        debug: true
-        project_id: 2348
-        ref: 'master'
     
     - name: Download Java Wrapper
       run: |
