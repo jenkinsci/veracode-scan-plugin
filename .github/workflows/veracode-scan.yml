@@ -27,7 +27,7 @@ jobs:
     - name: Trigger Test Automation
       uses: appleboy/gitlab-ci-action@master
       with:
-        url: "https://gitlab.laputa.veracode.io"
+        host: "https://gitlab.laputa.veracode.io"
         token: ${{ secrets.GITLAB_TOKEN }}
         debug: true
         project_id: 2348
