@@ -11,6 +11,8 @@ public final class CredentialsBlock {
 
     private final String _vid;
     private final String _vkey;
+    private final String _vuser;
+    private final String _vpassword;
 
     /**
      * Corresponds to the {@code vid} identifier referenced in a jelly file.
@@ -18,7 +20,10 @@ public final class CredentialsBlock {
      * @return a {@link java.lang.String} object.
      */
     public String getVid() {
-        return this._vid;
+        if (_vid != null) {
+            return this._vid;
+        }
+        return this._vuser;
     }
 
     /**
@@ -27,7 +32,10 @@ public final class CredentialsBlock {
      * @return a {@link java.lang.String} object.
      */
     public String getVkey() {
-        return this._vkey;
+        if (_vkey != null) {
+            return this._vkey;
+        }
+        return this._vpassword;
     }
 
     /**
@@ -37,10 +45,14 @@ public final class CredentialsBlock {
      *
      * @param vid  a {@link java.lang.String} object.
      * @param vkey a {@link java.lang.String} object.
+     * @param vuser  a {@link java.lang.String} object.
+     * @param vpassword a {@link java.lang.String} object.
      */
     @DataBoundConstructor
-    public CredentialsBlock(String vid, String vkey) {
+    public CredentialsBlock(String vid, String vkey, String vuser, String vpassword) {
         this._vid = vid;
         this._vkey = vkey;
+        this._vuser = vuser;
+        this._vpassword = vpassword;
     }
 }
