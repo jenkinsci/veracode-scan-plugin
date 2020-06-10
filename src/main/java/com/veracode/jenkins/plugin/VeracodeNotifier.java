@@ -89,9 +89,11 @@ public class VeracodeNotifier extends Notifier {
         // Backing fields for methods that correspond to identifiers referenced in
         // global.jelly
         // --------------------------------------------------------------------------------------
-        
+
         private String gvid;
         private String gvkey;
+        private String gvuser;
+        private String gvpassword;
         private boolean failbuild = true;
         private boolean copyremotefiles;
         private boolean autoappname;
@@ -107,13 +109,20 @@ public class VeracodeNotifier extends Notifier {
         // -------------------------------------------------------------------
         // Methods that correspond to identifiers referenced in global.jelly
         // -------------------------------------------------------------------
-        
+
         public String getGvid() {
-            return EncryptionUtil.decrypt(gvid);
+            if (gvid != null) {
+                return EncryptionUtil.decrypt(gvid);
+            }
+            return EncryptionUtil.decrypt(gvuser);
+
         }
 
         public String getGvkey() {
-            return EncryptionUtil.decrypt(gvkey);
+            if (gvkey != null) {
+                return EncryptionUtil.decrypt(gvkey);
+            }
+            return EncryptionUtil.decrypt(gvpassword);
         }
 
         public boolean getFailbuild() {
@@ -165,7 +174,7 @@ public class VeracodeNotifier extends Notifier {
         // Methods that correspond to validation of data supplied in the "Configure
         // System" page and the "Job Configuration" page
         // ------------------------------------------------------------------------------------------------------------------------
-        
+
         public FormValidation doTestConnection(@QueryParameter("gvid") final String gv_id,
                 @QueryParameter("gvkey") final String gv_key,
                 @QueryParameter("proxy") final boolean _proxy,
@@ -295,7 +304,7 @@ public class VeracodeNotifier extends Notifier {
         // --------------------------------------------------------------
         // Overridden methods
         // --------------------------------------------------------------
-        
+
         /**
          * The name of the plugin displayed in the UI.
          */
@@ -351,7 +360,7 @@ public class VeracodeNotifier extends Notifier {
         // --------------------------------------------------------------
         // Helper methods
         // --------------------------------------------------------------
-        
+
         /**
          * Whether Veracode credentials were supplied in the "Configure System" page.
          * <p>
@@ -376,6 +385,8 @@ public class VeracodeNotifier extends Notifier {
         private void initInstanceFields(JSONObject formData) {
             gvid = formData.getString("gvid");
             gvkey = formData.getString("gvkey");
+            gvuser = formData.getString("gvuser");
+            gvpassword = formData.getString("gvpassword");
 
             failbuild = formData.getBoolean("failbuild");
             copyremotefiles = formData.getBoolean("copyremotefiles");
@@ -445,7 +456,7 @@ public class VeracodeNotifier extends Notifier {
     // Backing fields for methods that correspond to identifiers referenced in
     // config.jelly
     // --------------------------------------------------------------------------------------
-    
+
     private final String _appname;
     private final boolean _createprofile;
     private final String _teams;
@@ -466,7 +477,7 @@ public class VeracodeNotifier extends Notifier {
     // -------------------------------------------------------------------
     // Methods that correspond to identifiers referenced in config.jelly
     // -------------------------------------------------------------------
-    
+
     public String getAppname() {
         return EncryptionUtil.decrypt(this._appname);
     }
@@ -545,7 +556,7 @@ public class VeracodeNotifier extends Notifier {
     // --------------------------------------------------------------
     // Overridden methods
     // --------------------------------------------------------------
-    
+
     /**
      * Returns the
      * {@link com.veracode.jenkins.plugin.VeracodeNotifier.VeracodeDescriptor
