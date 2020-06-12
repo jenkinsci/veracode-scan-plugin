@@ -385,8 +385,8 @@ public class VeracodeNotifier extends Notifier {
         private void initInstanceFields(JSONObject formData) {
             gvid = formData.getString("gvid");
             gvkey = formData.getString("gvkey");
-            gvuser = formData.getString("gvuser");
-            gvpassword = formData.getString("gvpassword");
+            gvuser = formData.containsKey("gvuser") ? formData.getString("gvuser") : null;
+            gvpassword = formData.containsKey("gvpassword") ? formData.getString("gvpassword") : null;
 
             failbuild = formData.getBoolean("failbuild");
             copyremotefiles = formData.getBoolean("copyremotefiles");
