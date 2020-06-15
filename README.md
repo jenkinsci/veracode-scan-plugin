@@ -14,7 +14,7 @@ For more info and resources, please visit the [Veracode Community](https://commu
 
 ### Important
 
-The Veracode Jenkins Plugin version 20.6.10.0 is the first release of this plugin on the Jenkins Marketplace. This version does not upgrade earlier plugin versions. You must first install this version, restart Jenkins and, then, you can safely uninstall an earlier version. DO NOT uninstall or disable your current plugin before installing this new version. For detailed instructions, see the [Veracode Help Center](https://help.veracode.com/go/t_install_jenkins).
+The Veracode Jenkins Plugin version 20.6.10.0 is the first release of this plugin on the Jenkins Marketplace. This version does not upgrade an earlier plugin version. You must first install this version, restart Jenkins and, then, uninstall an earlier version. DO NOT uninstall or disable your current plugin before installing this new version. For detailed instructions, see the [Veracode Help Center](https://help.veracode.com/go/t_install_jenkins).
 
 ## How to Contribute
 Veracode welcomes community contribution through pull requests.
