@@ -1,8 +1,13 @@
 name: Veracode Scan
 
-on: [push, pull_request]:
-  branches-ignore:
-    - master
+on: 
+  pull_request:
+    branches-ignore:
+      - master
+
+  push:
+    branches-ignore:
+      - master
 
 env:
   JAVA_WRAPPER_VERSION: "20.3.6.1" # Update the version when new version is released.
