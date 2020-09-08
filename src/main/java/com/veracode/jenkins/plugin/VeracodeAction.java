@@ -33,12 +33,16 @@ public class VeracodeAction implements RunAction2 {
 
     // The Jenkins build containing this action
     private transient Run<?, ?> build;
+    
+    // The object to store the specific region url
+    private final String xmlApiHost;
 
     /**
      * <p>Constructor for VeracodeAction.</p>
      */
     public VeracodeAction() {
         scanHistory = null;
+        xmlApiHost = null;
         build = null;
     }
 
@@ -47,12 +51,13 @@ public class VeracodeAction implements RunAction2 {
      *
      * @param scanHistory a {@link com.veracode.jenkins.plugin.data.ScanHistory} object.
      */
-    public VeracodeAction(ScanHistory scanHistory) {
-        if (null == scanHistory) {
+    public VeracodeAction(ScanHistory scanHistory, String xmlApiHost) {
+        if (null == scanHistory || null == xmlApiHost) {
             throw new IllegalArgumentException(
                     "Missing required information to create a VeracodeAction.");
         }
         this.scanHistory = scanHistory;
+        this.xmlApiHost = xmlApiHost;
         build = null;
     }
 
@@ -368,7 +373,7 @@ public class VeracodeAction implements RunAction2 {
         String escapedAcctId = StringEscapeUtils.escapeHtml(scanHistory.getAccountId());
         String escapedAppId = StringEscapeUtils.escapeHtml(scanHistory.getAppId());
         String escapedBuildId = StringEscapeUtils.escapeHtml(scanHistory.getBuildId());
-        return Constant.VIEW_REPORT_URI_PREFIX + ":" + escapedAcctId + ":" + escapedAppId + ":"
+        return String.format(Constant.VIEW_REPORT_URI_PREFIX, xmlApiHost) + ":" + escapedAcctId + ":" + escapedAppId + ":"
                 + escapedBuildId;
     }
 

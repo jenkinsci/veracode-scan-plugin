@@ -15,6 +15,7 @@ import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
 
 import com.veracode.apiwrapper.cli.VeracodeCommand.VeracodeParser;
+import com.veracode.http.Region;
 import com.veracode.jenkins.plugin.args.UploadAndScanArgs;
 import com.veracode.jenkins.plugin.common.Constant;
 import com.veracode.jenkins.plugin.data.CredentialsBlock;
@@ -1095,7 +1096,8 @@ public class VeracodeNotifier extends Notifier {
             String detailedReportXML = WrapperUtil.getDetailedReport(buildId, id, key, proxy);
             ScanHistory scanHistory = XmlUtil.newScanHistory(buildInfoXML, detailedReportXML,
                     build);
-            build.addAction(new VeracodeAction(scanHistory));
+            Region region = WrapperUtil.getRegion(id, key, proxy);
+            build.addAction(new VeracodeAction(scanHistory, region.getXmlApiHost()));
         } catch (Exception e) {
             build.addAction(new VeracodeAction());
             throw e;

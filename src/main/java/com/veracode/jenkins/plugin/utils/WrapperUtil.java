@@ -1,10 +1,19 @@
 package com.veracode.jenkins.plugin.utils;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+
+import com.google.gson.Gson;
+import com.google.gson.JsonParseException;
 import com.veracode.apiwrapper.AbstractAPIWrapper;
+import com.veracode.apiwrapper.cli.VeracodeCommand.VeracodeParser;
 import com.veracode.apiwrapper.wrapper.cli.exceptions.ApiException;
 import com.veracode.apiwrapper.wrappers.ResultsAPIWrapper;
 import com.veracode.apiwrapper.wrappers.SandboxAPIWrapper;
 import com.veracode.apiwrapper.wrappers.UploadAPIWrapper;
+import com.veracode.http.Region;
+import com.veracode.jenkins.plugin.args.GetRegionArgs;
+import com.veracode.jenkins.plugin.common.Constant;
 import com.veracode.jenkins.plugin.data.ProxyBlock;
 
 /**
@@ -231,5 +240,45 @@ public class WrapperUtil {
             throw new ApiException(error);
         }
         return summaryReport;
+    }
+
+    /**
+     * Get the region of given credentials
+     *
+     * @param id    a {@link java.lang.String} object - the Veracode API ID.
+     * @param key   a {@link java.lang.String} object - the Veracode API key.
+     * @param proxy a {@link com.veracode.jenkins.plugin.data.ProxyBlock} object -
+     *              the proxy settings. Use null if no proxy is required.
+     * @return a {@link com.veracode.http.Region} object - the region info.
+     * @throws java.lang.Exception when an error is encountered during the process.
+     */
+    public static final Region getRegion(final String id, final String key, final ProxyBlock proxy)
+            throws Exception {
+
+        if (StringUtil.isNullOrEmpty(id) || StringUtil.isNullOrEmpty(key)) {
+            throw new IllegalArgumentException("Credentials provided are invalid.");
+        }
+
+        try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                PrintStream ps = new PrintStream(baos, true, Constant.CHARACTER_ENCODING_UTF8)) {
+
+            VeracodeParser parser = new VeracodeParser();
+            parser.throwExceptions(true);
+            parser.setOutputWriter(ps);
+            parser.setErrorWriter(null);
+
+            GetRegionArgs getRegionArgs = GetRegionArgs.newGetRegionArgs(id, key, proxy);
+
+            int retcode = parser.parse(getRegionArgs.getArguments());
+
+            if (retcode != 0) {
+                throw new Exception("Cannot retrieve the region information.");
+            }
+
+            String output = baos.toString(Constant.CHARACTER_ENCODING_UTF8);
+            return new Gson().fromJson(output, Region.class);
+        } catch (JsonParseException e) {
+            throw new JsonParseException("Cannot parse region information.");
+        }
     }
 }

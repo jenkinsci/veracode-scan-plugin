@@ -18,7 +18,7 @@ public class Constant {
     public static final String PASSED = "Pass";
     public static final String PLUGIN_NAME = "veracode-scan";
     public static final String PLUGIN_ICONS_URI_PREFIX = "/plugin/" + PLUGIN_NAME + "/icons/";
-    public static final String VIEW_REPORT_URI_PREFIX = "https://analysiscenter.veracode.com/auth/index.jsp#ViewReportsDetailedReport";
+    public static final String VIEW_REPORT_URI_PREFIX = "https://%s/auth/index.jsp#ViewReportsDetailedReport";
 
     // Open new window icon
     public static final String OPEN_NEW_WINDOW = "open-new-window-16x16.png";
@@ -72,4 +72,5 @@ public class Constant {
     public static final int DEFAULT_VALUE_DA_MAX_DURATION_HOURS = 72;
     public static final int DEFAULT_VALUE_DA_WAIT_FOR_RESULTS_MINUTES = 60;
     public static final int UPLOADANDSCAN_MAX_RETRY_COUNT = 5;
+    public static final String CHARACTER_ENCODING_UTF8 = "UTF-8";
 }
