@@ -13,7 +13,7 @@ import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 
 import com.veracode.apiwrapper.cli.VeracodeCommand.VeracodeParser;
-import com.veracode.http.Region;
+import com.veracode.http.Credentials;
 import com.veracode.jenkins.plugin.args.UploadAndScanArgs;
 import com.veracode.jenkins.plugin.data.ProxyBlock;
 import com.veracode.jenkins.plugin.data.ScanHistory;
@@ -751,8 +751,9 @@ public class VeracodePipelineRecorder extends Recorder implements SimpleBuildSte
             String buildId = XmlUtil.parseBuildId(buildInfoXML);
             String detailedReportXML = WrapperUtil.getDetailedReport(buildId, vid, vkey, proxy);
             ScanHistory scanHistory = XmlUtil.newScanHistory(buildInfoXML, detailedReportXML, run);
-            Region region = WrapperUtil.getRegion(vid, vkey, proxy);
-            run.addAction(new VeracodeAction(scanHistory, region.getXmlApiHost()));
+            Credentials credentials = Credentials.create(vid, vkey);
+            String xmlApiHost = credentials.getRegion().getXmlApiHost();
+            run.addAction(new VeracodeAction(scanHistory, xmlApiHost));
         } catch (Exception e) {
             run.addAction(new VeracodeAction());
             throw e;

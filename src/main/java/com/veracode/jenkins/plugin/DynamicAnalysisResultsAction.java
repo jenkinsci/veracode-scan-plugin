@@ -368,8 +368,9 @@ public class DynamicAnalysisResultsAction implements RunAction2 {
         String escapedAcctId = StringEscapeUtils.escapeHtml(scanHistory.getAccountId());
         String escapedAppId = StringEscapeUtils.escapeHtml(scanHistory.getAppId());
         String escapedBuildId = StringEscapeUtils.escapeHtml(scanHistory.getBuildId());
-        return String.format(Constant.VIEW_REPORT_URI_PREFIX, xmlApiHost) + ":" + escapedAcctId + ":" + escapedAppId + ":"
-                + escapedBuildId;
+        return String.format(Constant.VIEW_REPORT_URI_PREFIX,
+                null == xmlApiHost ? Constant.DEFAULT_XML_API_HOST : xmlApiHost) + ":"
+                + escapedAcctId + ":" + escapedBuildId;
     }
 
     public boolean isScanHistoryAvailable() {
