@@ -370,7 +370,7 @@ public class DynamicAnalysisResultsAction implements RunAction2 {
         String escapedBuildId = StringEscapeUtils.escapeHtml(scanHistory.getBuildId());
         return String.format(Constant.VIEW_REPORT_URI_PREFIX,
                 null == xmlApiHost ? Constant.DEFAULT_XML_API_HOST : xmlApiHost) + ":"
-                + escapedAcctId + ":" + escapedBuildId;
+                + escapedAcctId + ":" + escapedAppId + ":" + escapedBuildId;
     }
 
     public boolean isScanHistoryAvailable() {
