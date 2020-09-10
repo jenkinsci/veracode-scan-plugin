@@ -373,6 +373,10 @@ public class VeracodeAction implements RunAction2 {
         String escapedAcctId = StringEscapeUtils.escapeHtml(scanHistory.getAccountId());
         String escapedAppId = StringEscapeUtils.escapeHtml(scanHistory.getAppId());
         String escapedBuildId = StringEscapeUtils.escapeHtml(scanHistory.getBuildId());
+        // New data member xmlApiHost will be null for results pages which are already
+        // generated using plugin versions before EU support. Hence to facilitate
+        // backward compatibility with the results pages generated from earlier plugin
+        // versions, xmlApiHost is set to its default value if it is null.
         return String.format(Constant.VIEW_REPORT_URI_PREFIX,
                 null == xmlApiHost ? Constant.DEFAULT_XML_API_HOST : xmlApiHost) + ":"
                 + escapedAcctId + ":" + escapedAppId + ":" + escapedBuildId;
