@@ -384,8 +384,8 @@ public class XmlUtil {
         XPathFactory xpf = XPathFactory.newInstance();
         XPath xPathObj = xpf.newXPath();
         NodeList nodeList = (NodeList) xPathObj.evaluate(
-                "/*/*[local-name()='sandbox'][@sandbox_id][@sandbox_name]",
-                xml.getDocumentElement(), XPathConstants.NODESET);
+                "/sandboxlist/sandbox[@sandbox_id][@sandbox_name]", xml.getDocumentElement(),
+                XPathConstants.NODESET);
         String sandboxId = "";
         for (int x = 0; x < nodeList.getLength(); x++) {
             Node node = nodeList.item(x);
