@@ -383,14 +383,20 @@ public class XmlUtil {
         Document xml = getXmlDocument(xmlSandboxListResult);
         XPathFactory xpf = XPathFactory.newInstance();
         XPath xPathObj = xpf.newXPath();
-        Node node = (Node) xPathObj.evaluate(
-                "/sandboxlist/sandbox[@sandbox_name=\"" + sandboxName + "\"]",
-                xml.getDocumentElement(), XPathConstants.NODE);
+        NodeList nodeList = (NodeList) xPathObj.evaluate(
+                "/sandboxlist/sandbox[@sandbox_id][@sandbox_name]", xml.getDocumentElement(),
+                XPathConstants.NODESET);
         String sandboxId = "";
-        if (null != node) {
-            sandboxId = node.getAttributes().getNamedItem("sandbox_id").getNodeValue();
+        for (int x = 0; x < nodeList.getLength(); x++) {
+            Node node = nodeList.item(x);
+
+            if (StringUtil.compare(node.getAttributes().getNamedItem("sandbox_name").getNodeValue(),
+                    sandboxName, true) == 0) {
+                sandboxId = node.getAttributes().getNamedItem("sandbox_id").getNodeValue();
+                break;
+            }
         }
-        return (!StringUtil.isNullOrEmpty(sandboxId)) ? sandboxId : "";
+        return sandboxId;
     }
 
     /**
