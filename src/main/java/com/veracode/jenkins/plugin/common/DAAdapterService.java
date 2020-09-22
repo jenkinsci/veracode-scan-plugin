@@ -19,6 +19,7 @@ import com.veracode.apiwrapper.dynamicanalysis.model.client.ScanOccurrenceInfo;
 import com.veracode.apiwrapper.exceptions.ApiException;
 import com.veracode.apiwrapper.services.APIServiceManager;
 import com.veracode.apiwrapper.services.DynamicAnalysisAPIService;
+import com.veracode.http.Credentials;
 import com.veracode.jenkins.plugin.DynamicAnalysisResultsAction;
 import com.veracode.jenkins.plugin.data.DAScanHistory;
 import com.veracode.jenkins.plugin.data.ProxyBlock;
@@ -453,7 +454,9 @@ public class DAAdapterService {
                         policyRulesStatus + Constant.NEWLINE);
 
                 // Create action for the results graph
-                build.addAction(new DynamicAnalysisResultsAction(daScanHistory));
+                Credentials credentials = Credentials.create(apiID, apiKey);
+                String xmlApiHost = credentials.getRegion().getXmlApiHost();
+                build.addAction(new DynamicAnalysisResultsAction(daScanHistory, xmlApiHost));
 
             } catch (ApiException e) {
                 logWithTimeStamp(listener,

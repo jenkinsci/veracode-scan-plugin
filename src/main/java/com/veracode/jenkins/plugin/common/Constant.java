@@ -18,7 +18,8 @@ public class Constant {
     public static final String PASSED = "Pass";
     public static final String PLUGIN_NAME = "veracode-scan";
     public static final String PLUGIN_ICONS_URI_PREFIX = "/plugin/" + PLUGIN_NAME + "/icons/";
-    public static final String VIEW_REPORT_URI_PREFIX = "https://analysiscenter.veracode.com/auth/index.jsp#ViewReportsDetailedReport";
+    public static final String DEFAULT_XML_API_HOST = "analysiscenter.veracode.com";
+    public static final String VIEW_REPORT_URI_PREFIX = "https://%s/auth/index.jsp#ViewReportsDetailedReport";
 
     // Open new window icon
     public static final String OPEN_NEW_WINDOW = "open-new-window-16x16.png";

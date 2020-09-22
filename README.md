@@ -3,6 +3,7 @@
 [![Build Status](https://ci.jenkins.io/job/Plugins/job/veracode-scan-plugin/job/master/badge/icon)](https://ci.jenkins.io/job/Plugins/job/veracode-scan-plugin/job/master/)
 [![Jenkins Version](https://img.shields.io/badge/Jenkins-2.60-green.svg?label=min.%20Jenkins)](https://jenkins.io/download/)
 ![JDK8](https://img.shields.io/badge/jdk-8-yellow.svg?label=min.%20JDK)
+[![Jenkins Plugin Installs](https://img.shields.io/jenkins/plugin/i/veracode-scan.svg?color=blue)](https://plugins.jenkins.io/veracode-scan)
 [![License: MIT](https://img.shields.io/badge/license-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ## General
