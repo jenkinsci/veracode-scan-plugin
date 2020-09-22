@@ -23,9 +23,6 @@ node('linux') {
 	}
 	
 	stage("Archive") {
-		findbugs(pattern: '**/target/findbugsXml.xml')
-		checkstyle(pattern: '**/target/checkstyle-result.xml')
-		jacoco()
 		archiveArtifacts artifacts: '**/target/*.hpi', fingerprint: true
 	}
 }
