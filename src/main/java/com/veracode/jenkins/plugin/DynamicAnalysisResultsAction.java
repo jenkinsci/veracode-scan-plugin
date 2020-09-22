@@ -28,12 +28,16 @@ public class DynamicAnalysisResultsAction implements RunAction2 {
 
     // The Jenkins build containing this action
     private transient Run<?, ?> build;
+    
+    // The object to store the specific region url
+    private final String xmlApiHost;
 
     /**
      * Constructor for DynamicAnalysisResultsAction.
      */
     public DynamicAnalysisResultsAction() {
         scanHistory = null;
+        xmlApiHost = null;
         build = null;
     }
 
@@ -43,12 +47,13 @@ public class DynamicAnalysisResultsAction implements RunAction2 {
      * @param scanHistory a {@link com.veracode.jenkins.plugin.data.DAScanHistory}
      *                    object.
      */
-    public DynamicAnalysisResultsAction(DAScanHistory scanHistory) {
-        if (null == scanHistory) {
+    public DynamicAnalysisResultsAction(DAScanHistory scanHistory, String xmlApiHost) {
+        if (null == scanHistory || null == xmlApiHost) {
             throw new IllegalArgumentException(
                     "Missing required information to create a DynamicAnalysisResultsAction.");
         }
         this.scanHistory = scanHistory;
+        this.xmlApiHost = xmlApiHost;
         build = null;
     }
 
@@ -363,8 +368,13 @@ public class DynamicAnalysisResultsAction implements RunAction2 {
         String escapedAcctId = StringEscapeUtils.escapeHtml(scanHistory.getAccountId());
         String escapedAppId = StringEscapeUtils.escapeHtml(scanHistory.getAppId());
         String escapedBuildId = StringEscapeUtils.escapeHtml(scanHistory.getBuildId());
-        return Constant.VIEW_REPORT_URI_PREFIX + ":" + escapedAcctId + ":" + escapedAppId + ":"
-                + escapedBuildId;
+        // New data member xmlApiHost will be null for results pages which are already
+        // generated using plugin versions before EU support. Hence to facilitate
+        // backward compatibility with the results pages generated from earlier plugin
+        // versions, xmlApiHost is set to its default value if it is null.
+        return String.format(Constant.VIEW_REPORT_URI_PREFIX,
+                null == xmlApiHost ? Constant.DEFAULT_XML_API_HOST : xmlApiHost) + ":"
+                + escapedAcctId + ":" + escapedAppId + ":" + escapedBuildId;
     }
 
     public boolean isScanHistoryAvailable() {
