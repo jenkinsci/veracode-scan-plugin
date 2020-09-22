@@ -23,8 +23,6 @@ node('linux') {
 	}
 	
 	stage("Archive") {
-		checkstyle(pattern: '**/target/checkstyle-result.xml')
-		jacoco()
 		archiveArtifacts artifacts: '**/target/*.hpi', fingerprint: true
 	}
 }
