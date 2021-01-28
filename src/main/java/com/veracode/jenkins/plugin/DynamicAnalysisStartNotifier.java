@@ -166,8 +166,6 @@ public class DynamicAnalysisStartNotifier extends Notifier {
         @SuppressWarnings("unchecked")
         @Override
         public Publisher newInstance(StaplerRequest req, JSONObject formData) throws FormException {
-            formData.put("analysisName",
-                    EncryptionUtil.encrypt(formData.getString("analysisName")));
             String maximumDuration = formData.getString("maximumDuration");
             formData.put("maximumDuration",
                     StringUtil.isNullOrEmpty(maximumDuration)

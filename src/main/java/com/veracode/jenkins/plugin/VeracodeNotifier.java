@@ -7,6 +7,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 
@@ -325,13 +326,16 @@ public class VeracodeNotifier extends Notifier {
          * Called by Jenkins when it needs to create an instance of the
          * {@link com.veracode.jenkins.plugin.VeracodeNotifier VeracodeNotifier} class.
          */
+        @SuppressWarnings("unchecked")
         @Override
         public Publisher newInstance(StaplerRequest req, JSONObject formData) throws FormException {
-            try {
-                EncryptionUtil.encrypt(req, formData);
-            } catch (ServletException e) {
-                throw new RuntimeException(e);
+            Map<String, Object> credMap = (Map<String, Object>) formData.get("credentials");
+            if (credMap != null) {
+                credMap.put("vid", EncryptionUtil.encrypt((String) credMap.get("vid")));
+                credMap.put("vkey", EncryptionUtil.encrypt((String) credMap.get("vkey")));
+                formData.put("credentials", credMap);
             }
+
             return super.newInstance(req, formData);
         }
 
