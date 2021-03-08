@@ -288,7 +288,7 @@ public class VeracodePipelineRecorder extends Recorder implements SimpleBuildSte
                         boolean dirCreated = localWorkspaceDir.mkdir();
                         if (!dirCreated) {
                             ps.print("\r\n\r\nFailed to create temporary local workspace.\r\n");
-                            if (this.canFailJob || (this.timeout != null && this.timeout > 0)) {
+                            if (this.canFailJob) {
                                 run.setResult(Result.FAILURE);
                             }
                         }
@@ -313,7 +313,7 @@ public class VeracodePipelineRecorder extends Recorder implements SimpleBuildSte
                     if (copyJarRemoteBuild(workspace, listener)) {
                         // remote scan if we can copy the veracode java wrapper
                         if (!runScanFromRemote(run, workspace, listener, ps)) {
-                            if (this.canFailJob || (this.timeout != null && this.timeout > 0)) {
+                            if (this.canFailJob) {
                                 run.setResult(Result.FAILURE);
                             }
                         }
@@ -398,15 +398,12 @@ public class VeracodePipelineRecorder extends Recorder implements SimpleBuildSte
                         if (this.canFailJob) {
                             ps.println();
                             ps.println("Error- Returned code from wrapper:" + retCode);
-                        }
-
-                        if (this.canFailJob || (this.timeout != null && this.timeout > 0)) {
                             run.setResult(Result.FAILURE);
                         }
                     }
                 }
             } catch (Exception e) {
-                if (this.canFailJob || (this.timeout != null && this.timeout > 0)) {
+                if (this.canFailJob) {
                     run.setResult(Result.FAILURE);
                 }
             }
