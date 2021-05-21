@@ -24,6 +24,7 @@ import com.veracode.jenkins.plugin.utils.StringUtil;
 import com.veracode.jenkins.plugin.utils.WrapperUtil;
 import com.veracode.jenkins.plugin.utils.XmlUtil;
 
+import hudson.AbortException;
 import hudson.EnvVars;
 import hudson.FilePath;
 import hudson.Launcher;
@@ -418,6 +419,9 @@ public class VeracodePipelineRecorder extends Recorder implements SimpleBuildSte
                     }
                 } catch (Exception e) {
                 }
+            }
+            if(run.getResult() == Result.FAILURE){
+                throw new AbortException();
             }
         }
     }
