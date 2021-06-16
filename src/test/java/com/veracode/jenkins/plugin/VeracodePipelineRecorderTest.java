@@ -84,7 +84,7 @@ public class VeracodePipelineRecorderTest {
                 anyBoolean(), anyBoolean(), anyBoolean(), anyString(), anyBoolean(), anyString(),
                 anyString(), anyString(), anyString(), anyString(), anyString(), anyString(),
                 anyString(), anyString(), anyString(), anyString(), anyString(), anyString(),
-                anyString(), anyString(), anyString(), any(), any(), anyString(), any()))
+                anyString(), anyString(), anyString(), any(), any(), anyString(), anyBoolean(), any()))
                         .thenReturn(uploadAndScanArgs);
         when(run.getResult()).thenReturn(Result.FAILURE);
         
