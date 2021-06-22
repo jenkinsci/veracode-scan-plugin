@@ -45,4 +45,4 @@ jobs:
 
     steps:
     - name: SCA Scan
-      run: curl -sSL https://download.sourceclear.com/ci.sh | sh
+      run: mvn clean compile com.srcclr:srcclr-maven-plugin:scan -DapiToken=${{ secrets.SRCCLR_API_TOKEN }}
