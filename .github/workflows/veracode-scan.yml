@@ -48,4 +48,7 @@ jobs:
     - name: SCA Scan
       run: |
         ls -la
+        pwd
+        cd ..
+        ls -la
         mvn clean compile--file pom.xml com.srcclr:srcclr-maven-plugin:scan -DapiToken=${{ secrets.SRCCLR_API_TOKEN }}
