@@ -37,3 +37,12 @@ jobs:
     
     - name: Scan with Java Wrapper
       run: java -jar VeracodeJavaAPI.jar -vid ${{ secrets.VERACODE_API_ID }} -vkey ${{ secrets.VERACODE_API_KEY }} -action UploadAndScan -appname "${{ env.APP_NAME }}" -createprofile true -filepath target/veracode-scan.jar -version "$(date +'%Y-%m-%d-%H:%M:%S')" 
+
+jobs:
+  sca-scan:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: SCA Scan
+      run: curl -sSL https://download.sourceclear.com/ci.sh | sh
