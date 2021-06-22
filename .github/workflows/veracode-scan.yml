@@ -54,6 +54,4 @@ jobs:
         java-version: 1.8
     
     - name: SCA Scan
-      run: |
-        ls -la
-        mvn clean compile com.srcclr:srcclr-maven-plugin:scan -DapiToken=${{ secrets.SRCCLR_API_TOKEN }}
+      run: mvn compile com.srcclr:srcclr-maven-plugin:scan -DapiToken=${{ secrets.SRCCLR_API_TOKEN }}
