@@ -32,6 +32,7 @@
             <url>https://opensource.org/licenses/MIT</url>
         </license>
     </licenses>
+
     <dependencies>
         <dependency>
             <groupId>com.veracode.vosp.api.wrappers</groupId>
@@ -39,6 +40,7 @@
             <artifactId>vosp-api-wrappers-java</artifactId>
             <version>21.5.7.7</version>
         </dependency>
+
         <dependency>
             <groupId>org.owasp.esapi</groupId>
             <artifactId>esapi</artifactId>
@@ -51,23 +53,25 @@
                 </exclusion>
             </exclusions>
         </dependency>
+
         <dependency>
-	    <groupId>org.slf4j</groupId>
-	    <artifactId>slf4j-api</artifactId>
-	    <version>1.7.26
-	    </version>
-        </dependency>
-        <dependency>
-	    <groupId>org.apache.xmlgraphics</groupId>
-	    <artifactId>batik-css</artifactId>
-	    <version>1.11</version>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.7.26
+            </version>
         </dependency>
 
-	<dependency>
-	    <groupId>org.jenkins-ci</groupId>
-	    <artifactId>symbol-annotation</artifactId>
-	    <version>1.14</version>
-	</dependency>
+        <dependency>
+            <groupId>org.apache.xmlgraphics</groupId>
+            <artifactId>batik-css</artifactId>
+            <version>1.11</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jenkins-ci</groupId>
+            <artifactId>symbol-annotation</artifactId>
+            <version>1.14</version>
+        </dependency>
 
         <dependency>
             <groupId>org.jenkins-ci.plugins</groupId>
@@ -96,51 +100,9 @@
         </dependency>
 
         <dependency>
-            <groupId>commons-beanutils</groupId>
-            <artifactId>commons-beanutils</artifactId>
-            <version>1.9.4</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.kohsuke</groupId>
-            <artifactId>libpam4j</artifactId>
-            <version>1.9</version>
-        </dependency>
-
-        <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
-            <version>2.7</version>
-        </dependency>
-
-        <dependency>
             <groupId>org.springframework</groupId>
-            <artifactId>spring-beans</artifactId>
-            <version>3.0.6.RELEASE</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-core</artifactId>
-            <version>3.2.9.RELEASE</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.ant</groupId>
-            <artifactId>ant</artifactId>
-            <version>1.9.15</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.xmlgraphics</groupId>
-            <artifactId>xmlgraphics-commons</artifactId>
-            <version>2.6</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-compress</artifactId>
-            <version>1.19</version>
+            <artifactId>spring-webmvc</artifactId>
+            <version>5.3.8</version>
         </dependency>
 
         <dependency>
@@ -150,21 +112,27 @@
         </dependency>
 
         <dependency>
-            <groupId>org.kohsuke.stapler</groupId>
-            <artifactId>stapler-jelly</artifactId>
-            <version>1.257</version>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.7</version>
         </dependency>
 
         <dependency>
-            <groupId>org.kohsuke.stapler</groupId>
-            <artifactId>stapler-groovy</artifactId>
-            <version>1.257</version>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-compress</artifactId>
+            <version>1.20</version>
         </dependency>
 
         <dependency>
-            <groupId>commons-codec</groupId>
-            <artifactId>commons-codec</artifactId>
-            <version>1.13</version>
+            <groupId>org.kohsuke</groupId>
+            <artifactId>libpam4j</artifactId>
+            <version>1.11</version>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-beanutils</groupId>
+            <artifactId>commons-beanutils</artifactId>
+            <version>1.9.4</version>
         </dependency>
     </dependencies>
 
@@ -188,7 +156,7 @@
     <repositories>
         <repository>
             <id>repo.jenkins-ci.org</id>
-	    <url>https://repo.jenkins-ci.org/public/</url>
+            <url>https://repo.jenkins-ci.org/public/</url>
         </repository>
     </repositories>
     <pluginRepositories>
