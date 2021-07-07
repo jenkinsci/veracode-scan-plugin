@@ -28,7 +28,7 @@ public class DynamicAnalysisResultsAction implements RunAction2 {
 
     // The Jenkins build containing this action
     private transient Run<?, ?> build;
-    
+
     // The object to store the specific region url
     private final String xmlApiHost;
 
@@ -44,8 +44,8 @@ public class DynamicAnalysisResultsAction implements RunAction2 {
     /**
      * Constructor for DynamicAnalysisResultsAction.
      *
-     * @param scanHistory a {@link com.veracode.jenkins.plugin.data.DAScanHistory}
-     *                    object.
+     * @param scanHistory a {@link com.veracode.jenkins.plugin.data.DAScanHistory} object.
+     * @param xmlApiHost the object to store the specific region url
      */
     public DynamicAnalysisResultsAction(DAScanHistory scanHistory, String xmlApiHost) {
         if (null == scanHistory || null == xmlApiHost) {

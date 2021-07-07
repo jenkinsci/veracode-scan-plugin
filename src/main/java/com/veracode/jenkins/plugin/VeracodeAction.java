@@ -33,7 +33,7 @@ public class VeracodeAction implements RunAction2 {
 
     // The Jenkins build containing this action
     private transient Run<?, ?> build;
-    
+
     // The object to store the specific region url
     private final String xmlApiHost;
 
@@ -50,6 +50,7 @@ public class VeracodeAction implements RunAction2 {
      * <p>Constructor for VeracodeAction.</p>
      *
      * @param scanHistory a {@link com.veracode.jenkins.plugin.data.ScanHistory} object.
+     * @param xmlApiHost the object to store the specific region url
      */
     public VeracodeAction(ScanHistory scanHistory, String xmlApiHost) {
         if (null == scanHistory || null == xmlApiHost) {
