@@ -12,11 +12,11 @@
     </parent>
     <groupId>com.veracode.jenkins</groupId>
     <artifactId>veracode-scan</artifactId>
-    <version>21.6.13.0-SNAPSHOT</version>
+    <version>21.7.14.0-SNAPSHOT</version>
     <packaging>hpi</packaging>
     <properties>
         <!-- Baseline Jenkins version you use to build the plugin. Users must have this version or newer to run. -->
-        <jenkins.version>2.60</jenkins.version>
+        <jenkins.version>2.107.3</jenkins.version>
         <java.level>8</java.level>
         <!-- Other properties you may want to use:
           ~ jenkins-test-harness.version: Jenkins Test Harness version you use to test the plugin. For Jenkins version >= 1.580.1 use JTH 2.0 or higher.
@@ -32,6 +32,7 @@
             <url>https://opensource.org/licenses/MIT</url>
         </license>
     </licenses>
+
     <dependencies>
         <dependency>
             <groupId>com.veracode.vosp.api.wrappers</groupId>
@@ -39,6 +40,7 @@
             <artifactId>vosp-api-wrappers-java</artifactId>
             <version>21.5.7.7</version>
         </dependency>
+
         <dependency>
             <groupId>org.owasp.esapi</groupId>
             <artifactId>esapi</artifactId>
@@ -51,23 +53,25 @@
                 </exclusion>
             </exclusions>
         </dependency>
+
         <dependency>
-	    <groupId>org.slf4j</groupId>
-	    <artifactId>slf4j-api</artifactId>
-	    <version>1.7.26
-	    </version>
-        </dependency>
-        <dependency>
-	    <groupId>org.apache.xmlgraphics</groupId>
-	    <artifactId>batik-css</artifactId>
-	    <version>1.11</version>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.7.26
+            </version>
         </dependency>
 
-	<dependency>
-	    <groupId>org.jenkins-ci</groupId>
-	    <artifactId>symbol-annotation</artifactId>
-	    <version>1.14</version>
-	</dependency>
+        <dependency>
+            <groupId>org.apache.xmlgraphics</groupId>
+            <artifactId>batik-css</artifactId>
+            <version>1.11</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jenkins-ci</groupId>
+            <artifactId>symbol-annotation</artifactId>
+            <version>1.14</version>
+        </dependency>
 
         <dependency>
             <groupId>org.jenkins-ci.plugins</groupId>
@@ -93,6 +97,72 @@
             <artifactId>powermock-api-mockito</artifactId>
             <version>1.6.5</version>
             <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-webmvc</artifactId>
+            <version>5.3.8</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>30.0-jre</version>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.7</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-compress</artifactId>
+            <version>1.20</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.kohsuke</groupId>
+            <artifactId>libpam4j</artifactId>
+            <version>1.11</version>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-beanutils</groupId>
+            <artifactId>commons-beanutils</artifactId>
+            <version>1.9.4</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.xmlgraphics</groupId>
+            <artifactId>xmlgraphics-commons</artifactId>
+            <version>2.6</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.ant</groupId>
+            <artifactId>ant</artifactId>
+            <version>1.9.15</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.kohsuke.stapler</groupId>
+            <artifactId>stapler-jelly</artifactId>
+            <version>1.257</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.kohsuke.stapler</groupId>
+            <artifactId>stapler-groovy</artifactId>
+            <version>1.257</version>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+            <version>1.13</version>
         </dependency>
     </dependencies>
 
