@@ -94,10 +94,10 @@
 		</table>
 	</f:entry>
 	
-	<f:entry title="Copy Output Remote Files to Master">
+	<f:entry title="Copy Output Remote Files to Controller">
 			<table width="100%">
 				<f:entry field="copyRemoteFiles">
-					<f:checkbox title="When a remote machine performs the build, the output files are copied to master (not recommended)."/>
+					<f:checkbox title="When a remote machine performs the build, the output files are copied to controller (not recommended)."/>
 				</f:entry>
 			</table>
 		</f:entry>
