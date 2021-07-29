@@ -7,14 +7,14 @@
 <div class="veracode" id="replacementpattern-help-id-static-freestyle">
 	<p>
 		Enter the replacement pattern that represents the groups captured by the filename pattern.
-		For example, if the filename pattern is '*-*-SNAPSHOT.war' and the replacement pattern '$1-master-SNAPSHOT.war',
-		an uploaded file named 'app-branch-SNAPSHOT.war' would be saved as 'app-master-SNAPSHOT.war'.
+		For example, if the filename pattern is '*-*-SNAPSHOT.war' and the replacement pattern '$1-SNAPSHOT.war',
+		an uploaded file named 'app-branch-SNAPSHOT.war' would be saved as 'app-SNAPSHOT.war'.
 	</p>
 	<p>
 		In order to specify a replacement pattern that includes a reference to a captured group followed by a number
 		place the captured group's index inside curly braces. For example, if the filename pattern is '*-*-SNAPSHOT.war'
-		and the replacement pattern is '${1}5-master-SNAPSHOT.war', an uploaded file named 'app-branch-SNAPSHOT.war' would be
-		saved as 'app5-master-SNAPSHOT.war'.
+		and the replacement pattern is '${1}5-SNAPSHOT.war', an uploaded file named 'app-branch-SNAPSHOT.war' would be
+		saved as 'app5-SNAPSHOT.war'.
 	</p>
 	<p>
 		New filenames for uploaded files must be valid. Path separators ('\' or '/') should not be included.
