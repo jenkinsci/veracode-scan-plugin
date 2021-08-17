@@ -23,6 +23,7 @@ import com.veracode.jenkins.plugin.utils.RemoteScanUtil;
 import com.veracode.jenkins.plugin.utils.StringUtil;
 import com.veracode.jenkins.plugin.utils.WrapperUtil;
 import com.veracode.jenkins.plugin.utils.XmlUtil;
+import com.veracode.util.lang.StringUtility;
 
 import hudson.AbortException;
 import hudson.EnvVars;
@@ -165,8 +166,8 @@ public class VeracodePipelineRecorder extends Recorder implements SimpleBuildSte
         this.canFailJob = canFailJob;
         this.debug = debug;
         this.copyRemoteFiles = copyRemoteFiles;
-        this.uploadIncludesPattern = uploadIncludesPattern;
-        this.uploadExcludesPattern = uploadExcludesPattern;
+        this.uploadIncludesPattern = StringUtility.getEmptyIfNull(uploadIncludesPattern);
+        this.uploadExcludesPattern = StringUtility.getEmptyIfNull(uploadExcludesPattern);
         this.scanIncludesPattern = scanIncludesPattern;
         this.scanExcludesPattern = scanExcludesPattern;
         this.fileNamePattern = fileNamePattern;
