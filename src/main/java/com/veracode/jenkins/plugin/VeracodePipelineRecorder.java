@@ -671,7 +671,7 @@ public class VeracodePipelineRecorder extends Recorder implements SimpleBuildSte
                 }
             }
 
-            procStart = procStart.cmds(command).masks(masks).stdout(listener).quiet(true);
+            procStart = procStart.pwd(workspace).cmds(command).masks(masks).stdout(listener).quiet(true);
 
             if (this.debug) {
                 procStart.quiet(false);

@@ -7,37 +7,50 @@ import static org.mockito.Mockito.when;
 
 import java.io.File;
 import java.io.PrintStream;
+import java.lang.reflect.Method;
 
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.junit.runner.RunWith;
+import org.mockito.Matchers;
 import org.mockito.Mockito;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
+import com.veracode.http.Credentials;
+import com.veracode.http.Region;
 import com.veracode.jenkins.plugin.args.UploadAndScanArgs;
+import com.veracode.jenkins.plugin.data.ScanHistory;
 import com.veracode.jenkins.plugin.utils.FileUtil;
 import com.veracode.jenkins.plugin.utils.RemoteScanUtil;
+import com.veracode.jenkins.plugin.utils.WrapperUtil;
+import com.veracode.jenkins.plugin.utils.XmlUtil;
 
 import hudson.AbortException;
 import hudson.EnvVars;
 import hudson.FilePath;
 import hudson.Launcher;
+import hudson.Proc;
+import hudson.Launcher.ProcStarter;
 import hudson.model.AbstractItem;
+import hudson.model.Computer;
 import hudson.model.ItemGroup;
 import hudson.model.Job;
+import hudson.model.Node;
 import hudson.model.Result;
 import hudson.model.Run;
 import hudson.model.TaskListener;
+import hudson.util.ArgumentListBuilder;
 import jenkins.model.Jenkins;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({
         Job.class, Run.class, ItemGroup.class, FilePath.class, UploadAndScanArgs.class,
-        RemoteScanUtil.class, Jenkins.class, VeracodePipelineRecorder.class, FileUtil.class
+        RemoteScanUtil.class, Jenkins.class, VeracodePipelineRecorder.class, FileUtil.class,
+        ProcStarter.class, WrapperUtil.class, XmlUtil.class, Credentials.class
 })
 public class VeracodePipelineRecorderTest {
 
@@ -144,5 +157,74 @@ public class VeracodePipelineRecorderTest {
         // Verify #getStringFilePaths method executed without any errors
         Mockito.verify(fileUtil, Mockito.times(1)).getStringFilePaths(sampleFilePath
                 .list(veracodePipelineRecorder.uploadIncludesPattern, veracodePipelineRecorder.uploadExcludesPattern));
+    }
+
+    @Test
+    public void testRunScanFromRemote() throws Exception {
+
+        Run run = PowerMockito.mock(Run.class);
+        FilePath filePath = PowerMockito.mock(FilePath.class);
+        TaskListener taskListener = PowerMockito.mock(TaskListener.class);
+        PrintStream printStream = PowerMockito.mock(PrintStream.class);
+        Computer computer = Mockito.mock(Computer.class);
+        Node node = Mockito.mock(Node.class);
+        EnvVars envVars = PowerMockito.mock(EnvVars.class);
+        Job job = PowerMockito.mock(Job.class);
+        Launcher launcher = PowerMockito.mock(Launcher.class);
+        ProcStarter procStarter = PowerMockito.mock(ProcStarter.class);
+        Proc proc = PowerMockito.mock(Proc.class);
+        ScanHistory scanHistory = PowerMockito.mock(ScanHistory.class);
+        Credentials credentials = PowerMockito.mock(Credentials.class);
+        Region region = PowerMockito.mock(Region.class);
+        VeracodeAction veracodeAction = PowerMockito.mock(VeracodeAction.class);
+
+        PowerMockito.mockStatic(RemoteScanUtil.class);
+        PowerMockito.mockStatic(FileUtil.class);
+        PowerMockito.mockStatic(WrapperUtil.class);
+        PowerMockito.mockStatic(XmlUtil.class);
+        PowerMockito.mockStatic(Credentials.class);
+
+        when(filePath.toComputer()).thenReturn(computer);
+        when(computer.getNode()).thenReturn(node);
+        when(RemoteScanUtil.getRemoteVeracodePath(node)).thenReturn(filePath);
+        when(run.getEnvironment(taskListener)).thenReturn(envVars);
+        when(run.getDisplayName()).thenReturn("DisplayName");
+        PowerMockito.when(run.getParent()).thenReturn(job);
+        when(job.getFullDisplayName()).thenReturn("FullDisplayName");
+        PowerMockito.when(envVars.expand(any())).thenReturn("Test");
+
+        when(FileUtil.getStringFilePaths(any())).thenReturn(new String[0]);
+        when(RemoteScanUtil.formatParameterValue(anyString())).thenCallRealMethod();
+        when(RemoteScanUtil.getMaskPosition(any())).thenCallRealMethod();
+
+        when(node.createLauncher(taskListener)).thenReturn(launcher);
+        PowerMockito.whenNew(ProcStarter.class).withNoArguments().thenReturn(procStarter);
+        when(procStarter.pwd(any(FilePath.class))).thenReturn(procStarter);
+        when(procStarter.cmds(any(ArgumentListBuilder.class))).thenReturn(procStarter);
+        when(procStarter.masks(Matchers.anyVararg())).thenReturn(procStarter);
+        when(procStarter.stdout(any(TaskListener.class))).thenReturn(procStarter);
+        when(procStarter.quiet(anyBoolean())).thenReturn(procStarter);
+        when(launcher.launch(any(ProcStarter.class))).thenReturn(proc);
+        when(proc.join()).thenReturn(0);
+
+        when(WrapperUtil.getBuildInfo(anyString(), anyString(), anyString(), anyString(), any()))
+                .thenReturn("buildInfoXML");
+        when(XmlUtil.parseBuildId(anyString())).thenReturn("buildId");
+        when(WrapperUtil.getDetailedReport(anyString(), anyString(), anyString(), any()))
+                .thenReturn("detailedReportXML");
+        when(XmlUtil.newScanHistory(anyString(), anyString(), any())).thenReturn(scanHistory);
+        when(Credentials.create(anyString(), anyString())).thenReturn(credentials);
+        when(credentials.getRegion()).thenReturn(region);
+        when(region.getXmlApiHost()).thenReturn("xmlApiHost");
+        PowerMockito.whenNew(VeracodeAction.class).withAnyArguments().thenReturn(veracodeAction);
+
+        Method runScanFromRemoteMethod = VeracodePipelineRecorder.class.getDeclaredMethod("runScanFromRemote",
+                Run.class, FilePath.class, TaskListener.class, PrintStream.class);
+        runScanFromRemoteMethod.setAccessible(true);
+        VeracodePipelineRecorder recorder = new VeracodePipelineRecorder("applicationName", "criticality", null,
+                "scanName", true, 60, true, null, false, false, true, true, "**/**.*", null, "**/**.jar", "**/**.war",
+                null, null, false, false, null, null, null, null, "vid", "vkey");
+        boolean success = (boolean) runScanFromRemoteMethod.invoke(recorder, run, filePath, taskListener, printStream);
+        Assert.assertTrue(success);
     }
 }
