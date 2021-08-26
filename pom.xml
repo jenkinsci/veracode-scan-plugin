@@ -246,7 +246,7 @@
     <profile>
       <id>sonar</id>
       <activation>
-        <activeByDefault>true</activeByDefault>
+        <activeByDefault>false</activeByDefault>
         <property>
           <name>env.BUILD_NUMBER</name>
         </property>
