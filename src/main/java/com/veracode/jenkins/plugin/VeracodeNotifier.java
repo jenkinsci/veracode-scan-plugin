@@ -1000,7 +1000,7 @@ public class VeracodeNotifier extends Notifier {
                     masks[i] = false;
             }
 
-            procStart = procStart.cmds(command).masks(masks).stdout(listener).quiet(true);
+            procStart = procStart.pwd(workspace).cmds(command).masks(masks).stdout(listener).quiet(true);
 
             if (bDebug) {
                 procStart.quiet(false);
