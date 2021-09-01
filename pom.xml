@@ -12,7 +12,7 @@
     </parent>
     <groupId>com.veracode.jenkins</groupId>
     <artifactId>veracode-scan</artifactId>
-    <version>21.8.15.0-SNAPSHOT</version>
+    <version>21.9.16.0-SNAPSHOT</version>
     <packaging>hpi</packaging>
     <properties>
         <!-- Baseline Jenkins version you use to build the plugin. Users must have this version or newer to run. -->
@@ -241,4 +241,48 @@
 			</plugin>
 		</plugins>
 	</build>
+
+<profiles>
+    <profile>
+      <id>sonar</id>
+      <activation>
+        <activeByDefault>false</activeByDefault>
+        <property>
+          <name>env.BUILD_NUMBER</name>
+        </property>
+      </activation>
+      <properties>
+        <sonar.skip>true</sonar.skip>
+        <sonar.host.url>https://sonarqube.prod.veracode.io</sonar.host.url>
+        <sonar.sources>src/main</sonar.sources>
+        <sonar.tests>src/test</sonar.tests>
+        <sonar.language>java</sonar.language>
+        <sonar.java.source>1.8</sonar.java.source>
+        <sonar.java.target>1.8</sonar.java.target>
+        <sonar.coverage.jacoco.xmlReportPaths>target/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
+        <sonar.projectKey>integrations:jenkins-veracode-scan-plugin</sonar.projectKey>
+        <sonar.projectName>integrations:jenkins-veracode-scan-plugin</sonar.projectName>
+      </properties>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.sonarsource.scanner.maven</groupId>
+            <artifactId>sonar-maven-plugin</artifactId>
+            <version>3.7.0.1746</version>
+            <executions>
+              <execution>
+                <phase>verify</phase>
+                <goals>
+                  <goal>sonar</goal>
+                </goals>
+              </execution>
+            </executions>
+            <configuration>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+
 </project>
