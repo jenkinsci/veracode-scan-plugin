@@ -363,7 +363,7 @@ public class VeracodePipelineRecorder extends Recorder implements SimpleBuildSte
                     run.getParent().getFullDisplayName(), applicationName, sandboxName, scanName,
                     criticality, scanIncludesPattern, scanExcludesPattern, fileNamePattern,
                     replacementPattern, pHost, pPort, pUser, pPassword, workspace,
-                    run.getEnvironment(listener), str_timeout, debug, uploadAndScanFilePaths);
+                    run.getEnvironment(listener), str_timeout, false, debug, uploadAndScanFilePaths);
 
             if (debug) {
                 ps.println(String.format("Calling wrapper with arguments:%n%s%n",
@@ -627,7 +627,7 @@ public class VeracodePipelineRecorder extends Recorder implements SimpleBuildSte
                     run.getParent().getFullDisplayName(), applicationName, sandboxName, scanName,
                     criticality, scanIncludesPattern, scanExcludesPattern, fileNamePattern,
                     replacementPattern, pHost, pPort, pUser, pPassword, workspace,
-                    run.getEnvironment(listener), str_timeout, debug, uploadAndScanFilePaths);
+                    run.getEnvironment(listener), str_timeout, false, debug, uploadAndScanFilePaths);
 
             String jarPath = jarFilePath + sep + execJarFile + ".jar";
             String cmd = "java -jar " + jarPath;

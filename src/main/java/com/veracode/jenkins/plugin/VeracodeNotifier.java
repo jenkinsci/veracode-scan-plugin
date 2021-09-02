@@ -478,6 +478,7 @@ public class VeracodeNotifier extends Notifier {
     private final CredentialsBlock _credentials;
     private final boolean _waitforscan;
     private String _timeout;
+    private final boolean deleteIncompleteScan;
 
     // -------------------------------------------------------------------
     // Methods that correspond to identifiers referenced in config.jelly
@@ -546,6 +547,10 @@ public class VeracodeNotifier extends Notifier {
 
     public String getTimeout() {
         return this.getWaitForScan() ? EncryptionUtil.decrypt(this._timeout) : null;
+    }
+
+    public boolean isDeleteIncompleteScan() {
+        return this.deleteIncompleteScan;
     }
 
     public String getVid() {
@@ -887,6 +892,7 @@ public class VeracodeNotifier extends Notifier {
      * @param scanexcludespattern   a {@link java.lang.String} object.
      * @param waitForScan           a boolean.
      * @param timeout               a {@link java.lang.String} object.
+     * @param deleteIncompleteScan  a boolean.
      * @param credentials           a
      *                              {@link com.veracode.jenkins.plugin.data.CredentialsBlock}
      *                              object.
@@ -896,7 +902,7 @@ public class VeracodeNotifier extends Notifier {
             String sandboxname, boolean createsandbox, String version, String filenamepattern,
             String replacementpattern, String uploadincludespattern, String uploadexcludespattern,
             String scanincludespattern, String scanexcludespattern, boolean waitForScan,
-            String timeout, CredentialsBlock credentials) {
+            String timeout, boolean deleteIncompleteScan, CredentialsBlock credentials) {
         this._appname = appname;
         this._createprofile = createprofile;
         this._teams = teams;
@@ -916,6 +922,7 @@ public class VeracodeNotifier extends Notifier {
 
         this._waitforscan = waitForScan;
         this._timeout = this._waitforscan ? FormValidationUtil.formatTimeout(timeout) : null;
+        this.deleteIncompleteScan = deleteIncompleteScan;
 
         this._credentials = credentials;
     }

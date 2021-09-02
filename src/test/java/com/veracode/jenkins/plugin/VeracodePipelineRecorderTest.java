@@ -100,7 +100,7 @@ public class VeracodePipelineRecorderTest {
                 anyBoolean(), anyBoolean(), anyBoolean(), anyString(), anyBoolean(), anyString(),
                 anyString(), anyString(), anyString(), anyString(), anyString(), anyString(),
                 anyString(), anyString(), anyString(), anyString(), anyString(), anyString(),
-                anyString(), anyString(), anyString(), any(), any(), anyString(), anyBoolean(), any()))
+                anyString(), anyString(), anyString(), any(), any(), anyString(), anyBoolean(), anyBoolean(), any()))
                         .thenReturn(uploadAndScanArgs);
         when(run.getResult()).thenReturn(Result.FAILURE);
         
@@ -142,7 +142,7 @@ public class VeracodePipelineRecorderTest {
                 anyBoolean(), anyBoolean(), anyString(), anyBoolean(), anyString(), anyString(), anyString(),
                 anyString(), anyString(), anyString(), anyString(), anyString(), anyString(), anyString(), anyString(),
                 anyString(), anyString(), anyString(), anyString(), anyString(), any(), any(), anyString(),
-                anyBoolean(), any())).thenReturn(uploadAndScanArgs);
+                anyBoolean(), anyBoolean(), any())).thenReturn(uploadAndScanArgs);
         when(run.getResult()).thenReturn(Result.SUCCESS);
 
         veracodePipelineRecorder.perform(run, sampleFilePath, launcher, taskListener);
