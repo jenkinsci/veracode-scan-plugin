@@ -194,4 +194,42 @@ public class UploadAndScanArgsTest {
         Assert.assertFalse("deleteincompletescan flag is visible in uploadAndScanArgs",
                 uploadAndScanArgs.list.contains("-deleteincompletescan"));
     }
+
+    @Test
+    public void testNewUploadAndScanArgsForPipelineRecorderWithDeleteIncompleteScanFlagTrue() throws IOException {
+
+        EnvVars envVars = PowerMockito.mock(EnvVars.class);
+        AbstractBuild build = PowerMockito.mock(AbstractBuild.class);
+        FilePath filePath = PowerMockito.mock(FilePath.class);
+        PowerMockito.when(build.getWorkspace()).thenReturn(filePath);
+        PowerMockito.when(envVars.expand(any())).thenReturn("anyString");
+
+        UploadAndScanArgs uploadAndScanArgs = UploadAndScanArgs.newUploadAndScanArgs(false, false, false, false, false,
+                false, "", false, "vid", "vkey", "buildnum", "sample_project", "sample_app", "sample_sandbox", "scan",
+                "High", "**/**.java", "", "", "", "phost", "pport", "puser", "pcredential", filePath, envVars, "60",
+                true, true, new String[2]);
+
+        Assert.assertTrue("deleteincompletescan flag is not visible in upload and scan argument list",
+                uploadAndScanArgs.list.contains("-deleteincompletescan"));
+        Assert.assertTrue("deleteincompletescan flag is not set to true",
+                uploadAndScanArgs.list.get(uploadAndScanArgs.list.indexOf("-deleteincompletescan") + 1).equals("true"));
+    }
+
+    @Test
+    public void testNewUploadAndScanArgsForPipelineRecorderWithDeleteIncompleteScanFlagFalse() throws IOException {
+
+        EnvVars envVars = PowerMockito.mock(EnvVars.class);
+        AbstractBuild build = PowerMockito.mock(AbstractBuild.class);
+        FilePath filePath = PowerMockito.mock(FilePath.class);
+        PowerMockito.when(build.getWorkspace()).thenReturn(filePath);
+        PowerMockito.when(envVars.expand(any())).thenReturn("anyString");
+
+        UploadAndScanArgs uploadAndScanArgs = UploadAndScanArgs.newUploadAndScanArgs(false, false, false, false, false,
+                false, "", false, "vid", "vkey", "buildnum", "sample_project", "sample_app", "sample_sandbox", "scan",
+                "High", "**/**.java", "", "", "", "phost", "pport", "puser", "pcredential", filePath, envVars, "60",
+                false, true, new String[2]);
+
+        Assert.assertFalse("deleteincompletescan flag should not be visible in upload and scan argument list",
+                uploadAndScanArgs.list.contains("-deleteincompletescan"));
+    }
 }
