@@ -72,12 +72,16 @@
 			</table>
 	</f:entry>
 
-	<f:optionalBlock title="Wait for scan to complete" name="waitForScan" inline="true"> 
+	<f:optionalBlock title="Wait for Scan to Complete" name="waitForScan" inline="true"> 
 		<f:entry title="Maximum Wait Time (in minutes)" field="timeout">
 			<f:number default="60"/>
 		</f:entry>
 	</f:optionalBlock>
-	
+
+	<f:entry title="Delete Incomplete Scan" field="deleteIncompleteScan">
+		<f:checkbox default="false" />
+	</f:entry>
+
 	<f:entry title="API ID" field="vid">
 		<f:textbox />
 	</f:entry>

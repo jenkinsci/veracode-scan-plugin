@@ -67,6 +67,8 @@ public class VeracodePipelineRecorder extends Recorder implements SimpleBuildSte
     @DataBoundSetter
     public final Integer timeout;
     @DataBoundSetter
+    public final boolean deleteIncompleteScan;
+    @DataBoundSetter
     public final boolean createProfile;
     @DataBoundSetter
     public final String teams;
@@ -123,6 +125,7 @@ public class VeracodePipelineRecorder extends Recorder implements SimpleBuildSte
      * @param scanName              a {@link java.lang.String} object.
      * @param waitForScan           a boolean.
      * @param timeout               a int.
+     * @param deleteIncompleteScan  a boolean.
      * @param createProfile         a boolean.
      * @param teams                 a {@link java.lang.String} object.
      * @param createSandbox         a boolean.
@@ -146,7 +149,7 @@ public class VeracodePipelineRecorder extends Recorder implements SimpleBuildSte
      */
     @DataBoundConstructor
     public VeracodePipelineRecorder(String applicationName, String criticality, String sandboxName,
-            String scanName, boolean waitForScan, int timeout, boolean createProfile, String teams,
+            String scanName, boolean waitForScan, int timeout, boolean deleteIncompleteScan, boolean createProfile, String teams,
             boolean createSandbox, boolean timeoutFailsJob, boolean canFailJob, boolean debug,
             String uploadIncludesPattern, String uploadExcludesPattern, String scanIncludesPattern,
             String scanExcludesPattern, String fileNamePattern, String replacementPattern,
@@ -160,6 +163,7 @@ public class VeracodePipelineRecorder extends Recorder implements SimpleBuildSte
         this.timeoutFailsJob = timeoutFailsJob;
         this.waitForScan = waitForScan;
         this.timeout = waitForScan && timeout > 0 ? timeout : null;
+        this.deleteIncompleteScan = deleteIncompleteScan;
         this.createProfile = createProfile;
         this.teams = teams;
         this.createSandbox = createSandbox;
@@ -363,7 +367,7 @@ public class VeracodePipelineRecorder extends Recorder implements SimpleBuildSte
                     run.getParent().getFullDisplayName(), applicationName, sandboxName, scanName,
                     criticality, scanIncludesPattern, scanExcludesPattern, fileNamePattern,
                     replacementPattern, pHost, pPort, pUser, pPassword, workspace,
-                    run.getEnvironment(listener), str_timeout, debug, uploadAndScanFilePaths);
+                    run.getEnvironment(listener), str_timeout, deleteIncompleteScan, debug, uploadAndScanFilePaths);
 
             if (debug) {
                 ps.println(String.format("Calling wrapper with arguments:%n%s%n",
@@ -627,7 +631,7 @@ public class VeracodePipelineRecorder extends Recorder implements SimpleBuildSte
                     run.getParent().getFullDisplayName(), applicationName, sandboxName, scanName,
                     criticality, scanIncludesPattern, scanExcludesPattern, fileNamePattern,
                     replacementPattern, pHost, pPort, pUser, pPassword, workspace,
-                    run.getEnvironment(listener), str_timeout, debug, uploadAndScanFilePaths);
+                    run.getEnvironment(listener), str_timeout, deleteIncompleteScan, debug, uploadAndScanFilePaths);
 
             String jarPath = jarFilePath + sep + execJarFile + ".jar";
             String cmd = "java -jar " + jarPath;
@@ -671,7 +675,7 @@ public class VeracodePipelineRecorder extends Recorder implements SimpleBuildSte
                 }
             }
 
-            procStart = procStart.cmds(command).masks(masks).stdout(listener).quiet(true);
+            procStart = procStart.pwd(workspace).cmds(command).masks(masks).stdout(listener).quiet(true);
 
             if (this.debug) {
                 procStart.quiet(false);

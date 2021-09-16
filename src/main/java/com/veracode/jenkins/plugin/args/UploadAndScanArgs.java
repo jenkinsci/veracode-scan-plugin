@@ -34,6 +34,7 @@ public final class UploadAndScanArgs extends AbstractArgs {
     private static final String REPLACEMENT = SWITCH + "replacement";
     private static final String FILEPATH = SWITCH + "filepath";
     private static final String TIMEOUT = SWITCH + "scantimeout";
+    private static final String DELETEINCOMPLETESCAN = SWITCH + "deleteincompletescan";
     private static final String MAXRETRYCOUNT = SWITCH + "maxretrycount";
     private static final String DEBUG = SWITCH + "debug";
 
@@ -66,13 +67,14 @@ public final class UploadAndScanArgs extends AbstractArgs {
      * @param pattern       a {@link java.lang.String} object.
      * @param replacement   a {@link java.lang.String} object.
      * @param timeOut       a {@link java.lang.String} object.
+     * @param deleteIncompleteScan a boolean.
      * @param debug         a boolean.
      * @param filepath      a {@link java.lang.String} object.
      */
     private void addStdArguments(boolean bRemoteScan, String appname, String description,
             boolean createprofile, String teams, String criticality, String sandboxname,
             boolean createsandbox, String version, String include, String exclude, String pattern,
-            String replacement, String timeOut, boolean debug, String... filepath) {
+            String replacement, String timeOut, boolean deleteIncompleteScan, boolean debug, String... filepath) {
         // only add scantimeout if scan takes place from remote
         if (bRemoteScan) {
             if (!StringUtil.isNullOrEmpty(timeOut)) {
@@ -82,7 +84,7 @@ public final class UploadAndScanArgs extends AbstractArgs {
         }
 
         addStdArguments(appname, description, createprofile, teams, criticality, sandboxname,
-                createsandbox, version, include, exclude, pattern, replacement, debug, filepath);
+                createsandbox, version, include, exclude, pattern, replacement, deleteIncompleteScan, debug, filepath);
     }
 
     /**
@@ -101,12 +103,14 @@ public final class UploadAndScanArgs extends AbstractArgs {
      * @param exclude       a {@link java.lang.String} object.
      * @param pattern       a {@link java.lang.String} object.
      * @param replacement   a {@link java.lang.String} object.
+     * @param deleteIncompleteScan a boolean.
+     * @param debug         a boolean.
      * @param filepath      a {@link java.lang.String} object.
      */
     private void addStdArguments(String appname, String description, boolean createprofile,
             String teams, String criticality, String sandboxname, boolean createsandbox,
             String version, String include, String exclude, String pattern, String replacement,
-            boolean debug, String... filepath) {
+            boolean deleteIncompleteScan, boolean debug, String... filepath) {
         if (!StringUtil.isNullOrEmpty(appname)) {
             list.add(APPNAME);
             list.add(appname);
@@ -168,6 +172,11 @@ public final class UploadAndScanArgs extends AbstractArgs {
 
             list.add(REPLACEMENT);
             list.add(replacement);
+        }
+
+        if (deleteIncompleteScan) {
+            list.add(DELETEINCOMPLETESCAN);
+            list.add(Boolean.toString(true));
         }
 
         list.add(MAXRETRYCOUNT);
@@ -289,7 +298,7 @@ public final class UploadAndScanArgs extends AbstractArgs {
                 notifier.getScanincludespattern(), notifier.getScanexcludespattern(),
                 notifier.getFilenamepattern(), notifier.getReplacementpattern(), phost, pport,
                 puser, ppassword, build.getWorkspace(), envVars, notifier.getTimeout(),
-                descriptor.getDebug(), filePaths);
+                notifier.isDeleteIncompleteScan(), descriptor.getDebug(), filePaths);
     }
 
     /**
@@ -324,6 +333,7 @@ public final class UploadAndScanArgs extends AbstractArgs {
      * @param envVars             a {@link hudson.EnvVars} object.
      * @param debug               a boolean.
      * @param timeOut             a {@link java.lang.String} object.
+     * @param deleteIncompleteScan a boolean.
      * @param filePaths           an array of {@link java.lang.String} objects.
      * @return a {@link com.veracode.jenkins.plugin.args.UploadAndScanArgs} object.
      */
@@ -334,7 +344,7 @@ public final class UploadAndScanArgs extends AbstractArgs {
             String sandboxName, String scanName, String criticality, String scanIncludesPattern,
             String scanExcludesPattern, String fileNamePattern, String replacementPattern,
             String pHost, String pPort, String pUser, String pCredential, FilePath workspace,
-            hudson.EnvVars envVars, String timeOut, boolean debug, String[] filePaths) {
+            hudson.EnvVars envVars, String timeOut, boolean deleteIncompleteScan, boolean debug, String[] filePaths) {
 
         String description = null;
 
@@ -402,7 +412,7 @@ public final class UploadAndScanArgs extends AbstractArgs {
         args.addProxyConfiguration(phost, pport);
         args.addStdArguments(bRemoteScan, applicationName, description, createProfile, teams,
                 criticality, sandboxName, createSandbox, scanName, scanIncludesPattern,
-                scanExcludesPattern, fileNamePattern, replacementPattern, timeOut, debug,
+                scanExcludesPattern, fileNamePattern, replacementPattern, timeOut, deleteIncompleteScan, debug,
                 filePaths);
         args.addUserAgent(UserAgentUtil.getVersionDetails());
 

@@ -1,5 +1,7 @@
 package com.veracode.jenkins.plugin.args;
 
+import static org.mockito.Matchers.any;
+
 import java.io.IOException;
 
 import org.junit.Assert;
@@ -7,12 +9,12 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.junit.runner.RunWith;
-import org.mockito.Matchers;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import com.veracode.jenkins.plugin.VeracodeNotifier;
+import com.veracode.jenkins.plugin.VeracodeNotifier.VeracodeDescriptor;
 import com.veracode.jenkins.plugin.data.CredentialsBlock;
 import com.veracode.jenkins.plugin.utils.FormValidationUtil;
 
@@ -24,7 +26,7 @@ import hudson.model.AbstractProject;
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({
         AbstractBuild.class, UploadAndScanArgs.class, FormValidationUtil.class,
-        VeracodeNotifier.VeracodeDescriptor.class
+        VeracodeNotifier.class, VeracodeDescriptor.class, FilePath.class
 })
 public class UploadAndScanArgsTest {
 
@@ -49,6 +51,7 @@ public class UploadAndScanArgsTest {
         String scanExcludesPattern = "";
         boolean waitForScan = true;
         String timeout = "60";
+        boolean deleteIncompleteScan = true;
         boolean bRemoteScan = true;
 
         AbstractBuild build = PowerMockito.mock(AbstractBuild.class);
@@ -59,11 +62,11 @@ public class UploadAndScanArgsTest {
         PowerMockito.mockStatic(FormValidationUtil.class);
         CredentialsBlock credentials = new CredentialsBlock("v_id", "v_key", "v_user", "v_pass");
         String[] filePaths = new String[2];
-        PowerMockito.when(FormValidationUtil.formatTimeout(Matchers.any())).thenReturn("60");
+        PowerMockito.when(FormValidationUtil.formatTimeout(any())).thenReturn("60");
         VeracodeNotifier veracodeNotifier = PowerMockito.spy(new VeracodeNotifier(appName,
                 createProfile, teams, criticality, sandboxName, createSandbox, version,
                 filenamePattern, replacementPattern, uploadIncludesPattern, uploadExcludesPattern,
-                scanIncludesPattern, scanExcludesPattern, waitForScan, timeout, credentials));
+                scanIncludesPattern, scanExcludesPattern, waitForScan, timeout, deleteIncompleteScan, credentials));
 
         FilePath filePath = new FilePath(tempFolder.newFolder("tempDir"));
 
@@ -81,6 +84,7 @@ public class UploadAndScanArgsTest {
         PowerMockito.doReturn("").when(veracodeNotifier).getFilenamepattern();
         PowerMockito.doReturn("").when(veracodeNotifier).getReplacementpattern();
         PowerMockito.doReturn("60").when(veracodeNotifier).getTimeout();
+        PowerMockito.doReturn(true).when(veracodeNotifier).isDeleteIncompleteScan();
         PowerMockito.doReturn(filePath).when(build).getWorkspace();
         PowerMockito.doReturn(appName).when(envVars).expand(appName);
         PowerMockito.when(veracodeDescriptor.getDebug()).thenReturn(true);
@@ -118,5 +122,114 @@ public class UploadAndScanArgsTest {
                 uploadAndScanArgs.list.contains("5"));
         Assert.assertTrue("debug is not visible in uploadAndScanArgs",
                 uploadAndScanArgs.list.contains("-debug"));
+        Assert.assertTrue("deleteincompletescan is not visible in uploadAndScanArgs",
+                uploadAndScanArgs.list.contains("-deleteincompletescan"));
+    }
+
+    @Test
+    public void testNewUploadAndScanArgsWithDeleteIncompleteScanFlagTrue() throws IOException {
+
+        AbstractBuild build = PowerMockito.mock(AbstractBuild.class);
+        EnvVars envVars = PowerMockito.mock(EnvVars.class);
+        VeracodeDescriptor veracodeDescriptor = PowerMockito.mock(VeracodeDescriptor.class);
+        AbstractProject abstractProject = PowerMockito.mock(AbstractProject.class);
+        PowerMockito.mockStatic(FormValidationUtil.class);
+        CredentialsBlock credentials = new CredentialsBlock("v_id", "v_key", null, null);
+        PowerMockito.when(FormValidationUtil.formatTimeout(any())).thenReturn("60");
+        VeracodeNotifier veracodeNotifier = PowerMockito.spy(new VeracodeNotifier("test_app", true, "test_team", "High",
+                "test_sandbox", true, "1.0", "**/*.jar", "", "", "", "", "", true, "60", true, credentials));
+
+        PowerMockito.doReturn(veracodeDescriptor).when(veracodeNotifier).getDescriptor();
+        PowerMockito.when(veracodeDescriptor.getAutoappname()).thenReturn(true);
+        PowerMockito.when(veracodeDescriptor.getAutodescription()).thenReturn(true);
+        PowerMockito.when(veracodeDescriptor.getAutoversion()).thenReturn(true);
+        PowerMockito.when(veracodeDescriptor.getProxy()).thenReturn(false);
+        PowerMockito.when(build.getDisplayName()).thenReturn("project_name");
+        PowerMockito.when(build.getProject()).thenReturn(abstractProject);
+        PowerMockito.when(abstractProject.getDisplayName()).thenReturn("project_name");
+        PowerMockito.doReturn("High").when(veracodeNotifier).getCriticality();
+        PowerMockito.doReturn("60").when(veracodeNotifier).getTimeout();
+        PowerMockito.when(build.getWorkspace()).thenReturn(PowerMockito.mock(FilePath.class));
+        PowerMockito.when(envVars.expand(any())).thenReturn("anyString");
+        PowerMockito.when(veracodeDescriptor.getDebug()).thenReturn(true);
+        UploadAndScanArgs uploadAndScanArgs = UploadAndScanArgs.newUploadAndScanArgs(veracodeNotifier, build, envVars,
+                new String[2], true);
+
+        Assert.assertTrue("deleteincompletescan flag is not visible in uploadAndScanArgs",
+                uploadAndScanArgs.list.contains("-deleteincompletescan"));
+        Assert.assertTrue("deleteincompletescan flag is not true",
+                uploadAndScanArgs.list.get(uploadAndScanArgs.list.indexOf("-deleteincompletescan") + 1).equals("true"));
+    }
+
+    @Test
+    public void testNewUploadAndScanArgsWithDeleteIncompleteScanFlagFalse() throws IOException {
+
+        AbstractBuild build = PowerMockito.mock(AbstractBuild.class);
+        EnvVars envVars = PowerMockito.mock(EnvVars.class);
+        VeracodeNotifier.VeracodeDescriptor veracodeDescriptor = PowerMockito
+                .mock(VeracodeNotifier.VeracodeDescriptor.class);
+        AbstractProject abstractProject = PowerMockito.mock(AbstractProject.class);
+        PowerMockito.mockStatic(FormValidationUtil.class);
+        CredentialsBlock credentials = new CredentialsBlock("v_id", "v_key", null, null);
+        PowerMockito.when(FormValidationUtil.formatTimeout(any())).thenReturn("60");
+        VeracodeNotifier veracodeNotifier = PowerMockito.spy(new VeracodeNotifier("test_app", true, "test_team", "High",
+                "test_sandbox", true, "1.0", "**/*.jar", "", "", "", "", "", true, "60", false, credentials));
+
+        PowerMockito.doReturn(veracodeDescriptor).when(veracodeNotifier).getDescriptor();
+        PowerMockito.when(veracodeDescriptor.getAutoappname()).thenReturn(true);
+        PowerMockito.when(veracodeDescriptor.getAutodescription()).thenReturn(true);
+        PowerMockito.when(veracodeDescriptor.getAutoversion()).thenReturn(true);
+        PowerMockito.when(veracodeDescriptor.getProxy()).thenReturn(false);
+        PowerMockito.when(build.getDisplayName()).thenReturn("project_name");
+        PowerMockito.when(build.getProject()).thenReturn(abstractProject);
+        PowerMockito.when(abstractProject.getDisplayName()).thenReturn("project_name");
+        PowerMockito.doReturn("High").when(veracodeNotifier).getCriticality();
+        PowerMockito.doReturn("60").when(veracodeNotifier).getTimeout();
+        PowerMockito.when(build.getWorkspace()).thenReturn(PowerMockito.mock(FilePath.class));
+        PowerMockito.when(envVars.expand(any())).thenReturn("anyString");
+        PowerMockito.when(veracodeDescriptor.getDebug()).thenReturn(true);
+        UploadAndScanArgs uploadAndScanArgs = UploadAndScanArgs.newUploadAndScanArgs(veracodeNotifier, build, envVars,
+                new String[2], true);
+
+        Assert.assertFalse("deleteincompletescan flag is visible in uploadAndScanArgs",
+                uploadAndScanArgs.list.contains("-deleteincompletescan"));
+    }
+
+    @Test
+    public void testNewUploadAndScanArgsForPipelineRecorderWithDeleteIncompleteScanFlagTrue() throws IOException {
+
+        EnvVars envVars = PowerMockito.mock(EnvVars.class);
+        AbstractBuild build = PowerMockito.mock(AbstractBuild.class);
+        FilePath filePath = PowerMockito.mock(FilePath.class);
+        PowerMockito.when(build.getWorkspace()).thenReturn(filePath);
+        PowerMockito.when(envVars.expand(any())).thenReturn("anyString");
+
+        UploadAndScanArgs uploadAndScanArgs = UploadAndScanArgs.newUploadAndScanArgs(false, false, false, false, false,
+                false, "", false, "vid", "vkey", "buildnum", "sample_project", "sample_app", "sample_sandbox", "scan",
+                "High", "**/**.java", "", "", "", "phost", "pport", "puser", "pcredential", filePath, envVars, "60",
+                true, true, new String[2]);
+
+        Assert.assertTrue("deleteincompletescan flag is not visible in upload and scan argument list",
+                uploadAndScanArgs.list.contains("-deleteincompletescan"));
+        Assert.assertTrue("deleteincompletescan flag is not set to true",
+                uploadAndScanArgs.list.get(uploadAndScanArgs.list.indexOf("-deleteincompletescan") + 1).equals("true"));
+    }
+
+    @Test
+    public void testNewUploadAndScanArgsForPipelineRecorderWithDeleteIncompleteScanFlagFalse() throws IOException {
+
+        EnvVars envVars = PowerMockito.mock(EnvVars.class);
+        AbstractBuild build = PowerMockito.mock(AbstractBuild.class);
+        FilePath filePath = PowerMockito.mock(FilePath.class);
+        PowerMockito.when(build.getWorkspace()).thenReturn(filePath);
+        PowerMockito.when(envVars.expand(any())).thenReturn("anyString");
+
+        UploadAndScanArgs uploadAndScanArgs = UploadAndScanArgs.newUploadAndScanArgs(false, false, false, false, false,
+                false, "", false, "vid", "vkey", "buildnum", "sample_project", "sample_app", "sample_sandbox", "scan",
+                "High", "**/**.java", "", "", "", "phost", "pport", "puser", "pcredential", filePath, envVars, "60",
+                false, true, new String[2]);
+
+        Assert.assertFalse("deleteincompletescan flag should not be visible in upload and scan argument list",
+                uploadAndScanArgs.list.contains("-deleteincompletescan"));
     }
 }
