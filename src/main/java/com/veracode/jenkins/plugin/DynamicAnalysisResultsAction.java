@@ -173,9 +173,9 @@ public class DynamicAnalysisResultsAction implements RunAction2 {
         String iconName;
         if (complianceStatus.equalsIgnoreCase(Constant.PASSED)) {
             iconName = Constant.SHIELD_GREEN_16X16;
-        } else if (complianceStatus.equalsIgnoreCase(Constant.DID_NOT_PASS)) {
+        } else if (complianceStatus.equalsIgnoreCase(Constant.DID_NOT_PASSED)) {
             iconName = Constant.SHIELD_RED_16X16;
-        } else if (complianceStatus.equalsIgnoreCase(Constant.CONDITIONAL_PASS)) {
+        } else if (complianceStatus.equalsIgnoreCase(Constant.CONDITIONAL_PASSED)) {
             iconName = Constant.SHIELD_YELLOW_16X16;
         } else {
             iconName = Constant.SHIELD_GRAY_16X16;
@@ -195,9 +195,9 @@ public class DynamicAnalysisResultsAction implements RunAction2 {
         String iconName;
         if (complianceStatus.equalsIgnoreCase(Constant.PASSED)) {
             iconName = Constant.SHIELD_GREEN_24X24;
-        } else if (complianceStatus.equalsIgnoreCase(Constant.DID_NOT_PASS)) {
+        } else if (complianceStatus.equalsIgnoreCase(Constant.DID_NOT_PASSED)) {
             iconName = Constant.SHIELD_RED_24X24;
-        } else if (complianceStatus.equalsIgnoreCase(Constant.CONDITIONAL_PASS)) {
+        } else if (complianceStatus.equalsIgnoreCase(Constant.CONDITIONAL_PASSED)) {
             iconName = Constant.SHIELD_YELLOW_24X24;
         } else {
             iconName = Constant.SHIELD_GRAY_24X24;
@@ -217,9 +217,9 @@ public class DynamicAnalysisResultsAction implements RunAction2 {
         String iconName;
         if (complianceStatus.equalsIgnoreCase(Constant.PASSED)) {
             iconName = Constant.SHIELD_GREEN_32X32;
-        } else if (complianceStatus.equalsIgnoreCase(Constant.DID_NOT_PASS)) {
+        } else if (complianceStatus.equalsIgnoreCase(Constant.DID_NOT_PASSED)) {
             iconName = Constant.SHIELD_RED_32X32;
-        } else if (complianceStatus.equalsIgnoreCase(Constant.CONDITIONAL_PASS)) {
+        } else if (complianceStatus.equalsIgnoreCase(Constant.CONDITIONAL_PASSED)) {
             iconName = Constant.SHIELD_YELLOW_32X32;
         } else {
             iconName = Constant.SHIELD_GRAY_32X32;
@@ -239,9 +239,9 @@ public class DynamicAnalysisResultsAction implements RunAction2 {
         String iconName;
         if (complianceStatus.equalsIgnoreCase(Constant.PASSED)) {
             iconName = Constant.SHIELD_GREEN_48X48;
-        } else if (complianceStatus.equalsIgnoreCase(Constant.DID_NOT_PASS)) {
+        } else if (complianceStatus.equalsIgnoreCase(Constant.DID_NOT_PASSED)) {
             iconName = Constant.SHIELD_RED_48X48;
-        } else if (complianceStatus.equalsIgnoreCase(Constant.CONDITIONAL_PASS)) {
+        } else if (complianceStatus.equalsIgnoreCase(Constant.CONDITIONAL_PASSED)) {
             iconName = Constant.SHIELD_YELLOW_48X48;
         } else {
             iconName = Constant.SHIELD_GRAY_48X48;

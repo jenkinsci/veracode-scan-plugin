@@ -279,14 +279,14 @@ public final class UploadAndScanArgs extends AbstractArgs {
         String phost = null;
         String pport = null;
         String puser = null;
-        String ppassword = null;
+        String ppsword = null;
 
         // proxy settings
         if (descriptor.getProxy()) {
             phost = descriptor.getPhost();
             pport = descriptor.getPport();
             puser = descriptor.getPuser();
-            ppassword = descriptor.getPpassword();
+            ppsword = descriptor.getPpassword();
         }
 
         return newUploadAndScanArgs(bRemoteScan, descriptor.getAutoappname(),
@@ -297,7 +297,7 @@ public final class UploadAndScanArgs extends AbstractArgs {
                 notifier.getSandboxname(), notifier.getVersion(), notifier.getCriticality(),
                 notifier.getScanincludespattern(), notifier.getScanexcludespattern(),
                 notifier.getFilenamepattern(), notifier.getReplacementpattern(), phost, pport,
-                puser, ppassword, build.getWorkspace(), envVars, notifier.getTimeout(),
+                puser, ppsword, build.getWorkspace(), envVars, notifier.getTimeout(),
                 notifier.isDeleteIncompleteScan(), descriptor.getDebug(), filePaths);
     }
 
@@ -351,7 +351,7 @@ public final class UploadAndScanArgs extends AbstractArgs {
         String phost = null;
         String pport = null;
         String puser = null;
-        String ppassword = null;
+        String ppsword = null;
 
         if (!StringUtil.isNullOrEmpty(vId)) {
             vId = envVars.expand(vId);
@@ -402,13 +402,13 @@ public final class UploadAndScanArgs extends AbstractArgs {
             phost = pHost;
             pport = pPort;
             puser = pUser;
-            ppassword = pCredential;
+            ppsword = pCredential;
         }
         UploadAndScanArgs args = new UploadAndScanArgs();
         // We know whether we are using the global or job credentials because
         // of the initial initialization statements therefore no add'l logic req'd.
         args.addApiCredentials(vId, vKey);
-        args.addProxyCredentials(puser, ppassword);
+        args.addProxyCredentials(puser, ppsword);
         args.addProxyConfiguration(phost, pport);
         args.addStdArguments(bRemoteScan, applicationName, description, createProfile, teams,
                 criticality, sandboxName, createSandbox, scanName, scanIncludesPattern,

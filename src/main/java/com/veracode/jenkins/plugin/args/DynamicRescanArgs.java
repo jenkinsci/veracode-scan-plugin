@@ -143,16 +143,16 @@ public final class DynamicRescanArgs extends AbstractArgs {
         String phost = null;
         String pport = null;
         String puser = null;
-        String ppassword = null;
+        String ppsword = null;
 
         if (veracodeDescriptor.getProxy()) {
             phost = veracodeDescriptor.getPhost();
             pport = veracodeDescriptor.getPport();
             puser = veracodeDescriptor.getPuser();
-            ppassword = veracodeDescriptor.getPpassword();
+            ppsword = veracodeDescriptor.getPpassword();
         }
 
-        args.addProxyCredentials(puser, ppassword);
+        args.addProxyCredentials(puser, ppsword);
         args.addProxyConfiguration(phost, pport);
     }
 
@@ -186,7 +186,7 @@ public final class DynamicRescanArgs extends AbstractArgs {
         String phost = null;
         String pport = null;
         String puser = null;
-        String ppassword = null;
+        String ppsword = null;
 
         if (!StringUtil.isNullOrEmpty(vId)) {
             vId = envVars.expand(vId);
@@ -209,13 +209,13 @@ public final class DynamicRescanArgs extends AbstractArgs {
             phost = pHost;
             pport = pPort;
             puser = pUser;
-            ppassword = pCredential;
+            ppsword = pCredential;
         }
         DynamicRescanArgs args = new DynamicRescanArgs();
         // We know whether we are using the global or job credentials because
         // of the initial initialization statements therefore no add'l logic req'd.
         args.addApiCredentials(vId, vKey);
-        args.addProxyCredentials(puser, ppassword);
+        args.addProxyCredentials(puser, ppsword);
         args.addProxyConfiguration(phost, pport);
         args.addStdArguments(applicationName, version, DVREnabled, autoScanName);
         args.addUserAgent(UserAgentUtil.getVersionDetails());
