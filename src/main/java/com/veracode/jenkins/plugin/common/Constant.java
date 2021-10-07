@@ -13,8 +13,8 @@ public class Constant {
 
     public static final String RESULTS_READY = "Results Ready";
 
-    public static final String CONDITIONAL_PASS = "Conditional pass";
-    public static final String DID_NOT_PASS = "Did not pass";
+    public static final String CONDITIONAL_PASSED = "Conditional pass";
+    public static final String DID_NOT_PASSED = "Did not pass";
     public static final String PASSED = "Pass";
     public static final String PLUGIN_NAME = "veracode-scan";
     public static final String PLUGIN_ICONS_URI_PREFIX = "/plugin/" + PLUGIN_NAME + "/icons/";
