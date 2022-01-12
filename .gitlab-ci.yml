@@ -1,0 +1,22 @@
+image: maven:3-jdk-8-alpine
+
+stages:
+    - build
+    - test
+
+cache:
+  paths:
+    - target/
+
+build:
+  stage: build
+  script:
+    - mvn clean package
+  artifacts:
+    paths:
+    - target/*
+
+test:
+  stage: test
+  script:
+    - mvn test
