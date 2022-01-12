@@ -11,7 +11,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
-import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.Objects;
@@ -133,15 +132,6 @@ public class FileUtilTest {
 		PowerMockito.when(veracodeDescriptor.getFailbuild()).thenReturn(true);
 		boolean isCopied = FileUtil.copyJarFiles(build, null, null, ps);
 		Assert.assertFalse("Expected Files are not copied", isCopied);
-	}
-
-	@Test
-	public void testGetLocalWorkspaceFilepath() throws URISyntaxException {
-		FilePath filePath = FileUtil.getLocalWorkspaceFilepath();
-		String LOCAL_FILE_PATH = ".m2" + File.separator + "repository" + File.separator + "com" + File.separator
-				+ "veracode" + File.separator + "vosp" + File.separator + "api" + File.separator + "wrappers"
-				+ File.separator + "vosp-api-wrappers-java";
-		Assert.assertTrue("File path is incorrect", filePath.getRemote().contains(LOCAL_FILE_PATH));
 	}
 
 	@Test
