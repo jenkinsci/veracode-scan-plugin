@@ -111,7 +111,7 @@ public class FileUtilTest {
 		tempFile.createNewFile();
 		FilePath remoteFilePath = PowerMockito.spy(new FilePath(remoteDir));
 		FilePath localFilePath = PowerMockito.spy(new FilePath(localDir));
-		String jarName = remoteDir.getPath() + "\\vosp-api-wrappers-java.jar";
+		String jarName = remoteDir.getPath() + File.separator + "vosp-api-wrappers-java.jar";
 		PowerMockito.whenNew(FilePath.class).withArguments(node.getChannel(), jarName).thenReturn(localFilePath);
 		doNothing().when(localFilePath).copyToWithPermission(any());
 		boolean isFileCopied = FileUtil.copyJarFiles(build, localFilePath, remoteFilePath, ps);
@@ -138,7 +138,9 @@ public class FileUtilTest {
 	@Test
 	public void testGetLocalWorkspaceFilepath() throws URISyntaxException {
 		FilePath filePath = FileUtil.getLocalWorkspaceFilepath();
-		String LOCAL_FILE_PATH = ".m2\\repository\\com\\veracode\\vosp\\api\\wrappers\\vosp-api-wrappers-java";
+		String LOCAL_FILE_PATH = ".m2" + File.separator + "repository" + File.separator + "com" + File.separator
+				+ "veracode" + File.separator + "vosp" + File.separator + "api" + File.separator + "wrappers"
+				+ File.separator + "vosp-api-wrappers-java";
 		Assert.assertTrue("File path is incorrect", filePath.getRemote().contains(LOCAL_FILE_PATH));
 	}
 
@@ -188,7 +190,7 @@ public class FileUtilTest {
 	}
 
 	@Test
-	public void testCreateBuildPropertiesFile_Exception() throws IOException {
+	public void testCreateBuildPropertiesFile_FileNotFoundException() throws Exception {
 		Run<?, ?> run = mock(Run.class);
 		TaskListener listener = Mockito.mock(TaskListener.class);
 		Properties properties = Mockito.mock(Properties.class);
@@ -199,22 +201,6 @@ public class FileUtilTest {
 		when(listener.getLogger()).thenReturn(printStream);
 		boolean fileCreated = FileUtil.createBuildPropertiesFile(run, properties, listener);
 		Assert.assertFalse("property file is created", fileCreated);
-		Assert.assertEquals("property file is created", 0, tempDir.length());
-	}
-
-	@Test
-	public void testCreateBuildPropertiesFile_IOException() throws IOException {
-		Run<?, ?> run = mock(Run.class);
-		TaskListener listener = Mockito.mock(TaskListener.class);
-		Properties properties = Mockito.mock(Properties.class);
-		PrintStream printStream = Mockito.mock(PrintStream.class);
-		File tempDir = Mockito.spy(tempFolder.newFolder(TEMP_DIRECTORY));
-		when(run.getRootDir()).thenReturn(tempDir);
-		when(tempDir.getParent()).thenReturn("Error_tempDir");
-		when(listener.getLogger()).thenReturn(printStream);
-		boolean fileCreated = FileUtil.createBuildPropertiesFile(run, properties, listener);
-		Assert.assertFalse("property file is created", fileCreated);
-		Assert.assertEquals("property file is created", 0, tempDir.length());
 	}
 
 	@Test

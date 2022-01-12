@@ -55,12 +55,11 @@ public class RemoteScanUtilTest {
 
 	@Test
 	public void testGetPathSeparator() throws URISyntaxException {
-		FilePath filePath = FileUtil.getLocalWorkspaceFilepath();
-		String seperator1 = RemoteScanUtil.getPathSeparator(filePath.getRemote());
-		Assert.assertEquals("Didn't pick the separator correctly", "\\", seperator1);
+		String seperator1 = RemoteScanUtil.getPathSeparator("C:\\test");
+		Assert.assertEquals("Did not pick the separator correctly", "\\", seperator1);
 
-		String seperator2 = RemoteScanUtil.getPathSeparator("v");
-		Assert.assertEquals("Didn't pick the separator correctly", "/", seperator2);
+		String seperator2 = RemoteScanUtil.getPathSeparator("test");
+		Assert.assertEquals("Did not pick the separator correctly", "/", seperator2);
 	}
 
 	@Test
@@ -75,7 +74,7 @@ public class RemoteScanUtilTest {
 		when(node.getChannel()).thenReturn(virtualChannel);
 		PowerMockito.whenNew(FilePath.class).withArguments(VirtualChannel.class, String.class).thenReturn(remotePath);
 		FilePath filePath = RemoteScanUtil.getRemoteVeracodePath(build);
-		Assert.assertEquals("Remote veracode path is not match", tempDir.getPath() + "\\" + "veracode-scan",
+		Assert.assertEquals("Remote veracode path does not match", tempDir.getPath() + File.separator + "veracode-scan",
 				filePath.getRemote());
 	}
 
@@ -88,7 +87,7 @@ public class RemoteScanUtilTest {
 		when(node.getRootPath()).thenReturn(remotePath);
 		when(node.getChannel()).thenReturn(virtualChannel);
 		FilePath remoteVPath = RemoteScanUtil.getRemoteVeracodePath(node);
-		Assert.assertEquals("Remote veracode path is not match", tempDir.getPath() + "\\" + "veracode-scan",
+		Assert.assertEquals("Remote veracode path is not match", tempDir.getPath() + File.separator + "veracode-scan",
 				remoteVPath.getRemote());
 	}
 

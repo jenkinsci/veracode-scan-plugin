@@ -26,21 +26,21 @@ public class XmlDocumentGenerator {
 
 	// summaryreport
 	public static final String SUMMARYREPORT_XML_appId_buildId_buildName_policyStatus_policyRulesStatus =
-    "<?xml version='1.0' encoding='UTF-8'?>" +
-    "<summaryreport xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns=\"https://www.veracode.com/schema/reports/export/1.0\" xsi:schemaLocation=\"https://www.veracode.com/schema/reports/export/1.0 https://vospqaweb.veracode.local/resource/summaryreport.xsd\" report_format_version=\"1.3\" app_name=\"app_name\" app_id=\"%s\" first_build_submitted_date=\"\" build_id=\"%s\" version=\"%s\" submitter=\"Auto\" platform=\"\" assurance_level=\"5\" business_criticality=\"\" generation_date=\"\" veracode_level=\"\" total_flaws=\"27\" flaws_not_mitigated=\"27\" teams=\"\" life_cycle_stage=\"\" planned_deployment_date=\"\" last_update_time=\"\" is_latest_build=\"true\" policy_name=\"Veracode Transitional Very High\" policy_version=\"1\" policy_compliance_status=\"%s\" policy_rules_status=\"%s\" grace_period_expired=\"true\" scan_overdue=\"false\" business_owner=\"\" business_unit=\"\" tags=\"\" legacy_scan_engine=\"false\">\r\n" +
-    "	<static-analysis rating=\"D\" score=\"86\" submitted_date=\"\" published_date=\"\" analysis_size_bytes=\"\" engine_version=\"\">\r\n" +
-    "		<modules>" +
-    "			<module name=\"abc-1.2.13.jar\" compiler=\"JAVAC_1_4\" os=\"Java J2SE 6\" architecture=\"JVM\" loc=\"26229\" score=\"86\" numflawssev0=\"0\" numflawssev1=\"0\" numflawssev2=\"3\" numflawssev3=\"22\" numflawssev4=\"1\" numflawssev5=\"1\" />" + 
-    "		</modules>" +
-    "	</static-analysis>" +
-    "	<severity level=\"5\"><category categoryname=\"Untrusted Search Path\" severity=\"Very High\" count=\"1\" /></severity>" +
-    "	<severity level=\"4\"><category categoryname=\"SQL Injection\" severity=\"High\" count=\"1\" /></severity>" +
-    "	<severity level=\"3\"><category categoryname=\"Directory Traversal\" severity=\"Medium\" count=\"9\" /><category categoryname=\"Information Leakage\" severity=\"Medium\" count=\"6\" /><category categoryname=\"Encapsulation\" severity=\"Medium\" count=\"3\" /><category categoryname=\"Insufficient Input Validation\" severity=\"Medium\" count=\"3\" /><category categoryname=\"Credentials Management\" severity=\"Medium\" count=\"1\" /></severity>" +
-    "	<severity level=\"2\"><category categoryname=\"Code Quality\" severity=\"Low\" count=\"3\" /></severity>" +
-    "	<severity level=\"1\" />" +
-    "	<severity level=\"0\" />" +
-    "	<flaw-status new=\"27\" reopen=\"0\" open=\"0\" fixed=\"0\" total=\"27\" not_mitigated=\"27\" sev-1-change=\"0\" sev-2-change=\"3\" sev-3-change=\"22\" sev-4-change=\"1\" sev-5-change=\"1\" />" +
-    "</summaryreport>";
+	"<?xml version='1.0' encoding='UTF-8'?>" +
+	"<summaryreport xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns=\"https://www.veracode.com/schema/reports/export/1.0\" xsi:schemaLocation=\"https://www.veracode.com/schema/reports/export/1.0 https://vospqaweb.veracode.local/resource/summaryreport.xsd\" report_format_version=\"1.3\" app_name=\"app_name\" app_id=\"%s\" first_build_submitted_date=\"\" build_id=\"%s\" version=\"%s\" submitter=\"Auto\" platform=\"\" assurance_level=\"5\" business_criticality=\"\" generation_date=\"\" veracode_level=\"\" total_flaws=\"27\" flaws_not_mitigated=\"27\" teams=\"\" life_cycle_stage=\"\" planned_deployment_date=\"\" last_update_time=\"\" is_latest_build=\"true\" policy_name=\"Veracode Transitional Very High\" policy_version=\"1\" policy_compliance_status=\"%s\" policy_rules_status=\"%s\" grace_period_expired=\"true\" scan_overdue=\"false\" business_owner=\"\" business_unit=\"\" tags=\"\" legacy_scan_engine=\"false\">\r\n" +
+	"	<static-analysis rating=\"D\" score=\"86\" submitted_date=\"\" published_date=\"\" analysis_size_bytes=\"\" engine_version=\"\">\r\n" +
+	"		<modules>" +
+	"			<module name=\"abc-1.2.13.jar\" compiler=\"JAVAC_1_4\" os=\"Java J2SE 6\" architecture=\"JVM\" loc=\"26229\" score=\"86\" numflawssev0=\"0\" numflawssev1=\"0\" numflawssev2=\"3\" numflawssev3=\"22\" numflawssev4=\"1\" numflawssev5=\"1\" />" + 
+	"		</modules>" +
+	"	</static-analysis>" +
+	"	<severity level=\"5\"><category categoryname=\"Untrusted Search Path\" severity=\"Very High\" count=\"1\" /></severity>" +
+	"	<severity level=\"4\"><category categoryname=\"SQL Injection\" severity=\"High\" count=\"1\" /></severity>" +
+	"	<severity level=\"3\"><category categoryname=\"Directory Traversal\" severity=\"Medium\" count=\"9\" /><category categoryname=\"Information Leakage\" severity=\"Medium\" count=\"6\" /><category categoryname=\"Encapsulation\" severity=\"Medium\" count=\"3\" /><category categoryname=\"Insufficient Input Validation\" severity=\"Medium\" count=\"3\" /><category categoryname=\"Credentials Management\" severity=\"Medium\" count=\"1\" /></severity>" +
+	"	<severity level=\"2\"><category categoryname=\"Code Quality\" severity=\"Low\" count=\"3\" /></severity>" +
+	"	<severity level=\"1\" />" +
+	"	<severity level=\"0\" />" +
+	"	<flaw-status new=\"27\" reopen=\"0\" open=\"0\" fixed=\"0\" total=\"27\" not_mitigated=\"27\" sev-1-change=\"0\" sev-2-change=\"3\" sev-3-change=\"22\" sev-4-change=\"1\" sev-5-change=\"1\" />" +
+	"</summaryreport>";
 	
 	// detailedreport
 	private static final String DETAILEDREPORT_XML = 
