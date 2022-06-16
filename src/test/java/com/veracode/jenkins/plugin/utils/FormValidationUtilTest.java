@@ -74,10 +74,8 @@ public class FormValidationUtilTest {
 	public void testCheckConnection_IDAndKeyFormat() {
 		ProxyBlock proxyBlock = new ProxyBlock("testhost", "123", "user", "abc");
 		FormValidation errorCredFormat = FormValidationUtil.checkConnection("asdcd", "key", proxyBlock);
-		System.out.println(errorCredFormat.getMessage());
-		System.out.println(errorCredFormat.getMessage().contains("The credentials are not in the correct format"));
-//		Assert.assertTrue("Error message for credentials format is invalid",
-//				errorCredFormat.getMessage().contains("The credentials are not in the correct format"));
+		Assert.assertTrue("Error message for credentials format is invalid",
+				errorCredFormat.getMessage().contains("The credentials are not in the correct format"));
 	}
 
 	@Test
