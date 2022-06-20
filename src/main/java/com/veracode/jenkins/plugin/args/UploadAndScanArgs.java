@@ -67,7 +67,7 @@ public final class UploadAndScanArgs extends AbstractArgs {
      * @param pattern       a {@link java.lang.String} object.
      * @param replacement   a {@link java.lang.String} object.
      * @param timeOut       a {@link java.lang.String} object.
-     * @param deleteIncompleteScan a boolean.
+     * @param deleteIncompleteScan  a {@link java.lang.String} object.
      * @param debug         a boolean.
      * @param filepath      a {@link java.lang.String} object.
      */
@@ -103,7 +103,7 @@ public final class UploadAndScanArgs extends AbstractArgs {
      * @param exclude       a {@link java.lang.String} object.
      * @param pattern       a {@link java.lang.String} object.
      * @param replacement   a {@link java.lang.String} object.
-     * @param deleteIncompleteScan a boolean.
+     * @param deleteIncompleteScan  a {@link java.lang.String} object.
      * @param debug         a boolean.
      * @param filepath      a {@link java.lang.String} object.
      */
@@ -333,7 +333,7 @@ public final class UploadAndScanArgs extends AbstractArgs {
      * @param envVars             a {@link hudson.EnvVars} object.
      * @param debug               a boolean.
      * @param timeOut             a {@link java.lang.String} object.
-     * @param deleteIncompleteScan a boolean.
+     * @param deleteIncompleteScan  a {@link java.lang.String} object.
      * @param filePaths           an array of {@link java.lang.String} objects.
      * @return a {@link com.veracode.jenkins.plugin.args.UploadAndScanArgs} object.
      */
