@@ -74,7 +74,7 @@ public final class UploadAndScanArgs extends AbstractArgs {
     private void addStdArguments(boolean bRemoteScan, String appname, String description,
             boolean createprofile, String teams, String criticality, String sandboxname,
             boolean createsandbox, String version, String include, String exclude, String pattern,
-            String replacement, String timeOut, boolean deleteIncompleteScan, boolean debug, String... filepath) {
+            String replacement, String timeOut, String deleteIncompleteScan, boolean debug, String... filepath) {
         // only add scantimeout if scan takes place from remote
         if (bRemoteScan) {
             if (!StringUtil.isNullOrEmpty(timeOut)) {
@@ -110,7 +110,7 @@ public final class UploadAndScanArgs extends AbstractArgs {
     private void addStdArguments(String appname, String description, boolean createprofile,
             String teams, String criticality, String sandboxname, boolean createsandbox,
             String version, String include, String exclude, String pattern, String replacement,
-            boolean deleteIncompleteScan, boolean debug, String... filepath) {
+            String deleteIncompleteScan, boolean debug, String... filepath) {
         if (!StringUtil.isNullOrEmpty(appname)) {
             list.add(APPNAME);
             list.add(appname);
@@ -174,9 +174,9 @@ public final class UploadAndScanArgs extends AbstractArgs {
             list.add(replacement);
         }
 
-        if (deleteIncompleteScan) {
+        if (!StringUtil.isNullOrEmpty(deleteIncompleteScan)) {
             list.add(DELETEINCOMPLETESCAN);
-            list.add(Boolean.toString(true));
+            list.add(deleteIncompleteScan);
         }
 
         list.add(MAXRETRYCOUNT);
@@ -298,7 +298,7 @@ public final class UploadAndScanArgs extends AbstractArgs {
                 notifier.getScanincludespattern(), notifier.getScanexcludespattern(),
                 notifier.getFilenamepattern(), notifier.getReplacementpattern(), phost, pport,
                 puser, ppsword, build.getWorkspace(), envVars, notifier.getTimeout(),
-                notifier.isDeleteIncompleteScan(), descriptor.getDebug(), filePaths);
+                notifier.getDeleteIncompleteScan(), descriptor.getDebug(), filePaths);
     }
 
     /**
@@ -344,7 +344,7 @@ public final class UploadAndScanArgs extends AbstractArgs {
             String sandboxName, String scanName, String criticality, String scanIncludesPattern,
             String scanExcludesPattern, String fileNamePattern, String replacementPattern,
             String pHost, String pPort, String pUser, String pCredential, FilePath workspace,
-            hudson.EnvVars envVars, String timeOut, boolean deleteIncompleteScan, boolean debug, String[] filePaths) {
+            hudson.EnvVars envVars, String timeOut, String deleteIncompleteScan, boolean debug, String[] filePaths) {
 
         String description = null;
 
