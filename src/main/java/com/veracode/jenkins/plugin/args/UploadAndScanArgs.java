@@ -344,7 +344,7 @@ public final class UploadAndScanArgs extends AbstractArgs {
             String sandboxName, String scanName, String criticality, String scanIncludesPattern,
             String scanExcludesPattern, String fileNamePattern, String replacementPattern,
             String pHost, String pPort, String pUser, String pCredential, FilePath workspace,
-            hudson.EnvVars envVars, String timeOut, String deleteIncompleteScan, boolean debug, String[] filePaths) {
+            hudson.EnvVars envVars, String timeOut, Object deleteIncompleteScan, boolean debug, String[] filePaths) {
 
         String description = null;
 
@@ -410,10 +410,9 @@ public final class UploadAndScanArgs extends AbstractArgs {
         args.addApiCredentials(vId, vKey);
         args.addProxyCredentials(puser, ppsword);
         args.addProxyConfiguration(phost, pport);
-        args.addStdArguments(bRemoteScan, applicationName, description, createProfile, teams,
-                criticality, sandboxName, createSandbox, scanName, scanIncludesPattern,
-                scanExcludesPattern, fileNamePattern, replacementPattern, timeOut, deleteIncompleteScan, debug,
-                filePaths);
+        args.addStdArguments(bRemoteScan, applicationName, description, createProfile, teams, criticality, sandboxName,
+                createSandbox, scanName, scanIncludesPattern, scanExcludesPattern, fileNamePattern, replacementPattern,
+                timeOut, getDeleteIncompleteScan(deleteIncompleteScan), debug, filePaths);
         args.addUserAgent(UserAgentUtil.getVersionDetails());
 
         return args;
@@ -438,5 +437,25 @@ public final class UploadAndScanArgs extends AbstractArgs {
                 new java.text.SimpleDateFormat("yyyy-MM-dd-HH:mm:ss").format(new java.util.Date()));
         envVars.put(CUSTOM_BUILD_NUMBER_VAR, StringUtil.getEmptyIfNull(buildNumber));
         envVars.put(CUSTOM_PROJECT_NAME_VAR, StringUtil.getEmptyIfNull(projectName));
+    }
+
+    /**
+     * This method will handle the backward compatibility of deleteIncompleteScan.
+     * If deleteIncompleteScan is false then return "0". If deleteIncompleteScan is
+     * true then return "1". Else return the String value of the argument.
+     * 
+     * @param deleteIncompleteScan a {@link java.lang.Object} object.
+     * @return a {@link java.lang.String} object.
+     */
+    public static String getDeleteIncompleteScan(Object deleteIncompleteScan) {
+        if (deleteIncompleteScan == null) {
+            return null;
+        }
+
+        if (deleteIncompleteScan instanceof Boolean) {
+            return String.valueOf(((Boolean) deleteIncompleteScan).compareTo(false));
+        }
+
+        return String.valueOf(deleteIncompleteScan);
     }
 }
