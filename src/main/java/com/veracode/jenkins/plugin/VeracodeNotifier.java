@@ -86,6 +86,9 @@ public class VeracodeNotifier extends Notifier {
         private static final String[] criticalityDisplayNames = new String[] {
                 "Very High", "High", "Medium", "Low", "Very Low"
         };
+        private static final String[] deleteIncompleteScanLevels = new String[] {
+                "0", "1", "2"
+        };
 
         // --------------------------------------------------------------------------------------
         // Backing fields for methods that correspond to identifiers referenced in
@@ -303,6 +306,15 @@ public class VeracodeNotifier extends Notifier {
             return items;
         }
 
+        public ListBoxModel doFillDeleteIncompleteScanItems(
+                @QueryParameter("deleteIncompleteScan") String deleteIncompleteScan) {
+            ListBoxModel items = new ListBoxModel();
+            for (String level : deleteIncompleteScanLevels) {
+                items.add(new ListBoxModel.Option(level, level, level.equals(deleteIncompleteScan)));
+            }
+            return items;
+        }
+
         // --------------------------------------------------------------
         // Overridden methods
         // --------------------------------------------------------------
@@ -478,7 +490,7 @@ public class VeracodeNotifier extends Notifier {
     private final CredentialsBlock _credentials;
     private final boolean _waitforscan;
     private String _timeout;
-    private final boolean deleteIncompleteScan;
+    private final String deleteIncompleteScan;
 
     // -------------------------------------------------------------------
     // Methods that correspond to identifiers referenced in config.jelly
@@ -549,8 +561,14 @@ public class VeracodeNotifier extends Notifier {
         return this.getWaitForScan() ? EncryptionUtil.decrypt(this._timeout) : null;
     }
 
-    public boolean isDeleteIncompleteScan() {
-        return this.deleteIncompleteScan;
+    public String getDeleteIncompleteScan() {
+        if (this.deleteIncompleteScan.equals("false")) {
+            return "0";
+        } else if (this.deleteIncompleteScan.equals("true")) {
+            return "1";
+        } else {
+            return this.deleteIncompleteScan;
+        }
     }
 
     public String getVid() {
@@ -902,7 +920,7 @@ public class VeracodeNotifier extends Notifier {
             String sandboxname, boolean createsandbox, String version, String filenamepattern,
             String replacementpattern, String uploadincludespattern, String uploadexcludespattern,
             String scanincludespattern, String scanexcludespattern, boolean waitForScan,
-            String timeout, boolean deleteIncompleteScan, CredentialsBlock credentials) {
+            String timeout, String deleteIncompleteScan, CredentialsBlock credentials) {
         this._appname = appname;
         this._createprofile = createprofile;
         this._teams = teams;

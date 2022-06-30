@@ -73,8 +73,8 @@
 		</f:entry>
 	</f:optionalBlock>
 
-	<f:entry title="Delete Incomplete Scan" field="deleteIncompleteScan">
-		<f:checkbox default="false" />
+	<f:entry name="deleteIncompleteScan" title="Delete Incomplete Scan" field="deleteIncompleteScan">
+		<f:select />
 	</f:entry>
 
 	<f:optionalBlock title="Use Global Veracode API ID and Key" name="credentials" negative="true" checked="${instance.getCredentials() == null ? descriptor.hasGlobalCredentials() : false}"> 

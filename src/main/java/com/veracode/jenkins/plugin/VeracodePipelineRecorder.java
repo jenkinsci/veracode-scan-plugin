@@ -11,6 +11,7 @@ import java.util.List;
 import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
+import org.kohsuke.stapler.QueryParameter;
 
 import com.veracode.apiwrapper.cli.VeracodeCommand.VeracodeParser;
 import com.veracode.http.Credentials;
@@ -42,6 +43,7 @@ import hudson.tasks.BuildStepMonitor;
 import hudson.tasks.Publisher;
 import hudson.tasks.Recorder;
 import hudson.util.ArgumentListBuilder;
+import hudson.util.ListBoxModel;
 import jenkins.tasks.SimpleBuildStep;
 
 /**
@@ -67,7 +69,7 @@ public class VeracodePipelineRecorder extends Recorder implements SimpleBuildSte
     @DataBoundSetter
     public final Integer timeout;
     @DataBoundSetter
-    public final boolean deleteIncompleteScan;
+    public final Object deleteIncompleteScan;
     @DataBoundSetter
     public final boolean createProfile;
     @DataBoundSetter
@@ -125,7 +127,7 @@ public class VeracodePipelineRecorder extends Recorder implements SimpleBuildSte
      * @param scanName              a {@link java.lang.String} object.
      * @param waitForScan           a boolean.
      * @param timeout               a int.
-     * @param deleteIncompleteScan  a boolean.
+     * @param deleteIncompleteScan  a {@link java.lang.Object} object.
      * @param createProfile         a boolean.
      * @param teams                 a {@link java.lang.String} object.
      * @param createSandbox         a boolean.
@@ -149,7 +151,7 @@ public class VeracodePipelineRecorder extends Recorder implements SimpleBuildSte
      */
     @DataBoundConstructor
     public VeracodePipelineRecorder(String applicationName, String criticality, String sandboxName,
-            String scanName, boolean waitForScan, int timeout, boolean deleteIncompleteScan, boolean createProfile, String teams,
+            String scanName, boolean waitForScan, int timeout, Object deleteIncompleteScan, boolean createProfile, String teams,
             boolean createSandbox, boolean timeoutFailsJob, boolean canFailJob, boolean debug,
             String uploadIncludesPattern, String uploadExcludesPattern, String scanIncludesPattern,
             String scanExcludesPattern, String fileNamePattern, String replacementPattern,
@@ -447,6 +449,10 @@ public class VeracodePipelineRecorder extends Recorder implements SimpleBuildSte
     public static final class PipelineDescriptorImpl extends BuildStepDescriptor<Publisher> {
         public static final String PostBuildActionDisplayText = "Upload and Scan with Veracode Pipeline";
 
+        private static final String[] deleteIncompleteScanLevels = new String[] {
+                "0", "1", "2"
+        };
+
         @Override
         public boolean isApplicable(Class<? extends AbstractProject> jobType) {
             return false;
@@ -457,6 +463,14 @@ public class VeracodePipelineRecorder extends Recorder implements SimpleBuildSte
             return PostBuildActionDisplayText;
         }
 
+        public ListBoxModel doFillDeleteIncompleteScanItems(
+                @QueryParameter("deleteIncompleteScan") String deleteIncompleteScan) {
+            ListBoxModel items = new ListBoxModel();
+            for (String level : deleteIncompleteScanLevels) {
+                items.add(new ListBoxModel.Option(level, level, level.equals(deleteIncompleteScan)));
+            }
+            return items;
+        }
     }
 
     /**

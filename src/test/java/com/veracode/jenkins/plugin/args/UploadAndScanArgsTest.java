@@ -51,7 +51,7 @@ public class UploadAndScanArgsTest {
         String scanExcludesPattern = "";
         boolean waitForScan = true;
         String timeout = "60";
-        boolean deleteIncompleteScan = true;
+        String deleteIncompleteScan = "1";
         boolean bRemoteScan = true;
 
         AbstractBuild build = PowerMockito.mock(AbstractBuild.class);
@@ -84,7 +84,7 @@ public class UploadAndScanArgsTest {
         PowerMockito.doReturn("").when(veracodeNotifier).getFilenamepattern();
         PowerMockito.doReturn("").when(veracodeNotifier).getReplacementpattern();
         PowerMockito.doReturn("60").when(veracodeNotifier).getTimeout();
-        PowerMockito.doReturn(true).when(veracodeNotifier).isDeleteIncompleteScan();
+        PowerMockito.doReturn("1").when(veracodeNotifier).getDeleteIncompleteScan();
         PowerMockito.doReturn(filePath).when(build).getWorkspace();
         PowerMockito.doReturn(appName).when(envVars).expand(appName);
         PowerMockito.when(veracodeDescriptor.getDebug()).thenReturn(true);
@@ -126,8 +126,175 @@ public class UploadAndScanArgsTest {
                 uploadAndScanArgs.list.contains("-deleteincompletescan"));
     }
 
+    // Freestyle - DeleteIncompleteScan
+
     @Test
-    public void testNewUploadAndScanArgsWithDeleteIncompleteScanFlagTrue() throws IOException {
+    public void testNewUploadAndScanArgsForFreestyleWithDeleteIncompleteScan_False() throws IOException {
+
+        UploadAndScanArgs uploadAndScanArgs = testNewUploadAndScanArgsForFreestyleWithDeleteIncompleteScan(
+                String.valueOf(false));
+
+        Assert.assertTrue("deleteincompletescan is not visible in uploadAndScanArgs",
+                uploadAndScanArgs.list.contains("-deleteincompletescan"));
+        Assert.assertTrue("deleteincompletescan is not false",
+                uploadAndScanArgs.list.get(uploadAndScanArgs.list.indexOf("-deleteincompletescan") + 1).equals("0"));
+    }
+
+    @Test
+    public void testNewUploadAndScanArgsForFreestyleWithDeleteIncompleteScan_True() throws IOException {
+
+        UploadAndScanArgs uploadAndScanArgs = testNewUploadAndScanArgsForFreestyleWithDeleteIncompleteScan(
+                String.valueOf(true));
+
+        Assert.assertTrue("deleteincompletescan is not visible in uploadAndScanArgs",
+                uploadAndScanArgs.list.contains("-deleteincompletescan"));
+        Assert.assertTrue("deleteincompletescan is not true",
+                uploadAndScanArgs.list.get(uploadAndScanArgs.list.indexOf("-deleteincompletescan") + 1).equals("1"));
+    }
+
+    @Test
+    public void testNewUploadAndScanArgsForFreestyleWithDeleteIncompleteScan_0() throws IOException {
+
+        UploadAndScanArgs uploadAndScanArgs = testNewUploadAndScanArgsForFreestyleWithDeleteIncompleteScan("0");
+
+        Assert.assertTrue("deleteincompletescan is not visible in uploadAndScanArgs",
+                uploadAndScanArgs.list.contains("-deleteincompletescan"));
+        Assert.assertTrue("deleteincompletescan is not 0",
+                uploadAndScanArgs.list.get(uploadAndScanArgs.list.indexOf("-deleteincompletescan") + 1).equals("0"));
+    }
+
+    @Test
+    public void testNewUploadAndScanArgsForFreestyleWithDeleteIncompleteScan_1() throws IOException {
+
+        UploadAndScanArgs uploadAndScanArgs = testNewUploadAndScanArgsForFreestyleWithDeleteIncompleteScan("1");
+
+        Assert.assertTrue("deleteincompletescan is not visible in uploadAndScanArgs",
+                uploadAndScanArgs.list.contains("-deleteincompletescan"));
+        Assert.assertTrue("deleteincompletescan is not 1",
+                uploadAndScanArgs.list.get(uploadAndScanArgs.list.indexOf("-deleteincompletescan") + 1).equals("1"));
+    }
+
+    @Test
+    public void testNewUploadAndScanArgsForFreestyleWithDeleteIncompleteScan_2() throws IOException {
+
+        UploadAndScanArgs uploadAndScanArgs = testNewUploadAndScanArgsForFreestyleWithDeleteIncompleteScan("2");
+
+        Assert.assertTrue("deleteincompletescan is not visible in uploadAndScanArgs",
+                uploadAndScanArgs.list.contains("-deleteincompletescan"));
+        Assert.assertTrue("deleteincompletescan is not 2",
+                uploadAndScanArgs.list.get(uploadAndScanArgs.list.indexOf("-deleteincompletescan") + 1).equals("2"));
+    }
+
+
+    // Pipeline - DeleteIncompleteScan
+
+    @Test
+    public void testNewUploadAndScanArgsForPipelineWithDeleteIncompleteScan_false() throws IOException {
+
+        UploadAndScanArgs uploadAndScanArgs = testNewUploadAndScanArgsForPipelineWithDeleteIncompleteScan(false);
+
+        Assert.assertTrue("deleteincompletescan flag is not visible in upload and scan argument list",
+                uploadAndScanArgs.list.contains("-deleteincompletescan"));
+        Assert.assertTrue("deleteincompletescan flag is not set to false",
+                uploadAndScanArgs.list.get(uploadAndScanArgs.list.indexOf("-deleteincompletescan") + 1).equals("0"));
+    }
+
+    @Test
+    public void testNewUploadAndScanArgsForPipelineWithDeleteIncompleteScan_true() throws IOException {
+
+        UploadAndScanArgs uploadAndScanArgs = testNewUploadAndScanArgsForPipelineWithDeleteIncompleteScan(true);
+
+        Assert.assertTrue("deleteincompletescan flag is not visible in upload and scan argument list",
+                uploadAndScanArgs.list.contains("-deleteincompletescan"));
+        Assert.assertTrue("deleteincompletescan flag is not set to true",
+                uploadAndScanArgs.list.get(uploadAndScanArgs.list.indexOf("-deleteincompletescan") + 1).equals("1"));
+    }
+
+    @Test
+    public void testNewUploadAndScanArgsForPipelineWithDeleteIncompleteScan_0() throws IOException {
+
+        UploadAndScanArgs uploadAndScanArgs = testNewUploadAndScanArgsForPipelineWithDeleteIncompleteScan(0);
+
+        Assert.assertTrue("deleteincompletescan flag is not visible in upload and scan argument list",
+                uploadAndScanArgs.list.contains("-deleteincompletescan"));
+        Assert.assertTrue("deleteincompletescan flag is not set to 0",
+                uploadAndScanArgs.list.get(uploadAndScanArgs.list.indexOf("-deleteincompletescan") + 1).equals("0"));
+    }
+
+    @Test
+    public void testNewUploadAndScanArgsForPipelineWithDeleteIncompleteScan_1() throws IOException {
+
+        UploadAndScanArgs uploadAndScanArgs = testNewUploadAndScanArgsForPipelineWithDeleteIncompleteScan(1);
+
+        Assert.assertTrue("deleteincompletescan flag is not visible in upload and scan argument list",
+                uploadAndScanArgs.list.contains("-deleteincompletescan"));
+        Assert.assertTrue("deleteincompletescan flag is not set to 1",
+                uploadAndScanArgs.list.get(uploadAndScanArgs.list.indexOf("-deleteincompletescan") + 1).equals("1"));
+    }
+
+    @Test
+    public void testNewUploadAndScanArgsForPipelineWithDeleteIncompleteScan_2() throws IOException {
+
+        UploadAndScanArgs uploadAndScanArgs = testNewUploadAndScanArgsForPipelineWithDeleteIncompleteScan(2);
+
+        Assert.assertTrue("deleteincompletescan flag is not visible in upload and scan argument list",
+                uploadAndScanArgs.list.contains("-deleteincompletescan"));
+        Assert.assertTrue("deleteincompletescan flag is not set to 2",
+                uploadAndScanArgs.list.get(uploadAndScanArgs.list.indexOf("-deleteincompletescan") + 1).equals("2"));
+    }
+
+    @Test
+    public void testNewUploadAndScanArgsForPipelineWithDeleteIncompleteScan_String0() throws IOException {
+
+        UploadAndScanArgs uploadAndScanArgs = testNewUploadAndScanArgsForPipelineWithDeleteIncompleteScan("0");
+
+        Assert.assertTrue("deleteincompletescan flag is not visible in upload and scan argument list",
+                uploadAndScanArgs.list.contains("-deleteincompletescan"));
+        Assert.assertTrue("deleteincompletescan flag is not set to 0",
+                uploadAndScanArgs.list.get(uploadAndScanArgs.list.indexOf("-deleteincompletescan") + 1).equals("0"));
+    }
+
+    @Test
+    public void testNewUploadAndScanArgsForPipelineWithDeleteIncompleteScan_String1() throws IOException {
+
+        UploadAndScanArgs uploadAndScanArgs = testNewUploadAndScanArgsForPipelineWithDeleteIncompleteScan("1");
+
+        Assert.assertTrue("deleteincompletescan flag is not visible in upload and scan argument list",
+                uploadAndScanArgs.list.contains("-deleteincompletescan"));
+        Assert.assertTrue("deleteincompletescan flag is not set to 1",
+                uploadAndScanArgs.list.get(uploadAndScanArgs.list.indexOf("-deleteincompletescan") + 1).equals("1"));
+    }
+
+    @Test
+    public void testNewUploadAndScanArgsForPipelineWithDeleteIncompleteScan_String2() throws IOException {
+
+        UploadAndScanArgs uploadAndScanArgs = testNewUploadAndScanArgsForPipelineWithDeleteIncompleteScan("2");
+
+        Assert.assertTrue("deleteincompletescan flag is not visible in upload and scan argument list",
+                uploadAndScanArgs.list.contains("-deleteincompletescan"));
+        Assert.assertTrue("deleteincompletescan flag is not set to 2",
+                uploadAndScanArgs.list.get(uploadAndScanArgs.list.indexOf("-deleteincompletescan") + 1).equals("2"));
+    }
+
+    @Test
+    public void testNewUploadAndScanArgsForPipelineWithDeleteIncompleteScan_null() throws IOException {
+
+        UploadAndScanArgs uploadAndScanArgs = testNewUploadAndScanArgsForPipelineWithDeleteIncompleteScan(null);
+
+        Assert.assertFalse("deleteincompletescan flag is not visible in upload and scan argument list",
+                uploadAndScanArgs.list.contains("-deleteincompletescan"));
+    }
+
+    @Test
+    public void testNewUploadAndScanArgsForPipelineWithDeleteIncompleteScan_empty() throws IOException {
+
+        UploadAndScanArgs uploadAndScanArgs = testNewUploadAndScanArgsForPipelineWithDeleteIncompleteScan("");
+
+        Assert.assertFalse("deleteincompletescan flag is not visible in upload and scan argument list",
+                uploadAndScanArgs.list.contains("-deleteincompletescan"));
+    }
+
+    private UploadAndScanArgs testNewUploadAndScanArgsForFreestyleWithDeleteIncompleteScan(String deleteIncompleteScan) {
 
         AbstractBuild build = PowerMockito.mock(AbstractBuild.class);
         EnvVars envVars = PowerMockito.mock(EnvVars.class);
@@ -136,8 +303,9 @@ public class UploadAndScanArgsTest {
         PowerMockito.mockStatic(FormValidationUtil.class);
         CredentialsBlock credentials = new CredentialsBlock("v_id", "v_key", null, null);
         PowerMockito.when(FormValidationUtil.formatTimeout(any())).thenReturn("60");
-        VeracodeNotifier veracodeNotifier = PowerMockito.spy(new VeracodeNotifier("test_app", true, "test_team", "High",
-                "test_sandbox", true, "1.0", "**/*.jar", "", "", "", "", "", true, "60", true, credentials));
+        VeracodeNotifier veracodeNotifier = PowerMockito
+                .spy(new VeracodeNotifier("test_app", true, "test_team", "High", "test_sandbox", true, "1.0",
+                        "**/*.jar", "", "", "", "", "", true, "60", deleteIncompleteScan, credentials));
 
         PowerMockito.doReturn(veracodeDescriptor).when(veracodeNotifier).getDescriptor();
         PowerMockito.when(veracodeDescriptor.getAutoappname()).thenReturn(true);
@@ -152,51 +320,10 @@ public class UploadAndScanArgsTest {
         PowerMockito.when(build.getWorkspace()).thenReturn(PowerMockito.mock(FilePath.class));
         PowerMockito.when(envVars.expand(any())).thenReturn("anyString");
         PowerMockito.when(veracodeDescriptor.getDebug()).thenReturn(true);
-        UploadAndScanArgs uploadAndScanArgs = UploadAndScanArgs.newUploadAndScanArgs(veracodeNotifier, build, envVars,
-                new String[2], true);
-
-        Assert.assertTrue("deleteincompletescan flag is not visible in uploadAndScanArgs",
-                uploadAndScanArgs.list.contains("-deleteincompletescan"));
-        Assert.assertTrue("deleteincompletescan flag is not true",
-                uploadAndScanArgs.list.get(uploadAndScanArgs.list.indexOf("-deleteincompletescan") + 1).equals("true"));
+        return UploadAndScanArgs.newUploadAndScanArgs(veracodeNotifier, build, envVars, new String[2], true);
     }
 
-    @Test
-    public void testNewUploadAndScanArgsWithDeleteIncompleteScanFlagFalse() throws IOException {
-
-        AbstractBuild build = PowerMockito.mock(AbstractBuild.class);
-        EnvVars envVars = PowerMockito.mock(EnvVars.class);
-        VeracodeNotifier.VeracodeDescriptor veracodeDescriptor = PowerMockito
-                .mock(VeracodeNotifier.VeracodeDescriptor.class);
-        AbstractProject abstractProject = PowerMockito.mock(AbstractProject.class);
-        PowerMockito.mockStatic(FormValidationUtil.class);
-        CredentialsBlock credentials = new CredentialsBlock("v_id", "v_key", null, null);
-        PowerMockito.when(FormValidationUtil.formatTimeout(any())).thenReturn("60");
-        VeracodeNotifier veracodeNotifier = PowerMockito.spy(new VeracodeNotifier("test_app", true, "test_team", "High",
-                "test_sandbox", true, "1.0", "**/*.jar", "", "", "", "", "", true, "60", false, credentials));
-
-        PowerMockito.doReturn(veracodeDescriptor).when(veracodeNotifier).getDescriptor();
-        PowerMockito.when(veracodeDescriptor.getAutoappname()).thenReturn(true);
-        PowerMockito.when(veracodeDescriptor.getAutodescription()).thenReturn(true);
-        PowerMockito.when(veracodeDescriptor.getAutoversion()).thenReturn(true);
-        PowerMockito.when(veracodeDescriptor.getProxy()).thenReturn(false);
-        PowerMockito.when(build.getDisplayName()).thenReturn("project_name");
-        PowerMockito.when(build.getProject()).thenReturn(abstractProject);
-        PowerMockito.when(abstractProject.getDisplayName()).thenReturn("project_name");
-        PowerMockito.doReturn("High").when(veracodeNotifier).getCriticality();
-        PowerMockito.doReturn("60").when(veracodeNotifier).getTimeout();
-        PowerMockito.when(build.getWorkspace()).thenReturn(PowerMockito.mock(FilePath.class));
-        PowerMockito.when(envVars.expand(any())).thenReturn("anyString");
-        PowerMockito.when(veracodeDescriptor.getDebug()).thenReturn(true);
-        UploadAndScanArgs uploadAndScanArgs = UploadAndScanArgs.newUploadAndScanArgs(veracodeNotifier, build, envVars,
-                new String[2], true);
-
-        Assert.assertFalse("deleteincompletescan flag is visible in uploadAndScanArgs",
-                uploadAndScanArgs.list.contains("-deleteincompletescan"));
-    }
-
-    @Test
-    public void testNewUploadAndScanArgsForPipelineRecorderWithDeleteIncompleteScanFlagTrue() throws IOException {
+    private UploadAndScanArgs testNewUploadAndScanArgsForPipelineWithDeleteIncompleteScan(Object deleteIncompleteScan) {
 
         EnvVars envVars = PowerMockito.mock(EnvVars.class);
         AbstractBuild build = PowerMockito.mock(AbstractBuild.class);
@@ -204,32 +331,9 @@ public class UploadAndScanArgsTest {
         PowerMockito.when(build.getWorkspace()).thenReturn(filePath);
         PowerMockito.when(envVars.expand(any())).thenReturn("anyString");
 
-        UploadAndScanArgs uploadAndScanArgs = UploadAndScanArgs.newUploadAndScanArgs(false, false, false, false, false,
-                false, "", false, "vid", "vkey", "buildnum", "sample_project", "sample_app", "sample_sandbox", "scan",
-                "High", "**/**.java", "", "", "", "phost", "pport", "puser", "pcredential", filePath, envVars, "60",
-                true, true, new String[2]);
-
-        Assert.assertTrue("deleteincompletescan flag is not visible in upload and scan argument list",
-                uploadAndScanArgs.list.contains("-deleteincompletescan"));
-        Assert.assertTrue("deleteincompletescan flag is not set to true",
-                uploadAndScanArgs.list.get(uploadAndScanArgs.list.indexOf("-deleteincompletescan") + 1).equals("true"));
-    }
-
-    @Test
-    public void testNewUploadAndScanArgsForPipelineRecorderWithDeleteIncompleteScanFlagFalse() throws IOException {
-
-        EnvVars envVars = PowerMockito.mock(EnvVars.class);
-        AbstractBuild build = PowerMockito.mock(AbstractBuild.class);
-        FilePath filePath = PowerMockito.mock(FilePath.class);
-        PowerMockito.when(build.getWorkspace()).thenReturn(filePath);
-        PowerMockito.when(envVars.expand(any())).thenReturn("anyString");
-
-        UploadAndScanArgs uploadAndScanArgs = UploadAndScanArgs.newUploadAndScanArgs(false, false, false, false, false,
-                false, "", false, "vid", "vkey", "buildnum", "sample_project", "sample_app", "sample_sandbox", "scan",
-                "High", "**/**.java", "", "", "", "phost", "pport", "puser", "pcredential", filePath, envVars, "60",
-                false, true, new String[2]);
-
-        Assert.assertFalse("deleteincompletescan flag should not be visible in upload and scan argument list",
-                uploadAndScanArgs.list.contains("-deleteincompletescan"));
+        return UploadAndScanArgs.newUploadAndScanArgs(false, false, false, false, false, false, "", false, "vid",
+                "vkey", "buildnum", "sample_project", "sample_app", "sample_sandbox", "scan", "High", "**/**.java", "",
+                "", "", "phost", "pport", "puser", "pcredential", filePath, envVars, "60", deleteIncompleteScan, true,
+                new String[2]);
     }
 }
