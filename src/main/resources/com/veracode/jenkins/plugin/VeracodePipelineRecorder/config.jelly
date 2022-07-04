@@ -78,7 +78,7 @@
 		</f:entry>
 	</f:optionalBlock>
 
-	<f:entry name="deleteIncompleteScan" title="Delete Incomplete Scan" field="deleteIncompleteScan">
+	<f:entry name="deleteIncompleteScanLevel" title="Delete Incomplete Scan" field="deleteIncompleteScanLevel">
 		<f:select />
 	</f:entry>
 
