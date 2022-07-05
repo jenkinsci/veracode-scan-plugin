@@ -195,6 +195,7 @@ public class VeracodePipelineRecorder extends Recorder implements SimpleBuildSte
 
     @DataBoundSetter
     public void setDeleteIncompleteScan(Boolean deleteIncompleteScan) {
+        this.deleteIncompleteScan = deleteIncompleteScan;
         this.deleteIncompleteScanLevel = deleteIncompleteScan != null ? deleteIncompleteScan.toString() : null;
     }
 
