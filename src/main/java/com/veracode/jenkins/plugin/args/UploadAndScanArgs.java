@@ -344,7 +344,7 @@ public final class UploadAndScanArgs extends AbstractArgs {
             String sandboxName, String scanName, String criticality, String scanIncludesPattern,
             String scanExcludesPattern, String fileNamePattern, String replacementPattern,
             String pHost, String pPort, String pUser, String pCredential, FilePath workspace,
-            hudson.EnvVars envVars, String timeOut, Object deleteIncompleteScan, boolean debug, String[] filePaths) {
+            hudson.EnvVars envVars, String timeOut, String deleteIncompleteScan, boolean debug, String[] filePaths) {
 
         String description = null;
 
@@ -442,20 +442,22 @@ public final class UploadAndScanArgs extends AbstractArgs {
     /**
      * This method will handle the backward compatibility of deleteIncompleteScan.
      * If deleteIncompleteScan is false then return "0". If deleteIncompleteScan is
-     * true then return "1". Else return the String value of the argument.
+     * true then return "1".
      * 
-     * @param deleteIncompleteScan a {@link java.lang.Object} object.
+     * @param deleteIncompleteScan a {@link java.lang.String} object.
      * @return a {@link java.lang.String} object.
      */
-    public static String getDeleteIncompleteScan(Object deleteIncompleteScan) {
+    public static String getDeleteIncompleteScan(String deleteIncompleteScan) {
         if (deleteIncompleteScan == null) {
             return null;
         }
 
-        if (deleteIncompleteScan instanceof Boolean) {
-            return String.valueOf(((Boolean) deleteIncompleteScan).compareTo(false));
+        if (deleteIncompleteScan.equals("false")) {
+            return "0";
+        } else if (deleteIncompleteScan.equals("true")) {
+            return "1";
+        } else {
+            return deleteIncompleteScan;
         }
-
-        return String.valueOf(deleteIncompleteScan);
     }
 }

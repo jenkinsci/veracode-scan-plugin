@@ -68,8 +68,10 @@ public class VeracodePipelineRecorder extends Recorder implements SimpleBuildSte
     public final boolean waitForScan;
     @DataBoundSetter
     public final Integer timeout;
+    // Needed in order to support true/false
+    private Boolean deleteIncompleteScan;
     @DataBoundSetter
-    public final Object deleteIncompleteScan;
+    public String deleteIncompleteScanLevel;
     @DataBoundSetter
     public final boolean createProfile;
     @DataBoundSetter
@@ -127,7 +129,7 @@ public class VeracodePipelineRecorder extends Recorder implements SimpleBuildSte
      * @param scanName              a {@link java.lang.String} object.
      * @param waitForScan           a boolean.
      * @param timeout               a int.
-     * @param deleteIncompleteScan  a {@link java.lang.Object} object.
+     * @param deleteIncompleteScanLevel  a {@link java.lang.String} object.
      * @param createProfile         a boolean.
      * @param teams                 a {@link java.lang.String} object.
      * @param createSandbox         a boolean.
@@ -151,7 +153,7 @@ public class VeracodePipelineRecorder extends Recorder implements SimpleBuildSte
      */
     @DataBoundConstructor
     public VeracodePipelineRecorder(String applicationName, String criticality, String sandboxName,
-            String scanName, boolean waitForScan, int timeout, Object deleteIncompleteScan, boolean createProfile, String teams,
+            String scanName, boolean waitForScan, int timeout, String deleteIncompleteScanLevel, boolean createProfile, String teams,
             boolean createSandbox, boolean timeoutFailsJob, boolean canFailJob, boolean debug,
             String uploadIncludesPattern, String uploadExcludesPattern, String scanIncludesPattern,
             String scanExcludesPattern, String fileNamePattern, String replacementPattern,
@@ -165,7 +167,7 @@ public class VeracodePipelineRecorder extends Recorder implements SimpleBuildSte
         this.timeoutFailsJob = timeoutFailsJob;
         this.waitForScan = waitForScan;
         this.timeout = waitForScan && timeout > 0 ? timeout : null;
-        this.deleteIncompleteScan = deleteIncompleteScan;
+        this.deleteIncompleteScanLevel = deleteIncompleteScanLevel;
         this.createProfile = createProfile;
         this.teams = teams;
         this.createSandbox = createSandbox;
@@ -185,6 +187,16 @@ public class VeracodePipelineRecorder extends Recorder implements SimpleBuildSte
         this.pPort = useProxy ? pPort : null;
         this.pUser = useProxy ? pUser : null;
         this.pPassword = useProxy ? pPassword : null;
+    }
+
+    public Boolean getDeleteIncompleteScan() {
+        return deleteIncompleteScan;
+    }
+
+    @DataBoundSetter
+    public void setDeleteIncompleteScan(Boolean deleteIncompleteScan) {
+        this.deleteIncompleteScan = deleteIncompleteScan;
+        this.deleteIncompleteScanLevel = deleteIncompleteScan != null ? deleteIncompleteScan.toString() : null;
     }
 
     /**
@@ -369,7 +381,7 @@ public class VeracodePipelineRecorder extends Recorder implements SimpleBuildSte
                     run.getParent().getFullDisplayName(), applicationName, sandboxName, scanName,
                     criticality, scanIncludesPattern, scanExcludesPattern, fileNamePattern,
                     replacementPattern, pHost, pPort, pUser, pPassword, workspace,
-                    run.getEnvironment(listener), str_timeout, deleteIncompleteScan, debug, uploadAndScanFilePaths);
+                    run.getEnvironment(listener), str_timeout, deleteIncompleteScanLevel, debug, uploadAndScanFilePaths);
 
             if (debug) {
                 ps.println(String.format("Calling wrapper with arguments:%n%s%n",
@@ -463,11 +475,11 @@ public class VeracodePipelineRecorder extends Recorder implements SimpleBuildSte
             return PostBuildActionDisplayText;
         }
 
-        public ListBoxModel doFillDeleteIncompleteScanItems(
-                @QueryParameter("deleteIncompleteScan") String deleteIncompleteScan) {
+        public ListBoxModel doFillDeleteIncompleteScanLevelItems(
+                @QueryParameter("deleteIncompleteScanLevel") String deleteIncompleteScanLevel) {
             ListBoxModel items = new ListBoxModel();
             for (String level : deleteIncompleteScanLevels) {
-                items.add(new ListBoxModel.Option(level, level, level.equals(deleteIncompleteScan)));
+                items.add(new ListBoxModel.Option(level, level, level.equals(deleteIncompleteScanLevel)));
             }
             return items;
         }
@@ -645,7 +657,7 @@ public class VeracodePipelineRecorder extends Recorder implements SimpleBuildSte
                     run.getParent().getFullDisplayName(), applicationName, sandboxName, scanName,
                     criticality, scanIncludesPattern, scanExcludesPattern, fileNamePattern,
                     replacementPattern, pHost, pPort, pUser, pPassword, workspace,
-                    run.getEnvironment(listener), str_timeout, deleteIncompleteScan, debug, uploadAndScanFilePaths);
+                    run.getEnvironment(listener), str_timeout, deleteIncompleteScanLevel, debug, uploadAndScanFilePaths);
 
             String jarPath = jarFilePath + sep + execJarFile + ".jar";
             String cmd = "java -jar " + jarPath;
