@@ -58,7 +58,7 @@ public class SCAScanHistory {
         maxCVSSScore = 0;
         vulCounts = null;
         scaComponents = null;
-        this.vulCountHistory = new ArrayList<Map<String, Long>>(vulCountHistory);
+        this.vulCountHistory = new ArrayList<>(vulCountHistory);
         totalVulCount = 0;
         totalNewVulCount = 0;
         totalNetVulCount = 0;
@@ -77,7 +77,7 @@ public class SCAScanHistory {
             Set<SCAComponent> scaComponents, List<Map<String, Long>> vulCountHistory) {
         this.subscribed = true;
         this.maxCVSSScore = maxCVSSScore;
-        this.scaComponents = new HashSet<SCAComponent>(scaComponents);
+        this.scaComponents = new HashSet<>(scaComponents);
         this.vulCounts = new FindingCounts[SeverityLevel.values().length];
 
         int totalVulCount = 0;
@@ -96,7 +96,7 @@ public class SCAScanHistory {
         this.totalNetVulCount = totalNetVulCount;
         this.blComponentsCount = blComponentsCount;
 
-        this.vulCountHistory = new ArrayList<Map<String, Long>>(vulCountHistory);
+        this.vulCountHistory = new ArrayList<>(vulCountHistory);
     }
 
     public boolean isSubscribed() {
@@ -112,7 +112,7 @@ public class SCAScanHistory {
     }
 
     public Set<SCAComponent> getSCAComponents() {
-        return new HashSet<SCAComponent>(scaComponents);
+        return new HashSet<>(scaComponents);
     }
 
     public FindingCounts getCountBySeverity(SeverityLevel sevLevel) {
