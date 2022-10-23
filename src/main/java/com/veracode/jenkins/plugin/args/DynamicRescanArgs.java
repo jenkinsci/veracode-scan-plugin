@@ -43,7 +43,7 @@ public final class DynamicRescanArgs extends AbstractArgs {
      */
     public static DynamicRescanArgs dynamicScanArgs(DynamicRescanNotifier dynamicScanDescriptor,
             AbstractBuild<?, ?> build, EnvVars environment) {
-        VeracodeDescriptor veracodeDescriptor = (VeracodeDescriptor) Jenkins.getInstance()
+        VeracodeDescriptor veracodeDescriptor = (VeracodeDescriptor) Jenkins.get()
                 .getDescriptor(VeracodeNotifier.class);
 
         DynamicRescanArgs args = new DynamicRescanArgs();

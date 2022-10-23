@@ -96,7 +96,7 @@ public class ScanHistory {
         this.totalNetChangeCount = totalNetChangeCount;
         this.totalNewFlawsCount = totalNewFlawsCount;
 
-        this.flawsCountHistory = new ArrayList<Map<String, Long>>(flawsCountHistory);
+        this.flawsCountHistory = new ArrayList<>(flawsCountHistory);
         this.scaHistory = scaHistory;
         this.policyaffect = policyaffect.clone();
     }
@@ -163,7 +163,7 @@ public class ScanHistory {
                     "Invalid severity. Severity must be between 0 and 5");
         }
         int netChange = getNetChange(severity);
-        return netChange > 0 ? netChange : 0;
+        return Math.max(netChange, 0);
     }
 
     public int getNetChange(int severity) {

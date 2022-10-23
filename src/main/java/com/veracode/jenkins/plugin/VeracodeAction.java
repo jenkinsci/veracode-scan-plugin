@@ -345,7 +345,7 @@ public class VeracodeAction implements RunAction2 {
      */
     public void doGraph(StaplerRequest request, StaplerResponse response) {
         try {
-            Collection<BuildHistory> buildHistoryList = new ArrayList<BuildHistory>();
+            Collection<BuildHistory> buildHistoryList = new ArrayList<>();
             BuildHistory staticBuildHistory = new BuildHistory("Static Flaws",
                     scanHistory.getFlawsCountHistory());
             buildHistoryList.add(staticBuildHistory);
@@ -514,9 +514,7 @@ public class VeracodeAction implements RunAction2 {
         boolean result = false;
         try {
             result = scanHistory.getPolicyAffection(severity);
-        } catch (IllegalArgumentException iae) {
-            result = false;
-        } catch (NullPointerException ex) {
+        } catch (IllegalArgumentException | NullPointerException iae) {
             result = false;
         }
         return result;
@@ -692,7 +690,7 @@ public class VeracodeAction implements RunAction2 {
      */
     public ArrayList<String> getNewSCAComponentsByPolicyStatus(boolean isViolatedPolicy) {
 
-        ArrayList<String> componentArray = new ArrayList<String>();
+        ArrayList<String> componentArray = new ArrayList<>();
 
         /* Add SCA component names based on specified passed or failed policy status */
         for (SCAComponent component : scanHistory.getScaHistory().getSCAComponents()) {

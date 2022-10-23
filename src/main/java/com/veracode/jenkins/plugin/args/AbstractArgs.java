@@ -33,7 +33,7 @@ public abstract class AbstractArgs {
     /**
      * A list of command line arguments.
      */
-    protected final List<String> list = new ArrayList<String>();
+    protected final List<String> list = new ArrayList<>();
 
     /**
      * Constructor for AbstractArgs.

@@ -348,7 +348,7 @@ public class DynamicAnalysisResultsAction implements RunAction2 {
         try {
             BuildHistory buildHistory = new BuildHistory("Dynamic Vulnerabilities",
                     scanHistory.getFlawsCountHistory());
-            Collection<BuildHistory> buildHistoryList = new ArrayList<BuildHistory>();
+            Collection<BuildHistory> buildHistoryList = new ArrayList<>();
             buildHistoryList.add(buildHistory);
             TrendChart trendChart = new TrendChart(System.currentTimeMillis(), 600, 400,
                     buildHistoryList);
@@ -399,9 +399,7 @@ public class DynamicAnalysisResultsAction implements RunAction2 {
         boolean result = false;
         try {
             result = scanHistory.getPolicyAffection(severity);
-        } catch (IllegalArgumentException iae) {
-            result = false;
-        } catch (NullPointerException ex) {
+        } catch (IllegalArgumentException | NullPointerException iae) {
             result = false;
         }
         return result;
