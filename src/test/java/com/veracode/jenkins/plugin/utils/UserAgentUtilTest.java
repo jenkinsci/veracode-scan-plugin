@@ -26,7 +26,7 @@ public class UserAgentUtilTest {
 		PluginWrapper pluginWrapper = PowerMockito.mock(PluginWrapper.class);
 		PluginManager pluginManager = PowerMockito.mock(PluginManager.class);
 		VersionNumber versionNumber = new VersionNumber("2.277.3");
-		PowerMockito.when(Jenkins.getInstance()).thenReturn(jenkins);
+		PowerMockito.when(Jenkins.get()).thenReturn(jenkins);
 		Mockito.when(jenkins.getPluginManager()).thenReturn(pluginManager);
 		Mockito.when(pluginManager.getPlugin("veracode-scan")).thenReturn(pluginWrapper);
 		Mockito.when(pluginWrapper.getVersion()).thenReturn("1.0.0");
@@ -43,7 +43,7 @@ public class UserAgentUtilTest {
 		PowerMockito.mockStatic(Jenkins.class);
 		PowerMockito.mockStatic(VeracodeCommand.class);
 		PluginManager pluginManager = PowerMockito.mock(PluginManager.class);
-		PowerMockito.when(Jenkins.getInstance()).thenReturn(jenkins);
+		PowerMockito.when(Jenkins.get()).thenReturn(jenkins);
 		PowerMockito.when(Jenkins.getVersion()).thenReturn(null);
 		PowerMockito.when(VeracodeCommand.getJreVersion()).thenThrow(new RuntimeException());
 		Mockito.when(jenkins.getPluginManager()).thenReturn(pluginManager);

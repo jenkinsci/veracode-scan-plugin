@@ -127,7 +127,7 @@ public class FileUtilTest {
 				.mock(VeracodeNotifier.VeracodeDescriptor.class);
 		Jenkins jenkins = PowerMockito.mock(Jenkins.class);
 		PowerMockito.mockStatic(Jenkins.class);
-		PowerMockito.when(Jenkins.getInstance()).thenReturn(jenkins);
+		PowerMockito.when(Jenkins.get()).thenReturn(jenkins);
 		PowerMockito.when(jenkins.getDescriptor(VeracodeNotifier.class)).thenReturn(veracodeDescriptor);
 		PowerMockito.when(veracodeDescriptor.getFailbuild()).thenReturn(true);
 		boolean isCopied = FileUtil.copyJarFiles(build, null, null, ps);
