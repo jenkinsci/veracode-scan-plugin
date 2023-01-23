@@ -155,7 +155,7 @@ public final class FileUtil {
             oldJar.copyToWithPermission(newjarFilePath);
             bRet = true;
         } catch (RuntimeException ex) {
-            VeracodeDescriptor veracodeDescriptor = (VeracodeDescriptor) Jenkins.getInstance()
+            VeracodeDescriptor veracodeDescriptor = (VeracodeDescriptor) Jenkins.get()
                     .getDescriptor(VeracodeNotifier.class);
             if (veracodeDescriptor != null && veracodeDescriptor.getFailbuild()) {
                 ps.println("Failed to copy the jarfiles\n");

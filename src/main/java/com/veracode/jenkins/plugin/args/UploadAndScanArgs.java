@@ -226,7 +226,7 @@ public final class UploadAndScanArgs extends AbstractArgs {
         String path = null;
 
         try {
-            String rootUrl = Hudson.getInstance().getRootUrl();
+            String rootUrl = Hudson.get().getRootUrl();
             if (!StringUtil.isNullOrEmpty(rootUrl)) {
                 url = rootUrl;
             } else {

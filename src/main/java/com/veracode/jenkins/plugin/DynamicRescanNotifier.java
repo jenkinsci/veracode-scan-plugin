@@ -128,7 +128,7 @@ public class DynamicRescanNotifier extends Notifier {
         }
 
         private void updateFromGlobalConfiguration() {
-            VeracodeDescriptor globalVeracodeDescriptor = (VeracodeDescriptor) Jenkins.getInstance()
+            VeracodeDescriptor globalVeracodeDescriptor = (VeracodeDescriptor) Jenkins.get()
                     .getDescriptor(VeracodeNotifier.class);
             if (globalVeracodeDescriptor != null) {
                 failbuild = globalVeracodeDescriptor.getFailbuild();
