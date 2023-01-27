@@ -1,6 +1,7 @@
 package com.veracode.jenkins.plugin.args;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import com.veracode.jenkins.plugin.VeracodeNotifier;
@@ -45,8 +46,8 @@ public final class UploadAndScanArgs extends AbstractArgs {
     private static final String CUSTOM_BUILD_NUMBER_VAR = "buildnumber";
     public static final String CUSTOM_PROJECT_NAME_VAR = "projectname";
 
-    public static final List<String> STRING_TYPE_ARGS_UPLOADANDSCAN = Arrays.asList(APPNAME, TEAMS, CRITICALITY,
-            SANDBOXNAME, VERSION, INCLUDE, EXCLUDE, PATTERN, REPLACEMENT);
+    public static final List<String> STRING_TYPE_ARGS_UPLOADANDSCAN = Collections.unmodifiableList(
+            Arrays.asList(APPNAME, TEAMS, CRITICALITY, SANDBOXNAME, VERSION, INCLUDE, EXCLUDE, PATTERN, REPLACEMENT));
 
     /**
      * Constructor for UploadAndScanArgs.
