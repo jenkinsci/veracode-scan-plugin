@@ -1,12 +1,19 @@
 package com.veracode.jenkins.plugin.utils;
 
+import static com.veracode.jenkins.plugin.args.AbstractArgs.STRING_TYPE_ARGS_COMMON;
+import static com.veracode.jenkins.plugin.args.UploadAndScanArgs.STRING_TYPE_ARGS_UPLOADANDSCAN;
+
+import java.util.ArrayList;
 import java.util.List;
+
+import org.apache.commons.lang.StringEscapeUtils;
 
 import com.veracode.jenkins.plugin.common.Constant;
 
 import hudson.FilePath;
 import hudson.model.AbstractBuild;
 import hudson.model.Node;
+import hudson.util.ArgumentListBuilder;
 
 /**
  * The RemoteScanUtil is a utility class related to perfoming the scans in
@@ -123,6 +130,32 @@ public final class RemoteScanUtil {
             return (parameterValue.contains(" ") || parameterValue.contains("'"))
                     ? "\"" + parameterValue + "\""
                     : parameterValue;
+        }
+    }
+
+    /**
+     * Adds data passed from pipeline Groovy syntax to the command by escaping and
+     * adding quotes for any strings.
+     * 
+     * @param command   a {@link hudson.util.ArgumentListBuilder} object.
+     * @param arguments a {@link java.lang.String} object array.
+     */
+    public static void addArgumentsToCommand(ArgumentListBuilder command, String[] arguments) {
+        List<Integer> stringDataIndexes = new ArrayList<>();
+        int i = 0;
+        for (String _cmd : arguments) {
+
+            if (STRING_TYPE_ARGS_COMMON.contains(_cmd) || STRING_TYPE_ARGS_UPLOADANDSCAN.contains(_cmd)) {
+                stringDataIndexes.add(i + 1);
+            }
+
+            if (stringDataIndexes.contains(i)) {
+                command.addQuoted(StringEscapeUtils.escapeJava(_cmd));
+            } else {
+                command.add(_cmd);
+            }
+
+            i++;
         }
     }
 }

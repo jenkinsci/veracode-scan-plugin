@@ -1,6 +1,7 @@
 package com.veracode.jenkins.plugin.args;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import com.veracode.jenkins.plugin.utils.StringUtil;
@@ -29,6 +30,8 @@ public abstract class AbstractArgs {
     protected static final String VKEY = SWITCH + "vkey";
 
     protected static final String USERAGENT = SWITCH + "useragent";
+
+    public static final List<String> STRING_TYPE_ARGS_COMMON = Arrays.asList(VID, VKEY, PHOST, PPORT, PUSER, PPASSWORD);
 
     /**
      * A list of command line arguments.

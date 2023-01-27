@@ -659,19 +659,10 @@ public class VeracodePipelineRecorder extends Recorder implements SimpleBuildSte
                     replacementPattern, pHost, pPort, pUser, pPassword, workspace,
                     run.getEnvironment(listener), str_timeout, deleteIncompleteScanLevel, debug, uploadAndScanFilePaths);
 
-            String jarPath = jarFilePath + sep + execJarFile + ".jar";
-            String cmd = "java -jar " + jarPath;
-            String[] cmds = uploadAndScanArguments.getArguments();
-
-            StringBuilder result = new StringBuilder();
-            result.append(cmd);
-            for (String _cmd : cmds) {
-                _cmd = RemoteScanUtil.formatParameterValue(_cmd);
-                result.append(" " + _cmd);
-            }
-
             ArgumentListBuilder command = new ArgumentListBuilder();
-            command.addTokenized(result.toString());
+            command.add("java").add("-jar").add(jarFilePath + sep + execJarFile + ".jar");
+            // Add other arguments to the command
+            RemoteScanUtil.addArgumentsToCommand(command, uploadAndScanArguments.getArguments());
 
             List<String> remoteCmd = command.toList();
             int iSize = remoteCmd.size();
@@ -686,16 +677,9 @@ public class VeracodePipelineRecorder extends Recorder implements SimpleBuildSte
             // masking the password related information
             boolean[] masks = new boolean[iSize];
             for (int i = 0; i < iSize; i++) {
-                if (iPosPassword != -1) {
-                    if (iPosPassword == i)
-                        masks[i] = true;
-                } else if (iPosKey != -1) {
-                    if (iPosKey == i)
-                        masks[i] = true;
-                } else if (iPosProxyPassword != -1) {
-                    if (iPosProxyPassword == i) {
-                        masks[i] = true;
-                    }
+                if ((iPosPassword == i && iPosPassword != -1) || (iPosKey == i && iPosKey != -1)
+                        || (iPosProxyPassword == i && iPosProxyPassword != -1)) {
+                    masks[i] = true;
                 } else {
                     masks[i] = false;
                 }
