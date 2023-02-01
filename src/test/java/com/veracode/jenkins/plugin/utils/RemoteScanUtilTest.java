@@ -22,6 +22,7 @@ import hudson.FilePath;
 import hudson.model.AbstractBuild;
 import hudson.model.Node;
 import hudson.remoting.VirtualChannel;
+import hudson.util.ArgumentListBuilder;
 import jenkins.model.Jenkins;
 
 @RunWith(PowerMockRunner.class)
@@ -121,5 +122,39 @@ public class RemoteScanUtilTest {
 
 		String stringValue3 = RemoteScanUtil.formatParameterValue("temp'directory");
 		Assert.assertEquals("Remote veracode path is not match", "\"temp'directory\"", stringValue3);
+	}
+
+	@Test
+	public void testAddArgumentsToCommand_ArgsWithQuotes() {
+		ArgumentListBuilder command = new ArgumentListBuilder();
+		command.add("java").add("-jar").add("/devops/jenkins/agent/veracode-scan/VeracodeJavaAPI.jar");
+
+		String[] args = { "-action", "UploadAndScan", "-vid", "Test \"API' ID", "-vkey", "Test \"API' Key", "-phost",
+				"210.123\".23'.12", "-pport", "12\"3'4", "-puser", "Test \"Proxy' Username", "-ppassword",
+				"Test \"Proxy' Password", "-appname", "Test \"Application' Name", "-createprofile", "true", "-teams",
+				"Test \"Team' Name", "-criticality", "Very\"Hi'gh", "-sandboxname", "Test \"Sandbox' Name",
+				"-createsandbox", "true", "-version", "Test \"Scan' Name", "-include",
+				"Test \"Scan' Include Filenames Pattern", "-exclude", "Test \"Scan' Exclude Filenames Pattern",
+				"-pattern", "Test \"Save As' Filename Pattern", "-replacement", "Test \"Save As' Replacement Pattern",
+				"-deleteincompletescan", "2\"", "-maxretrycount", "5", "-debug", "-useragent", "Test User Agent" };
+
+		RemoteScanUtil.addArgumentsToCommand(command, args);
+
+		Assert.assertTrue(command.toList().contains("\"Test \\\"API' ID\""));
+		Assert.assertTrue(command.toList().contains("\"Test \\\"API' Key\""));
+		Assert.assertTrue(command.toList().contains("\"210.123\\\".23'.12\""));
+		Assert.assertTrue(command.toList().contains("\"12\\\"3'4\""));
+		Assert.assertTrue(command.toList().contains("\"Test \\\"Proxy' Username\""));
+		Assert.assertTrue(command.toList().contains("\"Test \\\"Proxy' Password\""));
+		Assert.assertTrue(command.toList().contains("\"Test \\\"Application' Name\""));
+		Assert.assertTrue(command.toList().contains("\"Test \\\"Team' Name\""));
+		Assert.assertTrue(command.toList().contains("\"Very\\\"Hi'gh\""));
+		Assert.assertTrue(command.toList().contains("\"Test \\\"Sandbox' Name\""));
+		Assert.assertTrue(command.toList().contains("\"Test \\\"Scan' Name\""));
+		Assert.assertTrue(command.toList().contains("\"Test \\\"Scan' Include Filenames Pattern\""));
+		Assert.assertTrue(command.toList().contains("\"Test \\\"Scan' Exclude Filenames Pattern\""));
+		Assert.assertTrue(command.toList().contains("\"Test \\\"Save As' Filename Pattern\""));
+		Assert.assertTrue(command.toList().contains("\"Test \\\"Save As' Replacement Pattern\""));
+		Assert.assertTrue(command.toList().contains("\"2\\\"\""));
 	}
 }

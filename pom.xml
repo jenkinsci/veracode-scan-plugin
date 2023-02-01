@@ -38,7 +38,7 @@
             <groupId>com.veracode.vosp.api.wrappers</groupId>
             <!-- Artifact name and version of the java wrapper -->
             <artifactId>vosp-api-wrappers-java</artifactId>
-            <version>22.10.10.4</version>
+            <version>23.1.10.5</version>
         </dependency>
 
         <dependency>
