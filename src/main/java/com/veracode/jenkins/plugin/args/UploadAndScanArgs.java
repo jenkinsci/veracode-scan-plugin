@@ -1,19 +1,19 @@
 package com.veracode.jenkins.plugin.args;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
 import com.veracode.jenkins.plugin.VeracodeNotifier;
+import com.veracode.jenkins.plugin.VeracodePipelineRecorder;
 import com.veracode.jenkins.plugin.VeracodeNotifier.VeracodeDescriptor;
 import com.veracode.jenkins.plugin.common.Constant;
 import com.veracode.jenkins.plugin.utils.FileUtil;
 import com.veracode.jenkins.plugin.utils.StringUtil;
 import com.veracode.jenkins.plugin.utils.UserAgentUtil;
 
+import hudson.EnvVars;
 import hudson.FilePath;
 import hudson.model.AbstractBuild;
 import hudson.model.Hudson;
+import hudson.model.Run;
+import jenkins.model.Jenkins;
 
 /**
  * The UploadAndScanArgs class builds the command line argument passed to the
@@ -45,10 +45,6 @@ public final class UploadAndScanArgs extends AbstractArgs {
     private static final String CUSTOM_TIMESTAMP_VAR = "timestamp";
     private static final String CUSTOM_BUILD_NUMBER_VAR = "buildnumber";
     public static final String CUSTOM_PROJECT_NAME_VAR = "projectname";
-
-    public static final List<String> STRING_TYPE_ARGS_UPLOADANDSCAN = Collections
-            .unmodifiableList(Arrays.asList(APPNAME, TEAMS, CRITICALITY, SANDBOXNAME, VERSION, INCLUDE, EXCLUDE,
-                    PATTERN, REPLACEMENT, DELETEINCOMPLETESCAN));
 
     /**
      * Constructor for UploadAndScanArgs.
@@ -261,7 +257,7 @@ public final class UploadAndScanArgs extends AbstractArgs {
 
     /**
      * Returns an UploadAndScanArgs object initialized with the specified arguments.
-     * Used by the notifier
+     * Used by the VeracodeNotifier.
      *
      * @param notifier    a {@link com.veracode.jenkins.plugin.VeracodeNotifier}
      *                    object.
@@ -311,7 +307,62 @@ public final class UploadAndScanArgs extends AbstractArgs {
 
     /**
      * Returns an UploadAndScanArgs object initialized with the specified arguments.
-     * Used by the pipeline recorder.
+     * Used by the VeracodePipelineRecorder.
+     * 
+     * @param vpr                              a
+     *                                         {@link com.veracode.jenkins.plugin.VeracodePipelineRecorder}
+     *                                         object.
+     * @param run                              a {@link hudson.model.Run} object.
+     * @param workspace                        a {@link hudson.FilePath} object.
+     * @param envVars                          a {@link hudson.EnvVars} object.
+     * @param filePaths                        an array of {@link java.lang.String}
+     *                                         objects.
+     * @param bRemoteScan                      a boolean.
+     * @param autoApplicationName              a boolean.
+     * @param autoScanName                     a boolean.
+     * @param createAutoApplicationDescription a boolean.
+     * @return a {@link com.veracode.jenkins.plugin.args.UploadAndScanArgs} object.
+     */
+    public static UploadAndScanArgs newUploadAndScanArgs(VeracodePipelineRecorder vpr, Run<?, ?> run,
+            FilePath workspace, EnvVars envVars, String[] filePaths, boolean bRemoteScan, boolean autoApplicationName,
+            boolean autoScanName, boolean createAutoApplicationDescription) {
+
+        VeracodeDescriptor globalDescriptor = (VeracodeDescriptor) Jenkins.get().getDescriptor(VeracodeNotifier.class);
+
+        String vId = (vpr.vid == null && vpr.vkey == null) ? globalDescriptor.getGvid() : vpr.vid;
+        String vKey = (vpr.vid == null && vpr.vkey == null) ? globalDescriptor.getGvkey() : vpr.vkey;
+
+        boolean useProxy = false;
+        String phost = null, pport = null, puser = null, ppsword = null;
+        if (vpr.useProxy) {
+            useProxy = vpr.useProxy;
+            phost = vpr.pHost;
+            pport = vpr.pPort;
+            puser = vpr.pUser;
+            ppsword = vpr.pPassword;
+        } else if (globalDescriptor.getProxy()) {
+            useProxy = globalDescriptor.getProxy();
+            phost = globalDescriptor.getPhost();
+            pport = globalDescriptor.getPport();
+            puser = globalDescriptor.getPuser();
+            ppsword = globalDescriptor.getPpassword();
+        }
+
+        String strTimeout = "";
+        if (vpr.timeout != null) {
+            strTimeout = Integer.toString(vpr.timeout);
+        }
+
+        return newUploadAndScanArgs(bRemoteScan, autoApplicationName, createAutoApplicationDescription, autoScanName,
+                vpr.createSandbox, vpr.createProfile, vpr.teams, useProxy, vId, vKey, run.getDisplayName(),
+                run.getParent().getFullDisplayName(), vpr.applicationName, vpr.sandboxName, vpr.scanName,
+                vpr.criticality, vpr.scanIncludesPattern, vpr.scanExcludesPattern, vpr.fileNamePattern,
+                vpr.replacementPattern, phost, pport, puser, ppsword, workspace, envVars, strTimeout,
+                vpr.deleteIncompleteScanLevel, vpr.debug, filePaths);
+    }
+
+    /**
+     * Returns an UploadAndScanArgs object initialized with the specified arguments.
      *
      * @param bRemoteScan         a boolean.
      * @param autoApplicationName a boolean.
@@ -355,11 +406,6 @@ public final class UploadAndScanArgs extends AbstractArgs {
             hudson.EnvVars envVars, String timeOut, String deleteIncompleteScan, boolean debug, String[] filePaths) {
 
         String description = null;
-
-        String phost = null;
-        String pport = null;
-        String puser = null;
-        String ppsword = null;
 
         if (!StringUtil.isNullOrEmpty(vId)) {
             vId = envVars.expand(vId);
@@ -405,19 +451,14 @@ public final class UploadAndScanArgs extends AbstractArgs {
         if (autoDescription) {
             description = createDescriptionArg(workspace.getParent());
         }
-        // proxy settings
-        if (useProxy) {
-            phost = pHost;
-            pport = pPort;
-            puser = pUser;
-            ppsword = pCredential;
-        }
+
         UploadAndScanArgs args = new UploadAndScanArgs();
         // We know whether we are using the global or job credentials because
         // of the initial initialization statements therefore no add'l logic req'd.
-        args.addApiCredentials(vId, vKey);
-        args.addProxyCredentials(puser, ppsword);
-        args.addProxyConfiguration(phost, pport);
+        args.addApiCredentials(bRemoteScan, envVars, vId, vKey);
+        if (useProxy) {
+            args.addProxyConfiguration(bRemoteScan, envVars, pHost, pPort, pUser, pCredential);
+        }
         args.addStdArguments(bRemoteScan, applicationName, description, createProfile, teams, criticality, sandboxName,
                 createSandbox, scanName, scanIncludesPattern, scanExcludesPattern, fileNamePattern, replacementPattern,
                 timeOut, getDeleteIncompleteScan(deleteIncompleteScan), debug, filePaths);

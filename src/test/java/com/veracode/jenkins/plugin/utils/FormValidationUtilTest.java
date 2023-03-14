@@ -1,6 +1,7 @@
 package com.veracode.jenkins.plugin.utils;
 
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyBoolean;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -81,7 +82,7 @@ public class FormValidationUtilTest {
 	@Test
 	public void testCheckConnection_Exception() {
 		PowerMockito.mockStatic(GetAppListArgs.class);
-		PowerMockito.when(GetAppListArgs.newGetAppListArgs(any(), any(), any())).thenThrow(new RuntimeException());
+		PowerMockito.when(GetAppListArgs.newGetAppListArgs(anyBoolean(), any(), any(), any(), any())).thenThrow(new RuntimeException());
 		FormValidation errorCredFormat = FormValidationUtil.checkConnection(VID, VKEY, null);
 		Assert.assertTrue("Error message for connection exception is invalid",
 				errorCredFormat.getMessage().contains("java.lang.RuntimeException"));

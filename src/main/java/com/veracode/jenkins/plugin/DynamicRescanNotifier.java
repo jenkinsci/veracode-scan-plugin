@@ -6,7 +6,6 @@ import java.io.PrintStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
-import java.util.List;
 
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.StaplerRequest;
@@ -20,6 +19,7 @@ import com.veracode.jenkins.plugin.utils.FileUtil;
 import com.veracode.jenkins.plugin.utils.RemoteScanUtil;
 import com.veracode.jenkins.plugin.utils.StringUtil;
 
+import hudson.EnvVars;
 import hudson.Extension;
 import hudson.FilePath;
 import hudson.Launcher;
@@ -284,6 +284,7 @@ public class DynamicRescanNotifier extends Notifier {
 
         getDescriptor().updateFromGlobalConfiguration();
         boolean debug = getDescriptor().getDebug();
+        EnvVars envVars = build.getEnvironment(listener);
 
         if (debug) {
             ps.println("\r\n[Debug mode is on]\r\n");
@@ -330,8 +331,7 @@ public class DynamicRescanNotifier extends Notifier {
                 ps.print("\r\n\r\nBuilding arguments. ");
             }
 
-            DynamicRescanArgs dynamicScanArguments = DynamicRescanArgs.dynamicScanArgs(this, build,
-                    build.getEnvironment(listener));
+            DynamicRescanArgs dynamicScanArguments = DynamicRescanArgs.dynamicScanArgs(this, build, envVars, false);
 
             if (debug) {
                 ps.println(String.format("Calling wrapper with arguments:%n%s%n",
@@ -414,46 +414,17 @@ public class DynamicRescanNotifier extends Notifier {
         // obtain the String file paths, using the includes/excludes patterns a
         // 2nd time
         try {
-            DynamicRescanArgs dynamicScanArguments = DynamicRescanArgs.dynamicScanArgs(this, build,
-                    build.getEnvironment(listener));
+            EnvVars envVars = build.getEnvironment(listener);
+            DynamicRescanArgs dynamicScanArguments = DynamicRescanArgs.dynamicScanArgs(this, build, envVars, true);
 
             String jarPath = jarFilePath + sep + Constant.execJarFile + ".jar";
-            String cmd = "java -jar " + jarPath;
-            String[] cmds = dynamicScanArguments.getArguments();
-
-            StringBuilder result = new StringBuilder();
-            result.append(cmd);
-            for (String _cmd : cmds) {
-                _cmd = RemoteScanUtil.formatParameterValue(_cmd);
-                result.append(" " + _cmd);
-            }
-
-            ArgumentListBuilder command = new ArgumentListBuilder();
-            command.addTokenized(result.toString());
-
-            List<String> remoteCmd = command.toList();
-            int iSize = remoteCmd.size();
-            Integer[] iPos = RemoteScanUtil.getMaskPosition(remoteCmd);
-            int iPosKey = iPos[0];
-            int iPosProxyPassword = iPos[1];
+            // Construct UploadAndScan command using the given args
+            ArgumentListBuilder command = RemoteScanUtil.addArgumentsToCommand(jarPath,
+                    dynamicScanArguments.getArguments(), node.toComputer().isUnix());
 
             Launcher launcher = node.createLauncher(listener);
             ProcStarter procStart = launcher.new ProcStarter();
-
-            // masking the password related information
-            boolean[] masks = new boolean[iSize];
-            for (int i = 0; i < iSize; i++) {
-                if (iPosKey != -1) {
-                    if (iPosKey == i)
-                        masks[i] = true;
-                } else if (iPosProxyPassword != -1) {
-                    if (iPosProxyPassword == i)
-                        masks[i] = true;
-                } else
-                    masks[i] = false;
-            }
-
-            procStart = procStart.cmds(command).masks(masks).stdout(listener).quiet(true);
+            procStart = procStart.cmds(command).envs(envVars).stdout(listener).quiet(true);
 
             if (bDebug) {
                 procStart.quiet(false);

@@ -6,7 +6,6 @@ import java.io.PrintStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletException;
@@ -709,11 +708,11 @@ public class VeracodeNotifier extends Notifier {
         ps.println("------------------------------------------------------------------------");
 
         boolean debug = getDescriptor().getDebug();
-        EnvVars envar = build.getEnvironment(listener);
-        UploadAndScanArgs.setEnvVars(envar, build.getDisplayName(),
+        EnvVars envVars = build.getEnvironment(listener);
+        UploadAndScanArgs.setEnvVars(envVars, build.getDisplayName(),
                 build.getProject().getDisplayName());
-        String uploadincludePattern = envar.expand(this.getUploadincludespattern());
-        String uploadexcludePattern = envar.expand(this.getUploadexcludespattern());
+        String uploadincludePattern = envVars.expand(this.getUploadincludespattern());
+        String uploadexcludePattern = envVars.expand(this.getUploadexcludespattern());
 
         if (debug) {
             ps.println("\r\n[Debug mode is on]\r\n");
@@ -831,7 +830,7 @@ public class VeracodeNotifier extends Notifier {
             }
 
             UploadAndScanArgs uploadAndScanArguments = UploadAndScanArgs.newUploadAndScanArgs(this,
-                    build, build.getEnvironment(listener), uploadAndScanFilePaths, false);
+                    build, envVars, uploadAndScanFilePaths, false);
 
             if (debug) {
 
@@ -959,11 +958,11 @@ public class VeracodeNotifier extends Notifier {
     private boolean runScanFromRemote(AbstractBuild<?, ?> build, BuildListener listener,
             PrintStream ps, boolean bDebug) throws IOException, InterruptedException {
         boolean bRet = false;
-        EnvVars envar = build.getEnvironment(listener);
-        UploadAndScanArgs.setEnvVars(envar, build.getDisplayName(),
+        EnvVars envVars = build.getEnvironment(listener);
+        UploadAndScanArgs.setEnvVars(envVars, build.getDisplayName(),
                 build.getProject().getDisplayName());
-        String uploadincludePattern = envar.expand(this.getUploadincludespattern());
-        String uploadexcludePattern = envar.expand(this.getUploadexcludespattern());
+        String uploadincludePattern = envVars.expand(this.getUploadincludespattern());
+        String uploadexcludePattern = envVars.expand(this.getUploadexcludespattern());
         Node node = build.getBuiltOn();
         if (node == null) {
             ps.print("\r\n\r\nFailed to locate the build node.\r\n");
@@ -987,45 +986,16 @@ public class VeracodeNotifier extends Notifier {
             String[] uploadAndScanFilePaths = FileUtil.getStringFilePaths(
                     remoteworkspaceFilePath.list(uploadincludePattern, uploadexcludePattern));
             UploadAndScanArgs uploadAndScanArguments = UploadAndScanArgs.newUploadAndScanArgs(this,
-                    build, build.getEnvironment(listener), uploadAndScanFilePaths, true);
+                    build, envVars, uploadAndScanFilePaths, true);
 
             String jarPath = jarFilePath + sep + Constant.execJarFile + ".jar";
-            String cmd = "java -jar " + jarPath;
-            String[] cmds = uploadAndScanArguments.getArguments();
-
-            StringBuilder result = new StringBuilder();
-            result.append(cmd);
-            for (String _cmd : cmds) {
-                _cmd = RemoteScanUtil.formatParameterValue(_cmd);
-                result.append(" " + _cmd);
-            }
-
-            ArgumentListBuilder command = new ArgumentListBuilder();
-            command.addTokenized(result.toString());
-
-            List<String> remoteCmd = command.toList();
-            int iSize = remoteCmd.size();
-            Integer[] iPos = RemoteScanUtil.getMaskPosition(remoteCmd);
-            int iPosKey = iPos[0];
-            int iPosProxyPassword = iPos[1];
+            // Construct UploadAndScan command using the given args
+            ArgumentListBuilder command = RemoteScanUtil.addArgumentsToCommand(jarPath,
+                    uploadAndScanArguments.getArguments(), node.toComputer().isUnix());
 
             Launcher launcher = node.createLauncher(listener);
             ProcStarter procStart = launcher.new ProcStarter();
-
-            // masking the password related information
-            boolean[] masks = new boolean[iSize];
-            for (int i = 0; i < iSize; i++) {
-                if (iPosKey != -1) {
-                    if (iPosKey == i)
-                        masks[i] = true;
-                } else if (iPosProxyPassword != -1) {
-                    if (iPosProxyPassword == i)
-                        masks[i] = true;
-                } else
-                    masks[i] = false;
-            }
-
-            procStart = procStart.pwd(workspace).cmds(command).masks(masks).stdout(listener).quiet(true);
+            procStart = procStart.pwd(workspace).cmds(command).envs(envVars).stdout(listener).quiet(true);
 
             if (bDebug) {
                 procStart.quiet(false);

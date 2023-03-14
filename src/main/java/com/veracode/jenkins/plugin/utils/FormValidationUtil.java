@@ -123,7 +123,7 @@ public final class FormValidationUtil {
                 parser.setOutputWriter(null);
                 parser.setErrorWriter(ps);
 
-                GetAppListArgs appListArgs = GetAppListArgs.newGetAppListArgs(id, key, proxy);
+                GetAppListArgs appListArgs = GetAppListArgs.newGetAppListArgs(false, null, id, key, proxy);
 
                 parser.parse(appListArgs.getArguments());
 

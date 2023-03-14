@@ -1,12 +1,7 @@
 package com.veracode.jenkins.plugin.utils;
 
-import static com.veracode.jenkins.plugin.args.AbstractArgs.STRING_TYPE_ARGS_COMMON;
-import static com.veracode.jenkins.plugin.args.UploadAndScanArgs.STRING_TYPE_ARGS_UPLOADANDSCAN;
-
 import java.util.ArrayList;
 import java.util.List;
-
-import org.apache.commons.lang.StringEscapeUtils;
 
 import com.veracode.jenkins.plugin.common.Constant;
 
@@ -134,28 +129,37 @@ public final class RemoteScanUtil {
     }
 
     /**
-     * Adds data passed from pipeline Groovy syntax to the command by escaping and
-     * adding quotes for any strings.
+     * Construct OS specific command using the provided arguments and mask sensitive
+     * data. Also escapes the quotes for non-Unix OS.
      * 
-     * @param command   a {@link hudson.util.ArgumentListBuilder} object.
-     * @param arguments a {@link java.lang.String} object array.
+     * @param jarFilePath a {@link java.lang.String} object.
+     * @param arguments   a {@link java.lang.String} array.
+     * @param isUnix      a boolean.
+     * @return a {@link hudson.util.ArgumentListBuilder} object.
      */
-    public static void addArgumentsToCommand(ArgumentListBuilder command, String[] arguments) {
-        List<Integer> stringDataIndexes = new ArrayList<>();
+    public static ArgumentListBuilder addArgumentsToCommand(String jarFilePath, String[] arguments, boolean isUnix) {
+
+        ArgumentListBuilder command = new ArgumentListBuilder();
+        command.add("java").add("-jar").add(jarFilePath);
+
+        List<Integer> sensitiveArgs = new ArrayList<>();
         int i = 0;
-        for (String _cmd : arguments) {
+        for (String arg : arguments) {
 
-            if (STRING_TYPE_ARGS_COMMON.contains(_cmd) || STRING_TYPE_ARGS_UPLOADANDSCAN.contains(_cmd)) {
-                stringDataIndexes.add(i + 1);
+            if (arg.equalsIgnoreCase("-vkey") || arg.equalsIgnoreCase("-ppassword")) {
+                sensitiveArgs.add(i + 1);
             }
 
-            if (stringDataIndexes.contains(i)) {
-                command.addQuoted(StringEscapeUtils.escapeJava(_cmd));
-            } else {
-                command.add(_cmd);
+            // handle non-Unix OS
+            if (!isUnix && arg.contains("\"")) {
+                arg = arg.replace("\"", "\\\"");
             }
+
+            command.add(arg, sensitiveArgs.contains(i));
 
             i++;
         }
+
+        return command;
     }
 }
