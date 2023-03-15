@@ -28,6 +28,7 @@ import hudson.Proc;
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
 import hudson.model.BuildListener;
+import hudson.model.Computer;
 import hudson.model.Node;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.BuildStepMonitor;
@@ -418,9 +419,27 @@ public class DynamicRescanNotifier extends Notifier {
             DynamicRescanArgs dynamicScanArguments = DynamicRescanArgs.dynamicScanArgs(this, build, envVars, true);
 
             String jarPath = jarFilePath + sep + Constant.execJarFile + ".jar";
-            // Construct UploadAndScan command using the given args
+
+            if (node == null) {
+                ps.print("\r\n\r\nFailed to locate the build node.\r\n");
+                return !getDescriptor().getFailbuild();
+            }
+
+            Computer computer = node.toComputer();
+            if (computer == null) {
+                ps.print("\r\n\r\nFailed to determine the computer.\r\n");
+                return !getDescriptor().getFailbuild();
+            }
+
+            Boolean isUnix = computer.isUnix();
+            if (isUnix == null) {
+                ps.print("\r\n\r\nFailed to determine the OS.\r\n");
+                return !getDescriptor().getFailbuild();
+            }
+
+            // Construct DynamicScan command using the given args
             ArgumentListBuilder command = RemoteScanUtil.addArgumentsToCommand(jarPath,
-                    dynamicScanArguments.getArguments(), node.toComputer().isUnix());
+                    dynamicScanArguments.getArguments(), isUnix);
 
             Launcher launcher = node.createLauncher(listener);
             ProcStarter procStart = launcher.new ProcStarter();
@@ -430,19 +449,14 @@ public class DynamicRescanNotifier extends Notifier {
                 procStart.quiet(false);
                 ps.print("\nInvoking the following command in remote workspace:\n");
             }
+
             Proc proc = launcher.launch(procStart);
-
             int retcode = proc.join();
-
-            if (retcode != 0) {
-                if (getDescriptor().getFailbuild()) {
-                    ps.print("\r\n\r\nError- Returned code from wrapper:" + retcode + "\r\n\n");
-                }
-
+            if (retcode != 0 && getDescriptor().getFailbuild()) {
+                ps.print("\r\n\r\nError- Returned code from wrapper:" + retcode + "\r\n\n");
             } else if (retcode == 0) {
                 bRet = true;
             }
-
         } catch (IOException | InterruptedException ex) {
             ex.printStackTrace();
             if (getDescriptor().getFailbuild()) {

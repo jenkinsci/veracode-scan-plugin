@@ -643,9 +643,15 @@ public class VeracodePipelineRecorder extends Recorder implements SimpleBuildSte
                     createAutoApplicationDescription);
 
             String jarPath = jarFilePath + sep + Constant.execJarFile + ".jar";
+
+            Boolean isUnix = comp.isUnix();
+            if (isUnix == null) {
+                throw new RuntimeException("Failed to determine the OS.");
+            }
+
             // Construct UploadAndScan command using the given args
             ArgumentListBuilder command = RemoteScanUtil.addArgumentsToCommand(jarPath,
-                    uploadAndScanArguments.getArguments(), comp.isUnix());
+                    uploadAndScanArguments.getArguments(), isUnix);
 
             Launcher launcher = node.createLauncher(listener);
             ProcStarter procStart = launcher.new ProcStarter();
@@ -655,10 +661,9 @@ public class VeracodePipelineRecorder extends Recorder implements SimpleBuildSte
                 procStart.quiet(false);
                 ps.print("\nInvoking the following command in remote workspace:\n");
             }
+
             Proc proc = launcher.launch(procStart);
-
             int retcode = proc.join();
-
             if (retcode != 0 && this.canFailJob) {
                 ps.print("\r\n\r\nError- Returned code from wrapper:" + retcode + "\r\n\n");
             } else {

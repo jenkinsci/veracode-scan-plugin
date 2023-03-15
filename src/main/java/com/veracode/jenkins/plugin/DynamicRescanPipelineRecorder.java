@@ -432,9 +432,15 @@ public class DynamicRescanPipelineRecorder extends Recorder implements SimpleBui
                     workspace, envVars, true);
 
             String jarPath = jarFilePath + sep + Constant.execJarFile + ".jar";
-            // Construct UploadAndScan command using the given args
+
+            Boolean isUnix = comp.isUnix();
+            if (isUnix == null) {
+                throw new RuntimeException("Failed to determine the OS.");
+            }
+
+            // Construct DynamicScan command using the given args
             ArgumentListBuilder command = RemoteScanUtil.addArgumentsToCommand(jarPath,
-                    pipelineScanArguments.getArguments(), comp.isUnix());
+                    pipelineScanArguments.getArguments(), isUnix);
 
             Launcher launcher = node.createLauncher(listener);
             ProcStarter procStart = launcher.new ProcStarter();
@@ -444,17 +450,14 @@ public class DynamicRescanPipelineRecorder extends Recorder implements SimpleBui
                 procStart.quiet(false);
                 ps.print("\nInvoking the following command in remote workspace:\n");
             }
+
             Proc proc = launcher.launch(procStart);
-
             int retcode = proc.join();
-
-            if (retcode != 0) {
-                if (this.canFailJob) {
-                    ps.print("\r\n\r\nError- Returned code from wrapper:" + retcode + "\r\n\n");
-                }
-            } else if (retcode == 0)
+            if (retcode != 0 && this.canFailJob) {
+                ps.print("\r\n\r\nError- Returned code from wrapper:" + retcode + "\r\n\n");
+            } else if (retcode == 0) {
                 bRet = true;
-
+            }
         } catch (IOException | InterruptedException ex) {
             ex.printStackTrace();
             if (this.canFailJob) {
