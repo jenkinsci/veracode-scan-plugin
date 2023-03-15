@@ -22,6 +22,7 @@ import hudson.FilePath;
 import hudson.model.AbstractBuild;
 import hudson.model.Node;
 import hudson.remoting.VirtualChannel;
+import hudson.util.ArgumentListBuilder;
 import jenkins.model.Jenkins;
 
 @RunWith(PowerMockRunner.class)
@@ -121,5 +122,89 @@ public class RemoteScanUtilTest {
 
 		String stringValue3 = RemoteScanUtil.formatParameterValue("temp'directory");
 		Assert.assertEquals("Remote veracode path is not match", "\"temp'directory\"", stringValue3);
+	}
+
+	@Test
+	public void testAddArgumentsToCommand_Unix() {
+
+		String jarFilePath = "/jenkins/veracode-scan/VeracodeJavaAPI.jar";
+		String[] args = { "-action", "UploadAndScan", "-vid", "Test \"API' ID", "-vkey", "Test \"API' Key", "-phost",
+				"210.123\".23'.12", "-pport", "12\"3'4", "-puser", "Test \"Proxy' Username", "-ppassword",
+				"Test \"Proxy' Password", "-appname", "Test \"Application' Name", "-createprofile", "true", "-teams",
+				"Test \"Team' Name", "-criticality", "Very\"Hi'gh", "-sandboxname", "Test \"Sandbox' Name",
+				"-createsandbox", "true", "-version", "Test \"Scan' Name", "-include",
+				"Test \"Scan' Include Filenames Pattern", "-exclude", "Test \"Scan' Exclude Filenames Pattern",
+				"-pattern", "Test \"Save As' Filename Pattern", "-replacement", "Test \"Save As' Replacement Pattern",
+				"-deleteincompletescan", "2\"", "-maxretrycount", "5", "-debug", "-useragent", "Test User Agent" };
+		boolean isUnix = true;
+
+		ArgumentListBuilder command = RemoteScanUtil.addArgumentsToCommand(jarFilePath, args, isUnix);
+		String str = command.toString();
+
+		Assert.assertTrue(str.contains("java -jar /jenkins/veracode-scan/VeracodeJavaAPI.jar"));
+		Assert.assertTrue(str.contains("-action UploadAndScan"));
+		Assert.assertTrue(str.contains("-vid \"Test \"API' ID\""));
+		Assert.assertTrue(str.contains("-vkey ******"));
+		Assert.assertTrue(str.contains("-phost 210.123\".23'.12"));
+		Assert.assertTrue(str.contains("-pport 12\"3'4"));
+		Assert.assertTrue(str.contains("-puser \"Test \"Proxy' Username\""));
+		Assert.assertTrue(str.contains("-ppassword ******"));
+		Assert.assertTrue(str.contains("-appname \"Test \"Application' Name\""));
+		Assert.assertTrue(str.contains("-createprofile true"));
+		Assert.assertTrue(str.contains("-teams \"Test \"Team' Name\""));
+		Assert.assertTrue(str.contains("-criticality Very\"Hi'gh"));
+		Assert.assertTrue(str.contains("-sandboxname \"Test \"Sandbox' Name\""));
+		Assert.assertTrue(str.contains("-createsandbox true"));
+		Assert.assertTrue(str.contains("-version \"Test \"Scan' Name\""));
+		Assert.assertTrue(str.contains("-include \"Test \"Scan' Include Filenames Pattern\""));
+		Assert.assertTrue(str.contains("-exclude \"Test \"Scan' Exclude Filenames Pattern\""));
+		Assert.assertTrue(str.contains("-pattern \"Test \"Save As' Filename Pattern\""));
+		Assert.assertTrue(str.contains("-replacement \"Test \"Save As' Replacement Pattern\""));
+		Assert.assertTrue(str.contains("-deleteincompletescan 2\""));
+		Assert.assertTrue(str.contains("-maxretrycount 5"));
+		Assert.assertTrue(str.contains("-debug"));
+		Assert.assertTrue(str.contains("-useragent \"Test User Agent\""));
+	}
+
+	@Test
+	public void testAddArgumentsToCommand_Windows() {
+
+		String jarFilePath = "/jenkins/veracode-scan/VeracodeJavaAPI.jar";
+		String[] args = { "-action", "UploadAndScan", "-vid", "Test \"API' ID", "-vkey", "Test \"API' Key", "-phost",
+				"210.123\".23'.12", "-pport", "12\"3'4", "-puser", "Test \"Proxy' Username", "-ppassword",
+				"Test \"Proxy' Password", "-appname", "Test \"Application' Name", "-createprofile", "true", "-teams",
+				"Test \"Team' Name", "-criticality", "Very\"Hi'gh", "-sandboxname", "Test \"Sandbox' Name",
+				"-createsandbox", "true", "-version", "Test \"Scan' Name", "-include",
+				"Test \"Scan' Include Filenames Pattern", "-exclude", "Test \"Scan' Exclude Filenames Pattern",
+				"-pattern", "Test \"Save As' Filename Pattern", "-replacement", "Test \"Save As' Replacement Pattern",
+				"-deleteincompletescan", "2\"", "-maxretrycount", "5", "-debug", "-useragent", "Test User Agent" };
+		boolean isUnix = false;
+
+		ArgumentListBuilder command = RemoteScanUtil.addArgumentsToCommand(jarFilePath, args, isUnix);
+		String str = command.toString();
+
+		Assert.assertTrue(str.contains("java -jar /jenkins/veracode-scan/VeracodeJavaAPI.jar"));
+		Assert.assertTrue(str.contains("-action UploadAndScan"));
+		Assert.assertTrue(str.contains("-vid \"Test \\\"API' ID\""));
+		Assert.assertTrue(str.contains("-vkey ******"));
+		Assert.assertTrue(str.contains("-phost 210.123\\\".23'.12"));
+		Assert.assertTrue(str.contains("-pport 12\\\"3'4"));
+		Assert.assertTrue(str.contains("-puser \"Test \\\"Proxy' Username\""));
+		Assert.assertTrue(str.contains("-ppassword ******"));
+		Assert.assertTrue(str.contains("-appname \"Test \\\"Application' Name\""));
+		Assert.assertTrue(str.contains("-createprofile true"));
+		Assert.assertTrue(str.contains("-teams \"Test \\\"Team' Name\""));
+		Assert.assertTrue(str.contains("-criticality Very\\\"Hi'gh"));
+		Assert.assertTrue(str.contains("-sandboxname \"Test \\\"Sandbox' Name\""));
+		Assert.assertTrue(str.contains("-createsandbox true"));
+		Assert.assertTrue(str.contains("-version \"Test \\\"Scan' Name\""));
+		Assert.assertTrue(str.contains("-include \"Test \\\"Scan' Include Filenames Pattern\""));
+		Assert.assertTrue(str.contains("-exclude \"Test \\\"Scan' Exclude Filenames Pattern\""));
+		Assert.assertTrue(str.contains("-pattern \"Test \\\"Save As' Filename Pattern\""));
+		Assert.assertTrue(str.contains("-replacement \"Test \\\"Save As' Replacement Pattern\""));
+		Assert.assertTrue(str.contains("-deleteincompletescan 2\\\""));
+		Assert.assertTrue(str.contains("-maxretrycount 5"));
+		Assert.assertTrue(str.contains("-debug"));
+		Assert.assertTrue(str.contains("-useragent \"Test User Agent\""));
 	}
 }

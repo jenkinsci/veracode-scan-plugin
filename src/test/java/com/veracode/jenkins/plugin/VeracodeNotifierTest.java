@@ -2,7 +2,9 @@ package com.veracode.jenkins.plugin;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
+import static org.mockito.Matchers.anyMap;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.anyVararg;
 import static org.mockito.Mockito.when;
 
 import java.io.PrintStream;
@@ -11,7 +13,6 @@ import java.lang.reflect.Method;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Matchers;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -33,6 +34,7 @@ import hudson.Proc;
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
 import hudson.model.BuildListener;
+import hudson.model.Computer;
 import hudson.model.Node;
 import hudson.model.TaskListener;
 import hudson.remoting.VirtualChannel;
@@ -63,6 +65,7 @@ public class VeracodeNotifierTest {
         Credentials credentials = PowerMockito.mock(Credentials.class);
         Region region = PowerMockito.mock(Region.class);
         VeracodeAction veracodeAction = PowerMockito.mock(VeracodeAction.class);
+        Computer computer = PowerMockito.mock(Computer.class);
 
         PowerMockito.mockStatic(FileUtil.class);
         PowerMockito.mockStatic(RemoteScanUtil.class);
@@ -92,11 +95,15 @@ public class VeracodeNotifierTest {
 
         when(RemoteScanUtil.getMaskPosition(any())).thenCallRealMethod();
 
+        when(node.toComputer()).thenReturn(computer);
+        when(computer.isUnix()).thenReturn(true);
+        when(RemoteScanUtil.addArgumentsToCommand(any(), anyVararg(), anyBoolean())).thenCallRealMethod();
+
         when(node.createLauncher(buildListener)).thenReturn(launcher);
         PowerMockito.whenNew(ProcStarter.class).withNoArguments().thenReturn(procStarter);
         when(procStarter.pwd(any(FilePath.class))).thenReturn(procStarter);
         when(procStarter.cmds(any(ArgumentListBuilder.class))).thenReturn(procStarter);
-        when(procStarter.masks(Matchers.anyVararg())).thenReturn(procStarter);
+        when(procStarter.envs(anyMap())).thenReturn(procStarter);
         when(procStarter.stdout(any(TaskListener.class))).thenReturn(procStarter);
         when(procStarter.quiet(anyBoolean())).thenReturn(procStarter);
         when(launcher.launch(any(ProcStarter.class))).thenReturn(proc);

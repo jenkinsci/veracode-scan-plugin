@@ -6,7 +6,6 @@ import java.io.PrintStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
-import java.util.List;
 
 import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.DataBoundConstructor;
@@ -16,6 +15,7 @@ import org.kohsuke.stapler.QueryParameter;
 import com.veracode.apiwrapper.cli.VeracodeCommand.VeracodeParser;
 import com.veracode.http.Credentials;
 import com.veracode.jenkins.plugin.args.UploadAndScanArgs;
+import com.veracode.jenkins.plugin.common.Constant;
 import com.veracode.jenkins.plugin.data.ProxyBlock;
 import com.veracode.jenkins.plugin.data.ScanHistory;
 import com.veracode.jenkins.plugin.utils.FileUtil;
@@ -370,18 +370,10 @@ public class VeracodePipelineRecorder extends Recorder implements SimpleBuildSte
             boolean autoApplicationName = false;
             boolean autoScanName = false;
             boolean createAutoApplicationDescription = false;
-            String str_timeout = "";
-            if (timeout != null) {
-                str_timeout = Integer.toString(timeout);
-            }
 
-            UploadAndScanArgs uploadAndScanArguments = UploadAndScanArgs.newUploadAndScanArgs(false,
-                    autoApplicationName, createAutoApplicationDescription, autoScanName,
-                    createSandbox, createProfile, teams, useProxy, vid, vkey, run.getDisplayName(),
-                    run.getParent().getFullDisplayName(), applicationName, sandboxName, scanName,
-                    criticality, scanIncludesPattern, scanExcludesPattern, fileNamePattern,
-                    replacementPattern, pHost, pPort, pUser, pPassword, workspace,
-                    run.getEnvironment(listener), str_timeout, deleteIncompleteScanLevel, debug, uploadAndScanFilePaths);
+            UploadAndScanArgs uploadAndScanArguments = UploadAndScanArgs.newUploadAndScanArgs(this, run, workspace,
+                    envVars, uploadAndScanFilePaths, false, autoApplicationName, autoScanName,
+                    createAutoApplicationDescription);
 
             if (debug) {
                 ps.println(String.format("Calling wrapper with arguments:%n%s%n",
@@ -646,71 +638,32 @@ public class VeracodePipelineRecorder extends Recorder implements SimpleBuildSte
             String[] uploadAndScanFilePaths = FileUtil
                     .getStringFilePaths(workspace.list(uploadincludePattern, uploadexcludePattern));
 
-            String str_timeout = "";
-            if (timeout != null) {
-                str_timeout = Integer.toString(timeout);
+            UploadAndScanArgs uploadAndScanArguments = UploadAndScanArgs.newUploadAndScanArgs(this, run, workspace,
+                    envVars, uploadAndScanFilePaths, true, autoApplicationName, autoScanName,
+                    createAutoApplicationDescription);
+
+            String jarPath = jarFilePath + sep + Constant.execJarFile + ".jar";
+
+            Boolean isUnix = comp.isUnix();
+            if (isUnix == null) {
+                throw new RuntimeException("Failed to determine the OS.");
             }
 
-            UploadAndScanArgs uploadAndScanArguments = UploadAndScanArgs.newUploadAndScanArgs(true,
-                    autoApplicationName, createAutoApplicationDescription, autoScanName,
-                    createSandbox, createProfile, teams, useProxy, vid, vkey, run.getDisplayName(),
-                    run.getParent().getFullDisplayName(), applicationName, sandboxName, scanName,
-                    criticality, scanIncludesPattern, scanExcludesPattern, fileNamePattern,
-                    replacementPattern, pHost, pPort, pUser, pPassword, workspace,
-                    run.getEnvironment(listener), str_timeout, deleteIncompleteScanLevel, debug, uploadAndScanFilePaths);
-
-            String jarPath = jarFilePath + sep + execJarFile + ".jar";
-            String cmd = "java -jar " + jarPath;
-            String[] cmds = uploadAndScanArguments.getArguments();
-
-            StringBuilder result = new StringBuilder();
-            result.append(cmd);
-            for (String _cmd : cmds) {
-                _cmd = RemoteScanUtil.formatParameterValue(_cmd);
-                result.append(" " + _cmd);
-            }
-
-            ArgumentListBuilder command = new ArgumentListBuilder();
-            command.addTokenized(result.toString());
-
-            List<String> remoteCmd = command.toList();
-            int iSize = remoteCmd.size();
-            Integer[] iPos = RemoteScanUtil.getMaskPosition(remoteCmd);
-            int iPosPassword = iPos[0];
-            int iPosKey = iPos[1];
-            int iPosProxyPassword = iPos[2];
+            // Construct UploadAndScan command using the given args
+            ArgumentListBuilder command = RemoteScanUtil.addArgumentsToCommand(jarPath,
+                    uploadAndScanArguments.getArguments(), isUnix);
 
             Launcher launcher = node.createLauncher(listener);
             ProcStarter procStart = launcher.new ProcStarter();
-
-            // masking the password related information
-            boolean[] masks = new boolean[iSize];
-            for (int i = 0; i < iSize; i++) {
-                if (iPosPassword != -1) {
-                    if (iPosPassword == i)
-                        masks[i] = true;
-                } else if (iPosKey != -1) {
-                    if (iPosKey == i)
-                        masks[i] = true;
-                } else if (iPosProxyPassword != -1) {
-                    if (iPosProxyPassword == i) {
-                        masks[i] = true;
-                    }
-                } else {
-                    masks[i] = false;
-                }
-            }
-
-            procStart = procStart.pwd(workspace).cmds(command).masks(masks).stdout(listener).quiet(true);
+            procStart = procStart.pwd(workspace).cmds(command).envs(envVars).stdout(listener).quiet(true);
 
             if (this.debug) {
                 procStart.quiet(false);
                 ps.print("\nInvoking the following command in remote workspace:\n");
             }
+
             Proc proc = launcher.launch(procStart);
-
             int retcode = proc.join();
-
             if (retcode != 0 && this.canFailJob) {
                 ps.print("\r\n\r\nError- Returned code from wrapper:" + retcode + "\r\n\n");
             } else {

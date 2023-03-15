@@ -1,5 +1,6 @@
 package com.veracode.jenkins.plugin.utils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.veracode.jenkins.plugin.common.Constant;
@@ -7,6 +8,7 @@ import com.veracode.jenkins.plugin.common.Constant;
 import hudson.FilePath;
 import hudson.model.AbstractBuild;
 import hudson.model.Node;
+import hudson.util.ArgumentListBuilder;
 
 /**
  * The RemoteScanUtil is a utility class related to perfoming the scans in
@@ -124,5 +126,40 @@ public final class RemoteScanUtil {
                     ? "\"" + parameterValue + "\""
                     : parameterValue;
         }
+    }
+
+    /**
+     * Construct OS specific command using the provided arguments and mask sensitive
+     * data. Also escapes the quotes for non-Unix OS.
+     * 
+     * @param jarFilePath a {@link java.lang.String} object.
+     * @param arguments   a {@link java.lang.String} array.
+     * @param isUnix      a boolean.
+     * @return a {@link hudson.util.ArgumentListBuilder} object.
+     */
+    public static ArgumentListBuilder addArgumentsToCommand(String jarFilePath, String[] arguments, boolean isUnix) {
+
+        ArgumentListBuilder command = new ArgumentListBuilder();
+        command.add("java").add("-jar").add(jarFilePath);
+
+        List<Integer> sensitiveArgs = new ArrayList<>();
+        int i = 0;
+        for (String arg : arguments) {
+
+            if (arg.equalsIgnoreCase("-vkey") || arg.equalsIgnoreCase("-ppassword")) {
+                sensitiveArgs.add(i + 1);
+            }
+
+            // handle non-Unix OS
+            if (!isUnix && arg.contains("\"")) {
+                arg = arg.replace("\"", "\\\"");
+            }
+
+            command.add(arg, sensitiveArgs.contains(i));
+
+            i++;
+        }
+
+        return command;
     }
 }

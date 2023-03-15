@@ -1,9 +1,14 @@
 package com.veracode.jenkins.plugin.args;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.veracode.jenkins.plugin.utils.StringUtil;
+
+import hudson.EnvVars;
 
 /**
  * The AbstractArgs class contributes API-agnostic switches to Veracode API
@@ -16,6 +21,12 @@ public abstract class AbstractArgs {
      * The number of characters to use for masked arguments.
      */
     private static final byte MASKED_ARG_LENGTH = 8;
+    private static final String API_ID_ENV_VAR = "VERACODE_API_KEY_ID";
+    private static final String API_KEY_ENV_VAR = "VERACODE_API_KEY_SECRET";
+    private static final String DELIMITER_COLON = ":";
+    private static final String DELIMITER_AT = "@";
+    private static final String PROTOCOL = "https://";
+    private static final String HTTPS_PROXY_ENV_VAR = "https_proxy";
 
     protected static final String SWITCH = "-";
     protected static final String ACTION = SWITCH + "action";
@@ -79,13 +90,79 @@ public abstract class AbstractArgs {
     }
 
     /**
-     * Adds the Veracode API credentials switches and arguments to the command line
-     * arguments list.
-     *
-     * @param vid  a {@link java.lang.String} object.
-     * @param vkey a {@link java.lang.String} object.
+     * Constructs proxy URL and adds it to the EnvVars if the build is happening in
+     * a remote workspace. If the build is happening in the local workspace, then
+     * adds the proxy detail switches and arguments to the command line arguments
+     * list.
+     * 
+     * @param isRemote  a boolean.
+     * @param envVars   a {@link hudson.EnvVars} object.
+     * @param phost     a {@link java.lang.String} object.
+     * @param pport     a {@link java.lang.String} object.
+     * @param puser     a {@link java.lang.String} object.
+     * @param ppassword a {@link java.lang.String} object.
      */
-    protected void addApiCredentials(String vid, String vkey) {
+    protected void addProxyConfiguration(boolean isRemote, EnvVars envVars, String phost, String pport, String puser,
+            String ppassword) {
+
+        if (isRemote && envVars != null) {
+            StringBuilder httpsProxy = new StringBuilder();
+            httpsProxy.append(PROTOCOL);
+            if (!StringUtil.isNullOrEmpty(puser)) {
+                httpsProxy.append(encodeURLPart(puser));
+                if (ppassword != null) {
+                    httpsProxy.append(DELIMITER_COLON).append(encodeURLPart(ppassword));
+                }
+                httpsProxy.append(DELIMITER_AT);
+            }
+            httpsProxy.append(phost).append(DELIMITER_COLON).append(pport);
+            envVars.put(HTTPS_PROXY_ENV_VAR, httpsProxy.toString());
+            return;
+        }
+
+        addProxyCredentials(puser, ppassword);
+        addProxyConfiguration(phost, pport);
+    }
+
+    /**
+     * Given a String, return a URL encoded String using UTF_8.
+     * 
+     * Example: For String 'user@veracode.com', return 'user%40veracode.com'
+     * 
+     * @param str
+     * @return
+     */
+    private static String encodeURLPart(String str) {
+        try {
+            return URLEncoder.encode(str, StandardCharsets.UTF_8.toString());
+        } catch (UnsupportedEncodingException e) {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    /**
+     * Adds the Veracode API credentials to the EnvVars if the build is happening in
+     * a remote workspace. If the build is happening in the local workspace, then
+     * adds the Veracode API credentials switches and arguments to the command line
+     * arguments list.
+     * 
+     * @param isRemote a boolean.
+     * @param envVars  a {@link hudson.EnvVars} object.
+     * @param vid      a {@link java.lang.String} object.
+     * @param vkey     a {@link java.lang.String} object.
+     */
+    protected void addApiCredentials(boolean isRemote, EnvVars envVars, String vid, String vkey) {
+
+        if (isRemote && envVars != null) {
+            if (!StringUtil.isNullOrEmpty(vid)) {
+                envVars.put(API_ID_ENV_VAR, vid);
+            }
+            if (!StringUtil.isNullOrEmpty(vkey)) {
+                envVars.put(API_KEY_ENV_VAR, vkey);
+            }
+            return;
+        }
+
         if (!StringUtil.isNullOrEmpty(vid)) {
             list.add(VID);
             list.add(vid);

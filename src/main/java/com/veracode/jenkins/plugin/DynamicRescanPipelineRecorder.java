@@ -6,7 +6,6 @@ import java.io.PrintStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
-import java.util.List;
 
 import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.DataBoundConstructor;
@@ -19,6 +18,7 @@ import com.veracode.jenkins.plugin.utils.FileUtil;
 import com.veracode.jenkins.plugin.utils.RemoteScanUtil;
 import com.veracode.jenkins.plugin.utils.StringUtil;
 
+import hudson.EnvVars;
 import hudson.FilePath;
 import hudson.Launcher;
 import hudson.Launcher.ProcStarter;
@@ -129,6 +129,7 @@ public class DynamicRescanPipelineRecorder extends Recorder implements SimpleBui
         ps.println(PipelineDynamicRescanDescriptorImpl.PostBuildActionDisplayText);
         ps.println("------------------------------------------------------------------------");
 
+        EnvVars envVars = run.getEnvironment(listener);
         if (debug) {
             ps.println("\r\n[Debug mode is on]\r\n");
 
@@ -208,7 +209,7 @@ public class DynamicRescanPipelineRecorder extends Recorder implements SimpleBui
                     autoApplicationName, createAutoApplicationDescription, autoScanName, useProxy,
                     vid, vkey, run.getDisplayName(), run.getParent().getFullDisplayName(),
                     applicationName, dvrEnabled, pHost, Integer.toString(pPort), pUser, pPassword,
-                    workspace, run.getEnvironment(listener));
+                    workspace, envVars, false);
 
             if (debug) {
                 ps.println(String.format("Calling wrapper with arguments:%n%s%n",
@@ -423,69 +424,40 @@ public class DynamicRescanPipelineRecorder extends Recorder implements SimpleBui
 
         try {
 
+            EnvVars envVars = run.getEnvironment(listener);
             DynamicRescanArgs pipelineScanArguments = DynamicRescanArgs.pipelineRescanArgs(
                     autoApplicationName, createAutoApplicationDescription, autoScanName, useProxy,
                     vid, vkey, run.getDisplayName(), run.getParent().getFullDisplayName(),
                     applicationName, dvrEnabled, pHost, Integer.toString(pPort), pUser, pPassword,
-                    workspace, run.getEnvironment(listener));
+                    workspace, envVars, true);
 
             String jarPath = jarFilePath + sep + Constant.execJarFile + ".jar";
-            String cmd = "java -jar " + jarPath;
-            String[] cmds = pipelineScanArguments.getArguments();
 
-            StringBuilder result = new StringBuilder();
-            result.append(cmd);
-            for (String _cmd : cmds) {
-                _cmd = RemoteScanUtil.formatParameterValue(_cmd);
-                result.append(" " + _cmd);
+            Boolean isUnix = comp.isUnix();
+            if (isUnix == null) {
+                throw new RuntimeException("Failed to determine the OS.");
             }
 
-            ArgumentListBuilder command = new ArgumentListBuilder();
-            command.addTokenized(result.toString());
-
-            List<String> remoteCmd = command.toList();
-            int iSize = remoteCmd.size();
-            Integer[] iPos = RemoteScanUtil.getMaskPosition(remoteCmd);
-            int iPosPassword = iPos[0];
-            int iPosKey = iPos[1];
-            int iPosProxyPassword = iPos[2];
+            // Construct DynamicScan command using the given args
+            ArgumentListBuilder command = RemoteScanUtil.addArgumentsToCommand(jarPath,
+                    pipelineScanArguments.getArguments(), isUnix);
 
             Launcher launcher = node.createLauncher(listener);
             ProcStarter procStart = launcher.new ProcStarter();
-
-            // masking the password related information
-            boolean[] masks = new boolean[iSize];
-            for (int i = 0; i < iSize; i++) {
-                if (iPosPassword != -1) {
-                    if (iPosPassword == i)
-                        masks[i] = true;
-                } else if (iPosKey != -1) {
-                    if (iPosKey == i)
-                        masks[i] = true;
-                } else if (iPosProxyPassword != -1) {
-                    if (iPosProxyPassword == i)
-                        masks[i] = true;
-                } else
-                    masks[i] = false;
-            }
-
-            procStart = procStart.cmds(command).masks(masks).stdout(listener).quiet(true);
+            procStart = procStart.cmds(command).envs(envVars).stdout(listener).quiet(true);
 
             if (this.debug) {
                 procStart.quiet(false);
                 ps.print("\nInvoking the following command in remote workspace:\n");
             }
+
             Proc proc = launcher.launch(procStart);
-
             int retcode = proc.join();
-
-            if (retcode != 0) {
-                if (this.canFailJob) {
-                    ps.print("\r\n\r\nError- Returned code from wrapper:" + retcode + "\r\n\n");
-                }
-            } else if (retcode == 0)
+            if (retcode != 0 && this.canFailJob) {
+                ps.print("\r\n\r\nError- Returned code from wrapper:" + retcode + "\r\n\n");
+            } else if (retcode == 0) {
                 bRet = true;
-
+            }
         } catch (IOException | InterruptedException ex) {
             ex.printStackTrace();
             if (this.canFailJob) {
