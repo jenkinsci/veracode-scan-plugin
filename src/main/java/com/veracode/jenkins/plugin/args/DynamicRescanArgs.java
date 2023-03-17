@@ -39,11 +39,12 @@ public final class DynamicRescanArgs extends AbstractArgs {
      *                              object.
      * @param build                 a {@link hudson.model.AbstractBuild} object.
      * @param environment           a {@link hudson.EnvVars} object.
+     * @param isRemote              a boolean.
      * @return a {@link com.veracode.jenkins.plugin.args.DynamicRescanArgs} object.
      */
     public static DynamicRescanArgs dynamicScanArgs(DynamicRescanNotifier dynamicScanDescriptor,
-            AbstractBuild<?, ?> build, EnvVars environment) {
-        VeracodeDescriptor veracodeDescriptor = (VeracodeDescriptor) Jenkins.getInstance()
+            AbstractBuild<?, ?> build, EnvVars environment, boolean isRemote) {
+        VeracodeDescriptor veracodeDescriptor = (VeracodeDescriptor) Jenkins.get()
                 .getDescriptor(VeracodeNotifier.class);
 
         DynamicRescanArgs args = new DynamicRescanArgs();
@@ -81,11 +82,11 @@ public final class DynamicRescanArgs extends AbstractArgs {
             appname = environment.get(CUSTOM_PROJECT_NAME_VAR);
         }
 
-        args.addApiCredentials(vid, vkey);
+        args.addApiCredentials(isRemote, environment, vid, vkey);
 
         args.addStdArguments(appname, scanName, isDVREnabled, autoversion);
         if (veracodeDescriptor != null) {
-            args.setProxy(veracodeDescriptor, args);
+            args.setProxy(isRemote, environment, veracodeDescriptor, args);
         }
         args.addUserAgent(UserAgentUtil.getVersionDetails());
 
@@ -139,21 +140,13 @@ public final class DynamicRescanArgs extends AbstractArgs {
      *                           {@link com.veracode.jenkins.plugin.args.DynamicRescanArgs}
      *                           object.
      */
-    private void setProxy(VeracodeDescriptor veracodeDescriptor, DynamicRescanArgs args) {
-        String phost = null;
-        String pport = null;
-        String puser = null;
-        String ppsword = null;
+    private void setProxy(boolean isRemote, EnvVars envVars, VeracodeDescriptor veracodeDescriptor,
+            DynamicRescanArgs args) {
 
         if (veracodeDescriptor.getProxy()) {
-            phost = veracodeDescriptor.getPhost();
-            pport = veracodeDescriptor.getPport();
-            puser = veracodeDescriptor.getPuser();
-            ppsword = veracodeDescriptor.getPpassword();
+            args.addProxyConfiguration(isRemote, envVars, veracodeDescriptor.getPhost(), veracodeDescriptor.getPport(),
+                    veracodeDescriptor.getPuser(), veracodeDescriptor.getPpassword());
         }
-
-        args.addProxyCredentials(puser, ppsword);
-        args.addProxyConfiguration(phost, pport);
     }
 
     /**
@@ -175,18 +168,21 @@ public final class DynamicRescanArgs extends AbstractArgs {
      * @param pCredential         a {@link java.lang.String} object.
      * @param workspace           a {@link hudson.FilePath} object.
      * @param envVars             a {@link hudson.EnvVars} object.
+     * @param isRemote            a boolean.
      * @return a {@link com.veracode.jenkins.plugin.args.DynamicRescanArgs} object.
      */
     public static DynamicRescanArgs pipelineRescanArgs(boolean autoApplicationName,
             boolean autoDescription, boolean autoScanName, boolean useProxy, String vId,
             String vKey, String version, String projectName, String applicationName,
             boolean DVREnabled, String pHost, String pPort, String pUser, String pCredential,
-            FilePath workspace, hudson.EnvVars envVars) {
+            FilePath workspace, hudson.EnvVars envVars, boolean isRemote) {
 
-        String phost = null;
-        String pport = null;
-        String puser = null;
-        String ppsword = null;
+        VeracodeDescriptor globalVeracodeDescriptor = (VeracodeDescriptor) Jenkins.get()
+                .getDescriptor(VeracodeNotifier.class);
+        if (vId == null && vKey == null) {
+            vId = globalVeracodeDescriptor.getGvid();
+            vKey = globalVeracodeDescriptor.getGvkey();
+        }
 
         if (!StringUtil.isNullOrEmpty(vId)) {
             vId = envVars.expand(vId);
@@ -204,19 +200,14 @@ public final class DynamicRescanArgs extends AbstractArgs {
         } else if (autoApplicationName) {
             applicationName = envVars.get(CUSTOM_PROJECT_NAME_VAR);
         }
-        // proxy settings
-        if (useProxy) {
-            phost = pHost;
-            pport = pPort;
-            puser = pUser;
-            ppsword = pCredential;
-        }
+
         DynamicRescanArgs args = new DynamicRescanArgs();
         // We know whether we are using the global or job credentials because
         // of the initial initialization statements therefore no add'l logic req'd.
-        args.addApiCredentials(vId, vKey);
-        args.addProxyCredentials(puser, ppsword);
-        args.addProxyConfiguration(phost, pport);
+        args.addApiCredentials(isRemote, envVars, vId, vKey);
+        if (useProxy) {
+            args.addProxyConfiguration(isRemote, envVars, pHost, pPort, pUser, pCredential);
+        }
         args.addStdArguments(applicationName, version, DVREnabled, autoScanName);
         args.addUserAgent(UserAgentUtil.getVersionDetails());
 

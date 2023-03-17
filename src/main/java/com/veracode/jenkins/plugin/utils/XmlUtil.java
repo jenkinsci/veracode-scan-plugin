@@ -672,8 +672,7 @@ public class XmlUtil {
                         // Ignoring the score that cannot be parsed as a double.
                         maxCompScore = -1;
                     }
-                    maxOverallScore = (maxCompScore > maxOverallScore) ? maxCompScore
-                            : maxOverallScore;
+                    maxOverallScore = Math.max(maxCompScore, maxOverallScore);
                 }
             }
         } catch (XPathExpressionException xpee) {
@@ -777,9 +776,7 @@ public class XmlUtil {
                             mitigated[sev] = true;
                         }
                     }
-                } catch (NumberFormatException nfe) {
-                    continue;
-                } catch (DOMException domex) {
+                } catch (NumberFormatException | DOMException nfe) {
                     continue;
                 }
             }
@@ -787,7 +784,7 @@ public class XmlUtil {
             throw new RuntimeException(xpee);
         }
 
-        Set<FindingCounts> results = new LinkedHashSet<FindingCounts>();
+        Set<FindingCounts> results = new LinkedHashSet<>();
         for (int i = 0; i < maxSevLevel; i++) {
             int newCount = 0, netCount = 0;
             if (null != lastSCAHistory && lastSCAHistory.isSubscribed()) {
@@ -832,7 +829,7 @@ public class XmlUtil {
         final String IS_NEW_ATTR = "new";
         final String IS_VIOLATED_POLICY_ATTR = "component_affects_policy_compliance";
 
-        Set<SCAComponent> newSCAComponentInfo = new HashSet<SCAComponent>();
+        Set<SCAComponent> newSCAComponentInfo = new HashSet<>();
 
         try {
             // parsing detailedreport.xml sca component tag
@@ -891,7 +888,7 @@ public class XmlUtil {
      *         mapping of the 2 parameters.
      */
     private static final Map<String, Long> createStats(long buildDate, Long count) {
-        Map<String, Long> thisScanStats = new HashMap<String, Long>();
+        Map<String, Long> thisScanStats = new HashMap<>();
         thisScanStats.put(ScanHistory.BUILD_DATE, buildDate);
         thisScanStats.put(ScanHistory.FLAWS_COUNT, count);
 
@@ -918,10 +915,10 @@ public class XmlUtil {
         // history is empty somehow,
         // then just insert the stats of this build.
         if (null == lastCountHistory || lastCountHistory.size() == 0) {
-            countHistory = new ArrayList<Map<String, Long>>();
+            countHistory = new ArrayList<>();
             countHistory.add(countInThisBuild);
         } else {
-            countHistory = new ArrayList<Map<String, Long>>(lastCountHistory);
+            countHistory = new ArrayList<>(lastCountHistory);
             // Reached the max number of build stats, remove the oldest (at index 0) and
             // append the stats from this build.
             // BTW, the list should never exceed the MAX_PREV_BUILDS, so the loop should

@@ -2,7 +2,9 @@ package com.veracode.jenkins.plugin;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
+import static org.mockito.Matchers.anyMap;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.anyVararg;
 import static org.mockito.Mockito.when;
 
 import java.io.File;
@@ -14,7 +16,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.junit.runner.RunWith;
-import org.mockito.Matchers;
 import org.mockito.Mockito;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
@@ -22,6 +23,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import com.veracode.http.Credentials;
 import com.veracode.http.Region;
+import com.veracode.jenkins.plugin.VeracodeNotifier.VeracodeDescriptor;
 import com.veracode.jenkins.plugin.args.UploadAndScanArgs;
 import com.veracode.jenkins.plugin.data.ScanHistory;
 import com.veracode.jenkins.plugin.utils.FileUtil;
@@ -33,8 +35,8 @@ import hudson.AbortException;
 import hudson.EnvVars;
 import hudson.FilePath;
 import hudson.Launcher;
-import hudson.Proc;
 import hudson.Launcher.ProcStarter;
+import hudson.Proc;
 import hudson.model.AbstractItem;
 import hudson.model.Computer;
 import hudson.model.ItemGroup;
@@ -50,7 +52,8 @@ import jenkins.model.Jenkins;
 @PrepareForTest({
         Job.class, Run.class, ItemGroup.class, FilePath.class, UploadAndScanArgs.class,
         RemoteScanUtil.class, Jenkins.class, VeracodePipelineRecorder.class, FileUtil.class,
-        ProcStarter.class, WrapperUtil.class, XmlUtil.class, Credentials.class
+        ProcStarter.class, WrapperUtil.class, XmlUtil.class, Credentials.class, Jenkins.class,
+        VeracodeDescriptor.class
 })
 public class VeracodePipelineRecorderTest {
 
@@ -177,12 +180,15 @@ public class VeracodePipelineRecorderTest {
         Credentials credentials = PowerMockito.mock(Credentials.class);
         Region region = PowerMockito.mock(Region.class);
         VeracodeAction veracodeAction = PowerMockito.mock(VeracodeAction.class);
+        Jenkins jenkins = PowerMockito.mock(Jenkins.class);
 
         PowerMockito.mockStatic(RemoteScanUtil.class);
         PowerMockito.mockStatic(FileUtil.class);
         PowerMockito.mockStatic(WrapperUtil.class);
         PowerMockito.mockStatic(XmlUtil.class);
         PowerMockito.mockStatic(Credentials.class);
+        PowerMockito.mockStatic(Jenkins.class);
+        PowerMockito.mockStatic(VeracodeDescriptor.class);
 
         when(filePath.toComputer()).thenReturn(computer);
         when(computer.getNode()).thenReturn(node);
@@ -197,11 +203,14 @@ public class VeracodePipelineRecorderTest {
         when(RemoteScanUtil.formatParameterValue(anyString())).thenCallRealMethod();
         when(RemoteScanUtil.getMaskPosition(any())).thenCallRealMethod();
 
+        when(computer.isUnix()).thenReturn(false);
+        when(RemoteScanUtil.addArgumentsToCommand(any(), anyVararg(), anyBoolean())).thenCallRealMethod();
+
         when(node.createLauncher(taskListener)).thenReturn(launcher);
         PowerMockito.whenNew(ProcStarter.class).withNoArguments().thenReturn(procStarter);
         when(procStarter.pwd(any(FilePath.class))).thenReturn(procStarter);
         when(procStarter.cmds(any(ArgumentListBuilder.class))).thenReturn(procStarter);
-        when(procStarter.masks(Matchers.anyVararg())).thenReturn(procStarter);
+        when(procStarter.envs(anyMap())).thenReturn(procStarter);
         when(procStarter.stdout(any(TaskListener.class))).thenReturn(procStarter);
         when(procStarter.quiet(anyBoolean())).thenReturn(procStarter);
         when(launcher.launch(any(ProcStarter.class))).thenReturn(proc);
@@ -218,12 +227,14 @@ public class VeracodePipelineRecorderTest {
         when(region.getXmlApiHost()).thenReturn("xmlApiHost");
         PowerMockito.whenNew(VeracodeAction.class).withAnyArguments().thenReturn(veracodeAction);
 
+        when(Jenkins.get()).thenReturn(jenkins);
+
         Method runScanFromRemoteMethod = VeracodePipelineRecorder.class.getDeclaredMethod("runScanFromRemote",
                 Run.class, FilePath.class, TaskListener.class, PrintStream.class);
         runScanFromRemoteMethod.setAccessible(true);
         VeracodePipelineRecorder recorder = new VeracodePipelineRecorder("applicationName", "criticality", null,
                 "scanName", true, 60, "0", true, null, false, false, true, true, "**/**.*", null, "**/**.jar", "**/**.war",
-                null, null, false, false, null, null, null, null, "vid", "vkey");
+                null, null, false, true, null, null, null, null, "vid", "vkey");
         boolean success = (boolean) runScanFromRemoteMethod.invoke(recorder, run, filePath, taskListener, printStream);
         Assert.assertTrue(success);
     }

@@ -52,7 +52,7 @@ public class UserAgentUtil {
      */
     private static String getPluginVersion() {
         try {
-            PluginWrapper pluginWrapper = Jenkins.getInstance().getPluginManager()
+            PluginWrapper pluginWrapper = Jenkins.get().getPluginManager()
                     .getPlugin(VERACODE_PLUGIN_CLASS);
             if (pluginWrapper == null) {
                 throw new RuntimeException("Cannot locate the plugin.");

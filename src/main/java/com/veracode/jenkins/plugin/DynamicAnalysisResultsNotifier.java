@@ -205,7 +205,7 @@ public class DynamicAnalysisResultsNotifier extends Notifier {
         }
 
         private void updateFromGlobalConfiguration() {
-            VeracodeDescriptor globalVeracodeDescriptor = (VeracodeDescriptor) Jenkins.getInstance()
+            VeracodeDescriptor globalVeracodeDescriptor = (VeracodeDescriptor) Jenkins.get()
                     .getDescriptor(VeracodeNotifier.class);
             if (globalVeracodeDescriptor != null) {
                 gvid = globalVeracodeDescriptor.getGvid();
