@@ -659,7 +659,9 @@ public class DAAdapterService {
                         || analysisStatus.equals(StatusTypeEnum.STOPPED_TIME_VERIFYING_RESULTS)
                         || analysisStatus.equals(StatusTypeEnum.STOPPED_TECHNICAL_ISSUE)
                         || analysisStatus.equals(StatusTypeEnum.STOPPED_VERIFYING_RESULTS_BY_USER)
-                        || analysisStatus.equals(StatusTypeEnum.STOPPED_VERIFYING_RESULTS))) {
+                        || analysisStatus.equals(StatusTypeEnum.STOPPED_VERIFYING_RESULTS)
+                        || analysisStatus.equals(StatusTypeEnum.STOPPED_VERIFYING_PARTIAL_RESULTS)
+                        || analysisStatus.equals(StatusTypeEnum.STOPPED_PARTIAL_RESULTS_AVAILABLE))) {
                     logWithTimeStamp(listener,
                             "The dynamic analysis failed to complete with status: %s",
                             analysisStatus);
