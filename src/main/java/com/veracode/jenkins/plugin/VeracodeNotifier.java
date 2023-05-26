@@ -35,6 +35,7 @@ import hudson.FilePath;
 import hudson.Launcher;
 import hudson.Launcher.ProcStarter;
 import hudson.Proc;
+import hudson.model.Result;
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
 import hudson.model.BuildListener;
@@ -100,6 +101,7 @@ public class VeracodeNotifier extends Notifier {
         private String gvuser;
         private String gvpassword;
         private boolean failbuild = true;
+        private boolean unstablebuild = true;
         private boolean copyremotefiles;
         private boolean autoappname;
         private boolean autodescription;
@@ -132,6 +134,10 @@ public class VeracodeNotifier extends Notifier {
 
         public boolean getFailbuild() {
             return failbuild;
+        }
+
+        public boolean isUnstablebuild() {
+            return unstablebuild;
         }
 
         public boolean getCopyremotefiles() {
@@ -406,6 +412,7 @@ public class VeracodeNotifier extends Notifier {
             gvpassword = formData.containsKey("gvpassword") ? formData.getString("gvpassword") : null;
 
             failbuild = formData.getBoolean("failbuild");
+            unstablebuild = formData.getBoolean("unstablebuild");
             copyremotefiles = formData.getBoolean("copyremotefiles");
             autoappname = formData.getBoolean("autoappname");
             autodescription = formData.getBoolean("autodescription");
@@ -719,6 +726,7 @@ public class VeracodeNotifier extends Notifier {
             ps.println("\r\n[Debug mode is on]\r\n");
 
             ps.println(String.format("Can Fail Build?%n%s%n", getDescriptor().getFailbuild()));
+            ps.println(String.format("Show Unstable Status for Failed Policy Evaluation?%n%s%n", getDescriptor().isUnstablebuild()));
 
             try {
                 Method method = com.veracode.apiwrapper.cli.VeracodeCommand.class
@@ -864,10 +872,24 @@ public class VeracodeNotifier extends Notifier {
                             e.getClass().getSimpleName(), e.getMessage()));
                     e.printStackTrace(ps);
                 } finally { // Make sure setting the build status correctly according to the retCode
-                    if (retcode != 0 && getDescriptor().getFailbuild()) {
+                    if (getDescriptor().getFailbuild()) {
                         ps.println();
-                        ps.println("Error- Returned code from wrapper:" + retcode);
-                        return false;
+                        String complianceStatus = build.getAction(VeracodeAction.class).getPolicyComplianceStatus();
+                        if (retcode != 0) {
+                            ps.println();
+                            ps.println("Error- Returned code from wrapper:" + retcode);
+                            if (getDescriptor().isUnstablebuild() && !StringUtil.isNullOrEmpty(complianceStatus) &&
+                                    (complianceStatus.equalsIgnoreCase(Constant.DID_NOT_PASSED))) {
+                                build.setResult(Result.UNSTABLE);
+                                return true;
+                            } else {
+                                return false;
+                            }
+                        } else if (getDescriptor().isUnstablebuild() && !StringUtil.isNullOrEmpty(complianceStatus) &&
+                                complianceStatus.equalsIgnoreCase(Constant.CONDITIONAL_PASSED)) {
+                            build.setResult(Result.UNSTABLE);
+                            return true;
+                        }
                     }
                 }
             } catch (Throwable e) {

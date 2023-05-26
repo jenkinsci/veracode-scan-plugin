@@ -91,11 +91,20 @@
 	</f:entry>
 
 	<f:entry title="Fail Job">
-		<table width="100%">
-			<f:entry field="canFailJob">
-				<f:checkbox title="Fail the entire Jenkins job if either of the following Veracode tasks fail: upload and scan (including SCA) or dynamic rescan post-build action"/>
+		<f:optionalBlock
+				title="Fail the Jenkins job if a Veracode task fails or the application fails to pass a security policy."
+				field="canFailJob" inline="true" checked="${descriptor.getFailbuild()}">
+			<f:entry>
+				<f:entry title="Show Unstable Status for Failed Policy Evaluation">
+					<table width="100%">
+						<f:entry field="unstableBuild">
+							<f:checkbox
+									title="Change the Jenkins job status to Unstable if the application fails to pass a security policy."/>
+						</f:entry>
+					</table>
+				</f:entry>
 			</f:entry>
-		</table>
+		</f:optionalBlock>
 	</f:entry>
 	
 	<f:entry title="Copy Output Remote Files to Controller">

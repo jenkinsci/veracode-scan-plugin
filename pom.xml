@@ -277,13 +277,13 @@
     <profile>
       <id>sonar</id>
       <activation>
-        <activeByDefault>false</activeByDefault>
+        <activeByDefault>true</activeByDefault>
         <property>
           <name>env.BUILD_NUMBER</name>
         </property>
       </activation>
       <properties>
-        <sonar.skip>true</sonar.skip>
+        <sonar.skip>false</sonar.skip>
         <sonar.host.url>https://sonarqube.prod.veracode.io</sonar.host.url>
         <sonar.sources>src/main</sonar.sources>
         <sonar.tests>src/test</sonar.tests>

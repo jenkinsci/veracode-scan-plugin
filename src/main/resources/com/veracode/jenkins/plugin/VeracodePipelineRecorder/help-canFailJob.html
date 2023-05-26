@@ -3,7 +3,13 @@
 		{
 			display:none;
 		}
+
 </style>
 <div class="veracode" id="canfailjob-help-id-static-pipeline">
-	Select the checkbox if you want the entire Jenkins job to fail if the upload and scan with Veracode action fails. If you do not select this option and the upload and scan with Veracode action fails, the Jenkins job completes and the failure is logged, but you do not receive any notification of the failure.
+    Select this option to fail the entire Jenkins job, and receive a notification, if any of the following occur:
+    <ul>
+        <li>Static Analysis, including SCA, upload and scan fails.</li>
+        <li>Dynamic Analysis rescan post-build action fails.</li>
+        <li>A policy evaluation of the application returns Did Not Pass or Conditional Pass.</li>
+    </ul>
 </div>
