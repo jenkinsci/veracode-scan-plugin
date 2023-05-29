@@ -83,6 +83,8 @@ public class VeracodePipelineRecorder extends Recorder implements SimpleBuildSte
     @DataBoundSetter
     public final boolean canFailJob;
     @DataBoundSetter
+    public final boolean unstableBuild;
+    @DataBoundSetter
     public final boolean debug;
     @DataBoundSetter
     public final boolean copyRemoteFiles;
@@ -135,6 +137,7 @@ public class VeracodePipelineRecorder extends Recorder implements SimpleBuildSte
      * @param createSandbox         a boolean.
      * @param timeoutFailsJob       a boolean.
      * @param canFailJob            a boolean.
+     * @param unstableBuild         a boolean.
      * @param debug                 a boolean.
      * @param uploadIncludesPattern a {@link java.lang.String} object.
      * @param uploadExcludesPattern a {@link java.lang.String} object.
@@ -154,7 +157,7 @@ public class VeracodePipelineRecorder extends Recorder implements SimpleBuildSte
     @DataBoundConstructor
     public VeracodePipelineRecorder(String applicationName, String criticality, String sandboxName,
             String scanName, boolean waitForScan, int timeout, String deleteIncompleteScanLevel, boolean createProfile, String teams,
-            boolean createSandbox, boolean timeoutFailsJob, boolean canFailJob, boolean debug,
+            boolean createSandbox, boolean timeoutFailsJob, boolean canFailJob, boolean unstableBuild, boolean debug,
             String uploadIncludesPattern, String uploadExcludesPattern, String scanIncludesPattern,
             String scanExcludesPattern, String fileNamePattern, String replacementPattern,
             boolean copyRemoteFiles, boolean useProxy, String pHost, String pPort, String pUser,
@@ -166,6 +169,7 @@ public class VeracodePipelineRecorder extends Recorder implements SimpleBuildSte
         this.scanName = scanName;
         this.timeoutFailsJob = timeoutFailsJob;
         this.waitForScan = waitForScan;
+        this.unstableBuild = unstableBuild;
         this.timeout = waitForScan && timeout > 0 ? timeout : null;
         this.deleteIncompleteScanLevel = deleteIncompleteScanLevel;
         this.createProfile = createProfile;
@@ -231,6 +235,7 @@ public class VeracodePipelineRecorder extends Recorder implements SimpleBuildSte
             ps.println("\r\n[Debug mode is on]\r\n");
 
             ps.println(String.format("Can Fail Job: %s%n", this.canFailJob));
+            ps.println(String.format("Show Unstable Status for Failed Policy Evaluation: %s%n", this.unstableBuild));
             if (this.timeout != null) {
                 ps.println(String.format("Timeout: %s%n", this.timeout));
             }
@@ -406,11 +411,21 @@ public class VeracodePipelineRecorder extends Recorder implements SimpleBuildSte
                             e.getClass().getSimpleName(), e.getMessage()));
                     e.printStackTrace(ps);
                 } finally { // Make sure setting the build status correctly according to the retCode
-                    if (retCode != 0) {
-                        if (this.canFailJob) {
+                    if (this.canFailJob) {
+                        ps.println();
+                        String complianceStatus = run.getAction(VeracodeAction.class).getPolicyComplianceStatus();
+                        if (retCode != 0) {
                             ps.println();
                             ps.println("Error- Returned code from wrapper:" + retCode);
-                            run.setResult(Result.FAILURE);
+                            if (this.unstableBuild && !StringUtil.isNullOrEmpty(complianceStatus) &&
+                                    (complianceStatus.equalsIgnoreCase(Constant.DID_NOT_PASSED))) {
+                                run.setResult(Result.UNSTABLE);
+                            } else {
+                                run.setResult(Result.FAILURE);
+                            }
+                        } else if (this.unstableBuild && !StringUtil.isNullOrEmpty(complianceStatus) &&
+                                complianceStatus.equalsIgnoreCase(Constant.CONDITIONAL_PASSED)) {
+                            run.setResult(Result.UNSTABLE);
                         }
                     }
                 }
