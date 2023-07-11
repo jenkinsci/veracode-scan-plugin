@@ -413,7 +413,11 @@ public class VeracodePipelineRecorder extends Recorder implements SimpleBuildSte
                 } finally { // Make sure setting the build status correctly according to the retCode
                     if (this.canFailJob) {
                         ps.println();
-                        String complianceStatus = run.getAction(VeracodeAction.class).getPolicyComplianceStatus();
+                        VeracodeAction veracodeAction = run.getAction(VeracodeAction.class);
+                        String complianceStatus = null;
+                        if (veracodeAction != null) {
+                            complianceStatus = veracodeAction.getPolicyComplianceStatus();
+                        }
                         if (retCode != 0) {
                             ps.println();
                             ps.println("Error- Returned code from wrapper:" + retCode);
