@@ -90,23 +90,22 @@
 		<f:textbox />
 	</f:entry>
 
-	<f:entry title="Fail Job">
-		<f:optionalBlock
-				title="Fail the Jenkins job if a Veracode task fails or the application fails to pass a security policy."
-				field="canFailJob" inline="true" checked="${descriptor.getFailbuild()}">
+	<f:entry>
+		<f:optionalBlock title="Fail Job" field="canFailJob" inline="true" checked="${descriptor.getFailbuild()}">
 			<f:entry>
-				<f:entry title="Show Unstable Status for Failed Policy Evaluation">
-					<table width="100%">
-						<f:entry field="unstableBuild">
-							<f:checkbox
-									title="Change the Jenkins job status to Unstable if the application fails to pass a security policy."/>
-						</f:entry>
-					</table>
-				</f:entry>
+				<table width="100%">
+					<tr>
+						<td style="padding-top:10px;">
+							<f:entry field="unstableBuild" title="Show Unstable Status for Failed Policy Evaluation">
+								<f:checkbox/>
+							</f:entry>
+						</td>
+					</tr>
+				</table>
 			</f:entry>
 		</f:optionalBlock>
 	</f:entry>
-	
+
 	<f:entry title="Copy Output Remote Files to Controller">
 			<table width="100%">
 				<f:entry field="copyRemoteFiles">
