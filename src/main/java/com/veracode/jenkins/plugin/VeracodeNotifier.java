@@ -874,7 +874,11 @@ public class VeracodeNotifier extends Notifier {
                 } finally { // Make sure setting the build status correctly according to the retCode
                     if (getDescriptor().getFailbuild()) {
                         ps.println();
-                        String complianceStatus = build.getAction(VeracodeAction.class).getPolicyComplianceStatus();
+                        VeracodeAction veracodeAction = build.getAction(VeracodeAction.class);
+                        String complianceStatus = null;
+                        if (veracodeAction != null) {
+                            complianceStatus = veracodeAction.getPolicyComplianceStatus();
+                        }
                         if (retcode != 0) {
                             ps.println();
                             ps.println("Error- Returned code from wrapper:" + retcode);
