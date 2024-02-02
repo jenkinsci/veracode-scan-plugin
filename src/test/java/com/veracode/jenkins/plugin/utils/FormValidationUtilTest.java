@@ -1,12 +1,11 @@
 package com.veracode.jenkins.plugin.utils;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyBoolean;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
 
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Matchers;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -192,7 +191,7 @@ public class FormValidationUtilTest {
 		PowerMockito.mockStatic(EncryptionUtil.class);
 		String defaultTimeout = FormValidationUtil.formatTimeout(timeout);
 		Assert.assertEquals("Issue in timeout value", defaultTimeoutValue, defaultTimeout);
-		PowerMockito.when(Secret.fromString(Matchers.any())).thenReturn(secret);
+		PowerMockito.when(Secret.fromString(any())).thenReturn(secret);
 		PowerMockito.when(EncryptionUtil.decrypt(timeout)).thenReturn(timeout);
 		String actualTimeout = FormValidationUtil.formatTimeout(timeout);
 		Assert.assertEquals("Issue in timeout value", timeout, actualTimeout);

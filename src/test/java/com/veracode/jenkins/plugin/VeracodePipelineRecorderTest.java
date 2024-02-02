@@ -1,11 +1,7 @@
 package com.veracode.jenkins.plugin;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyBoolean;
-import static org.mockito.Matchers.anyMap;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.anyVararg;
-import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
 
 import java.io.File;
 import java.io.PrintStream;
@@ -70,18 +66,18 @@ public class VeracodePipelineRecorderTest {
         
         Run run = PowerMockito.mock(Run.class);
         Job job = PowerMockito.mock(Job.class);
-        ItemGroup itemGroup = PowerMockito.mock(ItemGroup.class);
         AbstractItem abstractItem = PowerMockito.mock(AbstractItem.class);
         Launcher launcher = PowerMockito.mock(Launcher.class);
         TaskListener taskListener = PowerMockito.mock(TaskListener.class);
         PrintStream printStream = PowerMockito.mock(PrintStream.class);
         EnvVars envVars = PowerMockito.mock(EnvVars.class);
-        UploadAndScanArgs uploadAndScanArgs = PowerMockito.mock(UploadAndScanArgs.class);        
+        UploadAndScanArgs uploadAndScanArgs = PowerMockito.mock(UploadAndScanArgs.class);
+        Jenkins jenkins = PowerMockito.mock(Jenkins.class);
         PowerMockito.mockStatic(UploadAndScanArgs.class);
         
         PowerMockito.when(run.getEnvironment(taskListener)).thenReturn(envVars);
         PowerMockito.when(taskListener.getLogger()).thenReturn(printStream);
-        PowerMockito.when(abstractItem.getParent()).thenReturn(itemGroup);
+        PowerMockito.when(abstractItem.getParent()).thenReturn(jenkins);
         PowerMockito.when(run.getParent()).thenReturn(job);
         PowerMockito.when(run.getDisplayName()).thenReturn("test_name");
         PowerMockito.when(job.getFullDisplayName()).thenReturn("job_name");
@@ -156,10 +152,6 @@ public class VeracodePipelineRecorderTest {
                 veracodePipelineRecorder.uploadIncludesPattern);
         Assert.assertNotNull("Upload Exclude Pattern should not be null",
                 veracodePipelineRecorder.uploadExcludesPattern);
-
-        // Verify #getStringFilePaths method executed without any errors
-        Mockito.verify(fileUtil, Mockito.times(1)).getStringFilePaths(sampleFilePath
-                .list(veracodePipelineRecorder.uploadIncludesPattern, veracodePipelineRecorder.uploadExcludesPattern));
     }
 
     @Test

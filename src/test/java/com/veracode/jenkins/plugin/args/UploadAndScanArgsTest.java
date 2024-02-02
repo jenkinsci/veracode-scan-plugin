@@ -1,6 +1,6 @@
 package com.veracode.jenkins.plugin.args;
 
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 
 import java.io.IOException;
 
