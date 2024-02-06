@@ -513,8 +513,10 @@ public class VeracodeAction implements RunAction2 {
     public boolean getPolicyAffection(int severity) {
         boolean result = false;
         try {
-            result = scanHistory.getPolicyAffection(severity);
-        } catch (IllegalArgumentException | NullPointerException iae) {
+            if (scanHistory != null) {
+                result = scanHistory.getPolicyAffection(severity);
+            }
+        } catch (IllegalArgumentException iae) {
             result = false;
         }
         return result;
