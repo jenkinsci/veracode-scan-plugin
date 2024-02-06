@@ -1,6 +1,6 @@
 package com.veracode.jenkins.plugin.utils;
 
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -111,7 +111,9 @@ public class FileUtilTest {
 		FilePath remoteFilePath = PowerMockito.spy(new FilePath(remoteDir));
 		FilePath localFilePath = PowerMockito.spy(new FilePath(localDir));
 		String jarName = remoteDir.getPath() + File.separator + "vosp-api-wrappers-java.jar";
-		PowerMockito.whenNew(FilePath.class).withArguments(node.getChannel(), jarName).thenReturn(localFilePath);
+		FilePath[] filePaths = { mock(FilePath.class) };
+		when(remoteFilePath.list("vosp-api-wrappers-java*.jar")).thenReturn(filePaths);
+		when(filePaths[0].getRemote()).thenReturn(jarName);
 		doNothing().when(localFilePath).copyToWithPermission(any());
 		boolean isFileCopied = FileUtil.copyJarFiles(build, localFilePath, remoteFilePath, ps);
 		Assert.assertTrue("Files are not copied", isFileCopied);
