@@ -1,10 +1,9 @@
 package com.veracode.jenkins.plugin;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyBoolean;
-import static org.mockito.Matchers.anyMap;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.anyVararg;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
+import static org.mockito.ArgumentMatchers.anyMap;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 import java.io.PrintStream;
@@ -97,7 +96,7 @@ public class VeracodeNotifierTest {
 
         when(node.toComputer()).thenReturn(computer);
         when(computer.isUnix()).thenReturn(true);
-        when(RemoteScanUtil.addArgumentsToCommand(any(), anyVararg(), anyBoolean())).thenCallRealMethod();
+        when(RemoteScanUtil.addArgumentsToCommand(any(), any(String[].class), anyBoolean())).thenCallRealMethod();
 
         when(node.createLauncher(buildListener)).thenReturn(launcher);
         PowerMockito.whenNew(ProcStarter.class).withNoArguments().thenReturn(procStarter);

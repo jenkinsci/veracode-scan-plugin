@@ -1,6 +1,6 @@
 package com.veracode.jenkins.plugin.utils;
 
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 
 import org.junit.Assert;
 import org.junit.Test;
