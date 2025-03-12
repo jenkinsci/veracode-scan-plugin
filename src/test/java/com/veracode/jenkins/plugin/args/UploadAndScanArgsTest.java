@@ -53,6 +53,8 @@ public class UploadAndScanArgsTest {
         String timeout = "60";
         String deleteIncompleteScan = "1";
         boolean bRemoteScan = true;
+        boolean scanallnonfataltoplevelmodules = false;
+        boolean includenewmodules = false;
 
         AbstractBuild build = PowerMockito.mock(AbstractBuild.class);
         EnvVars envVars = PowerMockito.mock(EnvVars.class);
@@ -66,7 +68,8 @@ public class UploadAndScanArgsTest {
         VeracodeNotifier veracodeNotifier = PowerMockito.spy(new VeracodeNotifier(appName,
                 createProfile, teams, criticality, sandboxName, createSandbox, version,
                 filenamePattern, replacementPattern, uploadIncludesPattern, uploadExcludesPattern,
-                scanIncludesPattern, scanExcludesPattern, waitForScan, timeout, deleteIncompleteScan, credentials));
+                scanIncludesPattern, scanExcludesPattern, scanallnonfataltoplevelmodules, includenewmodules,
+                waitForScan, timeout, deleteIncompleteScan, credentials));
 
         FilePath filePath = new FilePath(tempFolder.newFolder("tempDir"));
 
@@ -272,7 +275,7 @@ public class UploadAndScanArgsTest {
         PowerMockito.when(FormValidationUtil.formatTimeout(any())).thenReturn("60");
         VeracodeNotifier veracodeNotifier = PowerMockito
                 .spy(new VeracodeNotifier("test_app", true, "test_team", "High", "test_sandbox", true, "1.0",
-                        "**/*.jar", "", "", "", "", "", true, "60", deleteIncompleteScan, credentials));
+                "**/*.jar", "", "", "", "", "", false, false, true, "60", deleteIncompleteScan, credentials));
 
         PowerMockito.doReturn(veracodeDescriptor).when(veracodeNotifier).getDescriptor();
         PowerMockito.when(veracodeDescriptor.getAutoappname()).thenReturn(true);
@@ -300,7 +303,8 @@ public class UploadAndScanArgsTest {
 
         return UploadAndScanArgs.newUploadAndScanArgs(false, false, false, false, false, false, "", false, "vid",
                 "vkey", "buildnum", "sample_project", "sample_app", "sample_sandbox", "scan", "High", "**/**.java", "",
-                "", "", "phost", "pport", "puser", "pcredential", filePath, envVars, "60", deleteIncompleteScan, true,
+                "", "", "phost", "pport", "puser", "pcredential", filePath, envVars, "60", deleteIncompleteScan,
+                true, false, false,
                 new String[2]);
     }
 }

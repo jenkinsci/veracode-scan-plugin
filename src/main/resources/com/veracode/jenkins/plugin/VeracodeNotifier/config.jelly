@@ -54,7 +54,38 @@
 				</f:entry>
 			</table>
 	</f:entry>
-	
+
+    <f:entry title="Optional Arguments">
+           <table width="100%">
+               <!-- First Checkbox -->
+               <f:entry title="ScanAllNonFatalTopLevelModules" field="scanallnonfataltoplevelmodules">
+                   <f:checkbox default="false"  name="scanallnonfataltoplevelmodules"/>
+               </f:entry>
+
+               <!-- Second Checkbox (Initially Disabled) -->
+               <f:entry title="IncludeNewModules" field="includenewmodules">
+                   <f:checkbox default="false" name="includenewmodules" />
+               </f:entry>
+           </table>
+    </f:entry>
+
+    <!-- JavaScript for Enabling/Disabling -->
+    <script>
+           Behaviour.specify("input[name='scanallnonfataltoplevelmodules']", 'toggleIncludeNewModules', 0, function(checkbox) {
+               function updateIncludeNewModules() {
+                   var includeNewModules = document.querySelector("input[name='includenewmodules']");
+                   if (includeNewModules) {
+                       includeNewModules.disabled = !checkbox.checked;
+                       if (!checkbox.checked) {
+                           includeNewModules.checked = false;
+                       }
+                   }
+               }
+               checkbox.addEventListener("change", updateIncludeNewModules);
+               updateIncludeNewModules(); // Initialize on page load
+           });
+      </script>
+
 	<f:entry title="Save As">
 			<table width="100%">
 				<f:entry title="Filename Pattern" field="filenamepattern">

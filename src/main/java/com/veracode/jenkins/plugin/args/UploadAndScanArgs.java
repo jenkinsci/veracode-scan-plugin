@@ -41,6 +41,8 @@ public final class UploadAndScanArgs extends AbstractArgs {
     private static final String DELETEINCOMPLETESCAN = SWITCH + "deleteincompletescan";
     private static final String MAXRETRYCOUNT = SWITCH + "maxretrycount";
     private static final String DEBUG = SWITCH + "debug";
+    private static final String SCANALLNONFATALTOPLEVELMODULES = SWITCH + "scanallnonfataltoplevelmodules";
+    private static final String INCLUDENEWMODULES = SWITCH + "includenewmodules";
 
     private static final String CUSTOM_TIMESTAMP_VAR = "timestamp";
     private static final String CUSTOM_BUILD_NUMBER_VAR = "buildnumber";
@@ -73,12 +75,15 @@ public final class UploadAndScanArgs extends AbstractArgs {
      * @param timeOut       a {@link java.lang.String} object.
      * @param deleteIncompleteScan  a {@link java.lang.String} object.
      * @param debug         a boolean.
+     * @param scanallnonfataltoplevelmodules   a boolean
+     * @param includenewmodules   a boolean
      * @param filepath      a {@link java.lang.String} object.
      */
     private void addStdArguments(boolean bRemoteScan, String appname, String description,
             boolean createprofile, String teams, String criticality, String sandboxname,
             boolean createsandbox, String version, String include, String exclude, String pattern,
-            String replacement, String timeOut, String deleteIncompleteScan, boolean debug, String... filepath) {
+            String replacement, String timeOut, String deleteIncompleteScan, boolean debug, boolean scanallnonfataltoplevelmodules,
+            boolean includenewmodules, String... filepath) {
         // only add scantimeout if scan takes place from remote
         if (bRemoteScan) {
             if (!StringUtil.isNullOrEmpty(timeOut)) {
@@ -88,7 +93,8 @@ public final class UploadAndScanArgs extends AbstractArgs {
         }
 
         addStdArguments(appname, description, createprofile, teams, criticality, sandboxname,
-                createsandbox, version, include, exclude, pattern, replacement, deleteIncompleteScan, debug, filepath);
+                createsandbox, version, include, exclude, pattern, replacement, deleteIncompleteScan, debug,
+                scanallnonfataltoplevelmodules, includenewmodules, filepath);
     }
 
     /**
@@ -109,12 +115,15 @@ public final class UploadAndScanArgs extends AbstractArgs {
      * @param replacement   a {@link java.lang.String} object.
      * @param deleteIncompleteScan  a {@link java.lang.String} object.
      * @param debug         a boolean.
+     * @param scanallnonfataltoplevelmodules   a boolean
+     * @param includenewmodules   a boolean
      * @param filepath      a {@link java.lang.String} object.
      */
     private void addStdArguments(String appname, String description, boolean createprofile,
             String teams, String criticality, String sandboxname, boolean createsandbox,
             String version, String include, String exclude, String pattern, String replacement,
-            String deleteIncompleteScan, boolean debug, String... filepath) {
+            String deleteIncompleteScan, boolean debug, boolean scanallnonfataltoplevelmodules,
+            boolean includenewmodules, String... filepath) {
         if (!StringUtil.isNullOrEmpty(appname)) {
             list.add(APPNAME);
             list.add(appname);
@@ -196,6 +205,15 @@ public final class UploadAndScanArgs extends AbstractArgs {
                     list.add(FILEPATH);
                     list.add(s);
                 }
+            }
+        }
+
+        if (scanallnonfataltoplevelmodules){
+            list.add(SCANALLNONFATALTOPLEVELMODULES);
+            list.add(String.valueOf(scanallnonfataltoplevelmodules));
+            if (includenewmodules) {
+                list.add(INCLUDENEWMODULES);
+                list.add(String.valueOf(includenewmodules));
             }
         }
     }
@@ -302,7 +320,8 @@ public final class UploadAndScanArgs extends AbstractArgs {
                 notifier.getScanincludespattern(), notifier.getScanexcludespattern(),
                 notifier.getFilenamepattern(), notifier.getReplacementpattern(), phost, pport,
                 puser, ppsword, build.getWorkspace(), envVars, notifier.getTimeout(),
-                notifier.getDeleteIncompleteScan(), descriptor.getDebug(), filePaths);
+                notifier.getDeleteIncompleteScan(), descriptor.getDebug(), notifier.getScanallnonfataltoplevelmodules(),
+                notifier.getIncludenewmodules(), filePaths);
     }
 
     /**
@@ -358,7 +377,8 @@ public final class UploadAndScanArgs extends AbstractArgs {
                 run.getParent().getFullDisplayName(), vpr.applicationName, vpr.sandboxName, vpr.scanName,
                 vpr.criticality, vpr.scanIncludesPattern, vpr.scanExcludesPattern, vpr.fileNamePattern,
                 vpr.replacementPattern, phost, pport, puser, ppsword, workspace, envVars, strTimeout,
-                vpr.deleteIncompleteScanLevel, vpr.debug, filePaths);
+                vpr.deleteIncompleteScanLevel, vpr.debug, vpr.scanallnonfataltoplevelmodules,
+                vpr.includenewmodules, filePaths);
     }
 
     /**
@@ -391,6 +411,8 @@ public final class UploadAndScanArgs extends AbstractArgs {
      * @param workspace           a {@link hudson.FilePath} object.
      * @param envVars             a {@link hudson.EnvVars} object.
      * @param debug               a boolean.
+     * @param scanallnonfataltoplevelmodules   a boolean
+     * @param includenewmodules   a boolean
      * @param timeOut             a {@link java.lang.String} object.
      * @param deleteIncompleteScan  a {@link java.lang.String} object.
      * @param filePaths           an array of {@link java.lang.String} objects.
@@ -403,7 +425,8 @@ public final class UploadAndScanArgs extends AbstractArgs {
             String sandboxName, String scanName, String criticality, String scanIncludesPattern,
             String scanExcludesPattern, String fileNamePattern, String replacementPattern,
             String pHost, String pPort, String pUser, String pCredential, FilePath workspace,
-            hudson.EnvVars envVars, String timeOut, String deleteIncompleteScan, boolean debug, String[] filePaths) {
+            hudson.EnvVars envVars, String timeOut, String deleteIncompleteScan, boolean debug,
+            boolean scanallnonfataltoplevelmodules, boolean includenewmodules, String[] filePaths) {
 
         String description = null;
 
@@ -461,7 +484,8 @@ public final class UploadAndScanArgs extends AbstractArgs {
         }
         args.addStdArguments(bRemoteScan, applicationName, description, createProfile, teams, criticality, sandboxName,
                 createSandbox, scanName, scanIncludesPattern, scanExcludesPattern, fileNamePattern, replacementPattern,
-                timeOut, getDeleteIncompleteScan(deleteIncompleteScan), debug, filePaths);
+                timeOut, getDeleteIncompleteScan(deleteIncompleteScan), debug, scanallnonfataltoplevelmodules,
+                includenewmodules, filePaths);
         args.addUserAgent(UserAgentUtil.getVersionDetails());
 
         return args;
