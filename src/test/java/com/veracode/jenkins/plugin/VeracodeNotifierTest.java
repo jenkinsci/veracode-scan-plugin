@@ -123,7 +123,7 @@ public class VeracodeNotifierTest {
                 AbstractBuild.class, BuildListener.class, PrintStream.class, boolean.class);
         runScanFromRemoteMethod.setAccessible(true);
         VeracodeNotifier notifier = new VeracodeNotifier("appname", true, null, "criticality", null, false, "version",
-                null, null, "**/**.*", null, "**/**.jar", "**/**.war", true, null, "0", null);
+                null, null, "**/**.*", null, "**/**.jar", "**/**.war", false, false, true, null, "0", null);
         boolean success = (boolean) runScanFromRemoteMethod.invoke(notifier, abstractBuild, buildListener, printStream,
                 true);
         Assert.assertTrue(success);
