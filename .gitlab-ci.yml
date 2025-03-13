@@ -11,7 +11,7 @@ cache:
 build:
   stage: build
   script:
-    - mvn clean package
+    - mvn clean package -Dsonar.skip=true
   artifacts:
     paths:
     - target/*
