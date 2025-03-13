@@ -166,7 +166,7 @@
       </activation>
       <properties>
         <sonar.skip>false</sonar.skip>
-        <sonar.host.url>https://sonarqube.prod.veracode.io</sonar.host.url>
+        <sonar.host.url>https://sonar.lz.veracode.io</sonar.host.url>
         <sonar.sources>src/main</sonar.sources>
         <sonar.tests>src/test</sonar.tests>
         <sonar.language>java</sonar.language>
