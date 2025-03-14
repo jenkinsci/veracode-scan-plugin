@@ -492,6 +492,8 @@ public class VeracodeNotifier extends Notifier {
     private final String _uploadexcludespattern;
     private final String _scanincludespattern;
     private final String _scanexcludespattern;
+    private final boolean _scanallnonfataltoplevelmodules;
+    private final boolean _includenewmodules;
     private final String _filenamepattern;
     private final String _replacementpattern;
     private final CredentialsBlock _credentials;
@@ -546,6 +548,10 @@ public class VeracodeNotifier extends Notifier {
     public String getScanexcludespattern() {
         return EncryptionUtil.decrypt(this._scanexcludespattern);
     }
+
+    public boolean getScanallnonfataltoplevelmodules() {return this._scanallnonfataltoplevelmodules;}
+
+    public boolean getIncludenewmodules() {return this._includenewmodules;}
 
     public String getFilenamepattern() {
         return EncryptionUtil.decrypt(this._filenamepattern);
@@ -934,6 +940,8 @@ public class VeracodeNotifier extends Notifier {
      * @param uploadexcludespattern a {@link java.lang.String} object.
      * @param scanincludespattern   a {@link java.lang.String} object.
      * @param scanexcludespattern   a {@link java.lang.String} object.
+     * @param scanallnonfataltoplevelmodules   a boolean
+     * @param includenewmodules     a boolean
      * @param waitForScan           a boolean.
      * @param timeout               a {@link java.lang.String} object.
      * @param deleteIncompleteScan  a boolean.
@@ -945,8 +953,9 @@ public class VeracodeNotifier extends Notifier {
     public VeracodeNotifier(String appname, boolean createprofile, String teams, String criticality,
             String sandboxname, boolean createsandbox, String version, String filenamepattern,
             String replacementpattern, String uploadincludespattern, String uploadexcludespattern,
-            String scanincludespattern, String scanexcludespattern, boolean waitForScan,
-            String timeout, String deleteIncompleteScan, CredentialsBlock credentials) {
+            String scanincludespattern, String scanexcludespattern, boolean scanallnonfataltoplevelmodules,
+            boolean includenewmodules, boolean waitForScan, String timeout, String deleteIncompleteScan,
+            CredentialsBlock credentials) {
         this._appname = appname;
         this._createprofile = createprofile;
         this._teams = teams;
@@ -960,6 +969,9 @@ public class VeracodeNotifier extends Notifier {
 
         this._scanincludespattern = scanincludespattern;
         this._scanexcludespattern = scanexcludespattern;
+
+        this._scanallnonfataltoplevelmodules = scanallnonfataltoplevelmodules;
+        this._includenewmodules = includenewmodules;
 
         this._filenamepattern = filenamepattern;
         this._replacementpattern = replacementpattern;

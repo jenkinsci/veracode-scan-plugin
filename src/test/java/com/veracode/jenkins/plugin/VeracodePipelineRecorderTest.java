@@ -61,7 +61,7 @@ public class VeracodePipelineRecorderTest {
 
         VeracodePipelineRecorder veracodePipelineRecorder = new VeracodePipelineRecorder("test_app",
                 "medium", "test_sand_box", "scan1", false, 100, "0", true, "test_team", true, true, true,
-                true, true, "**/*.jar", "", "", "", "", "", true, false, "pHost", "pPort", "pUser",
+                true, true, "**/*.jar", "", "", "", "", "", true, false, false, false, "pHost", "pPort", "pUser",
                 "pPassword", "vid", "vkey");
         
         Run run = PowerMockito.mock(Run.class);
@@ -99,8 +99,8 @@ public class VeracodePipelineRecorderTest {
                 anyBoolean(), anyBoolean(), anyBoolean(), anyString(), anyBoolean(), anyString(),
                 anyString(), anyString(), anyString(), anyString(), anyString(), anyString(),
                 anyString(), anyString(), anyString(), anyString(), anyString(), anyString(),
-                anyString(), anyString(), anyString(), any(), any(), anyString(), anyString(), anyBoolean(), any()))
-                        .thenReturn(uploadAndScanArgs);
+                anyString(), anyString(), anyString(), any(), any(), anyString(), anyString(), anyBoolean(),
+                anyBoolean(), anyBoolean(), any())).thenReturn(uploadAndScanArgs);
         when(run.getResult()).thenReturn(Result.FAILURE);
         
         veracodePipelineRecorder.perform(run, sampleFilePath, launcher, taskListener);
@@ -112,7 +112,7 @@ public class VeracodePipelineRecorderTest {
         // Pass null value for both upload include and exclude pattern
         VeracodePipelineRecorder veracodePipelineRecorder = new VeracodePipelineRecorder("test_app", "medium",
                 "test_sand_box", "scan1", false, 100, "0", true, "test_team", true, true, false, false, false, null, null, "", "",
-                "", "", false, false, "pHost", "pPort", "pUser", "pPassword", "vid", "vkey");
+                "", "", false, false, false, false, "pHost", "pPort", "pUser", "pPassword", "vid", "vkey");
 
         Run run = PowerMockito.mock(Run.class);
         Job job = PowerMockito.mock(Job.class);
@@ -141,7 +141,7 @@ public class VeracodePipelineRecorderTest {
                 anyBoolean(), anyBoolean(), anyString(), anyBoolean(), anyString(), anyString(), anyString(),
                 anyString(), anyString(), anyString(), anyString(), anyString(), anyString(), anyString(), anyString(),
                 anyString(), anyString(), anyString(), anyString(), anyString(), any(), any(), anyString(),
-                anyString(), anyBoolean(), any())).thenReturn(uploadAndScanArgs);
+                anyString(), anyBoolean(), anyBoolean(),anyBoolean(), any())).thenReturn(uploadAndScanArgs);
         when(run.getResult()).thenReturn(Result.SUCCESS);
 
         veracodePipelineRecorder.perform(run, sampleFilePath, launcher, taskListener);
@@ -226,7 +226,7 @@ public class VeracodePipelineRecorderTest {
         runScanFromRemoteMethod.setAccessible(true);
         VeracodePipelineRecorder recorder = new VeracodePipelineRecorder("applicationName", "criticality", null,
                 "scanName", true, 60, "0", true, null, false, false, true, true, true, "**/**.*", null, "**/**.jar", "**/**.war",
-                null, null, false, true, null, null, null, null, "vid", "vkey");
+                null, null, false, false, false, true, null, null, null, null, "vid", "vkey");
         boolean success = (boolean) runScanFromRemoteMethod.invoke(recorder, run, filePath, taskListener, printStream);
         Assert.assertTrue(success);
     }

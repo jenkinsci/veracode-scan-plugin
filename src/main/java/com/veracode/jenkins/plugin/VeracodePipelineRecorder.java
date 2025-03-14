@@ -88,6 +88,10 @@ public class VeracodePipelineRecorder extends Recorder implements SimpleBuildSte
     public final boolean debug;
     @DataBoundSetter
     public final boolean copyRemoteFiles;
+    @DataBoundSetter
+    public final boolean scanallnonfataltoplevelmodules;
+    @DataBoundSetter
+    public final boolean includenewmodules;
     // Patterns
     @DataBoundSetter
     public final String uploadIncludesPattern;
@@ -146,6 +150,8 @@ public class VeracodePipelineRecorder extends Recorder implements SimpleBuildSte
      * @param fileNamePattern       a {@link java.lang.String} object.
      * @param replacementPattern    a {@link java.lang.String} object.
      * @param copyRemoteFiles       a boolean.
+     * @param scanallnonfataltoplevelmodules   a boolean
+     * @param includenewmodules     a boolean
      * @param useProxy              a boolean.
      * @param pHost                 a {@link java.lang.String} object.
      * @param pPort                 a {@link java.lang.String} object.
@@ -160,7 +166,7 @@ public class VeracodePipelineRecorder extends Recorder implements SimpleBuildSte
             boolean createSandbox, boolean timeoutFailsJob, boolean canFailJob, boolean unstableBuild, boolean debug,
             String uploadIncludesPattern, String uploadExcludesPattern, String scanIncludesPattern,
             String scanExcludesPattern, String fileNamePattern, String replacementPattern,
-            boolean copyRemoteFiles, boolean useProxy, String pHost, String pPort, String pUser,
+            boolean copyRemoteFiles, boolean scanallnonfataltoplevelmodules, boolean includenewmodules, boolean useProxy, String pHost, String pPort, String pUser,
             String pPassword, String vid, String vkey) {
 
         this.applicationName = applicationName;
@@ -178,6 +184,8 @@ public class VeracodePipelineRecorder extends Recorder implements SimpleBuildSte
         this.canFailJob = canFailJob;
         this.debug = debug;
         this.copyRemoteFiles = copyRemoteFiles;
+        this.scanallnonfataltoplevelmodules = scanallnonfataltoplevelmodules;
+        this.includenewmodules = includenewmodules;
         this.uploadIncludesPattern = StringUtility.getEmptyIfNull(uploadIncludesPattern);
         this.uploadExcludesPattern = StringUtility.getEmptyIfNull(uploadExcludesPattern);
         this.scanIncludesPattern = scanIncludesPattern;
