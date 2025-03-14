@@ -8,7 +8,7 @@
 	</f:entry>
 	
 	<f:entry title="Create Application" name="createProfile">
-		<f:checkbox default="false" field="createProfile" onclick="createProfileChecked(this.checked)"/>
+		<f:checkbox default="false" field="createProfile" />
 	</f:entry>
 	<f:entry title="Team Name" field="teams">
 		<f:textbox />
