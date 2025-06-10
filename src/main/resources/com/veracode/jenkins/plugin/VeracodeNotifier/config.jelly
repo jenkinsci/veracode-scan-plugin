@@ -112,7 +112,7 @@
 		<f:section title="Veracode Credentials">
 
 			<f:entry title="API ID" field="vid">
-				<f:textbox onload="vapicredential()"/>
+				<f:textbox />
 			</f:entry>
 
 			<f:entry title="API Key" field="vkey">
